@@ -37,21 +37,21 @@ save(fullfile(datpath,'params.mat'),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions)*numel(params.func.runs),3);
 
-for k = 1:numel(params.func.runs)
-dpos = 1;
-    for i = 1:numel(sublist)
-        for j = 1:numel(nsessions)
+for kt = 1:numel(params.func.runs)
+    for k = 1:numel(task)
+        dpos = 1;
+        for i = 1:numel(sublist)
+            for j = 1:numel(nsessions)
                 datlist(dpos,1) = sublist(i);
                 datlist(dpos,2) = nsessions(j);
-                datlist(dpos,3) = params.func.runs(k);
+                datlist(dpos,3) = params.func.runs(kt);
         
                 dpos = dpos+1;
             end
-    end
-    
-    numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
-    
-    for k = 1:numel(task)
+        end
+        
+        numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
+        
         if params.use_parallel
             for j=1:numpacks
                 if (j*params.maxprocesses)<=numel(datlist(:,1))

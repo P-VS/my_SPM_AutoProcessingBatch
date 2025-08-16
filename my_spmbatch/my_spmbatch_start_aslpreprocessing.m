@@ -6,13 +6,13 @@ save(fullfile(datpath,'params.mat'),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions)*numel(params.asl.runs),3);
 
-for k = 1:numel(params.asl.runs)
+for kt = 1:numel(params.asl.runs)
     dpos = 1;
     for i = 1:numel(sublist)
         for j = 1:numel(nsessions)
                 datlist(dpos,1) = sublist(i);
                 datlist(dpos,2) = nsessions(j);
-                datlist(dpos,3) = params.asl.runs(k);
+                datlist(dpos,3) = params.asl.runs(kt);
         
                 dpos = dpos+1;
             end
