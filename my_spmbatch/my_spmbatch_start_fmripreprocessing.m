@@ -35,7 +35,7 @@ end
 
 save(fullfile(datpath,'params.mat'),'params')
 
-datlist = zeros(numel(sublist)*numel(nsessions)*numel(params.func.runs),3);
+datlist = zeros(numel(sublist)*numel(nsessions),3);
 
 for kt = 1:numel(params.func.runs)
     for k = 1:numel(task)
