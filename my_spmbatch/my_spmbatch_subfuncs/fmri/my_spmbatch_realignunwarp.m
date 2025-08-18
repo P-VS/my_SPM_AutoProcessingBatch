@@ -4,7 +4,7 @@ Vref = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ne).tprefix ppparams.
 Vfunc = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ne).tprefix ppparams.func(ne).funcfile]));
 
 wrap = [0 0 0];
-if params.func.pepolar, wrap(ppparams.pepolar.pedim) = 1; end
+%if params.func.pepolar, wrap(ppparams.pepolar.pedim) = 1; end
 
 %% estimate the realignment parameters
 if ne==params.func.echoes(1)
@@ -96,7 +96,9 @@ end
 if params.func.pepolar
     uweoptions = spm_get_defaults('unwarp.estimate');
     uwroptions = spm_get_defaults('unwarp.write');
-    uweflags.fwhm      = 0; %uweoptions.fwhm;
+    uwroptions.jm      = 0;
+    
+    uweflags.fwhm      = uweoptions.fwhm;
     uweflags.order     = uweoptions.basfcn;
     uweflags.regorder  = uweoptions.regorder;
     uweflags.lambda    = uweoptions.regwgt;
