@@ -431,6 +431,15 @@ for ic=1:numel(params.contrast)
         weights=[weights subweights];
     end
 
+    postmp = find(weights>0);
+    if ~isempty(postmp)
+        weights(postmp) = weights(postmp)/numel(postmp);
+    end
+    negtmp = find(weights<0);
+    if ~isempty(negtmp)
+        weights(negtmp) = weights(negtmp)/numel(negtmp);
+    end
+
     matlabbatch{mbidx}.spm.stats.con.consess{ic}.tcon.name = contrastname;
     matlabbatch{mbidx}.spm.stats.con.consess{ic}.tcon.weights = weights;
     
