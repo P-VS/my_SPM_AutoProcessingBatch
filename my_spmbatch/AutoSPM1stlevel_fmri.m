@@ -24,17 +24,17 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [4,5]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:8]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'bilateralfingertapping'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'stroop'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'dune-dla_cbf_glm';
-params.modality = 'fasl'; %'fmri' of 'fasl'
+params.analysisname = 'meica_bold';
+params.modality = 'fmri'; %'fmri' of 'fasl'
 
 params.use_parallel = false; 
 params.maxprocesses = 2; %Best not too high to avoid memory problems
@@ -42,8 +42,8 @@ params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_dune-dla_asl'; %'preproc_bold_dune'; %'preproc_func_ME-EmoFaces_dune'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swcdlavfre'; %'swacdfre'; %'swacdure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
@@ -69,8 +69,8 @@ params.keeplogs = false;
     params.confounds_prefix = 'rp_e'; %confounds file of form [confounds_prefix 'sub-ii_task-... .txt']
     params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
     params.add_regressors = false; %if data not denoised set true otherwhise false 
-    params.add_derivatives = true; %add temmperal and dispertion derivatives to the GLM (default=false)
-    params.optimize_HRF = false; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
+    params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
+    params.optimize_HRF = true; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
     params.use_ownmask = true;
     params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
     params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
@@ -97,24 +97,71 @@ params.keeplogs = false;
     %   contrast(i).conditions={'condition 1','condition 2'};
     %   contrast(i).vector=[1 -1];
 
+    %% For experiment MANON: STROOP
+    params.contrast(1).conditions = {'congruent','neutral'};
+    params.contrast(1).vector = [1,-1];
+
+    params.contrast(2).conditions = {'congruent','neutral'};
+    params.contrast(2).vector = [-1,1];
+
+    params.contrast(3).conditions = {'incongruent','neutral'};
+    params.contrast(3).vector = [1,-1];
+
+    params.contrast(4).conditions = {'incongruent','neutral'};
+    params.contrast(4).vector = [-1,1];
+
+    params.contrast(5).conditions = {'congruent','incongruent'};
+    params.contrast(5).vector = [1,-1];
+
+    params.contrast(6).conditions = {'congruent','incongruent'};
+    params.contrast(6).vector = [-1,1];
+
+    params.contrast(7).conditions = {'congruent','incongruent','neutral'};
+    params.contrast(7).vector = [1,1,1];
+
+    params.contrast(8).conditions = {'congruent','incongruent','neutral'};
+    params.contrast(8).vector = [-1,-1,-1];
+
+    %% For experiment MANON: Go-NoGO
     %params.contrast(1).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
     %params.contrast(1).vector = [1,1,-1,-1];
 
     %params.contrast(2).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
     %params.contrast(2).vector = [-1,-1,1,1];
 
-    params.contrast(1).conditions = {'Finger'};
-    params.contrast(1).vector = [1];
+    %params.contrast(3).conditions = {'Go_Left','Go_Right'};
+    %params.contrast(3).vector = [1,1];
 
-    params.contrast(2).conditions = {'Finger'};
-    params.contrast(2).vector = [-1];
+    %params.contrast(4).conditions = {'Go_Left','Go_Right'};
+    %params.contrast(4).vector = [-1,-1];
 
+    %params.contrast(5).conditions = {'NoGo_Left','NoGo_Right'};
+    %params.contrast(5).vector = [1,1];
+
+    %params.contrast(6).conditions = {'NoGo_Left','NoGo_Right'};
+    %params.contrast(6).vector = [-1,-1];
+
+    %params.contrast(7).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
+    %params.contrast(7).vector = [1,1,1,1];
+
+    %params.contrast(8).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
+    %params.contrast(8).vector = [-1,-1,-1,-1];
+
+    %% For experiment ASLBOLD: Fingertapping
+    %params.contrast(1).conditions = {'Finger'};
+    %params.contrast(1).vector = [1];
+
+    %params.contrast(2).conditions = {'Finger'};
+    %params.contrast(2).vector = [-1];
+
+    %% For experiment ME-fMRI: EFT
     %params.contrast(1).conditions = {'episodic','semantic'};
     %params.contrast(1).vector = [1,-1];
     
     %params.contrast(2).conditions = {'episodic','semantic'};
     %params.contrast(2).vector = [-1,1];
     
+    %% For experiment ME-fMRI: EFT
     %params.contrast(1).conditions = {'sad','neutral'};
     %params.contrast(1).vector = [1,-1];
     
