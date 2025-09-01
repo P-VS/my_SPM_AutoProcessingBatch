@@ -1,9 +1,8 @@
 function [delfiles,keepfiles] = my_spmbatch_preprocfasl(ppparams,params,delfiles,keepfiles)
 
 %% Make GM, WM masks
-if ~isfield(ppparams.perf(1),'c1m0scanfile') || ~isfield(ppparams.perf(1),'c2m0scanfile') || ~isfield(ppparams.perf(1),'c3m0scanfile')
-    [ppparams,delfiles,~] = my_spmbatch_asl_segmentation(ppparams,params,delfiles,keepfiles);
-end
+
+[ppparams,delfiles,~] = my_spmbatch_asl_segmentation(ppparams,params,delfiles,keepfiles);
 
 %% Control-Label subtraction to make deltam series
 if ~isfield(ppparams.perf(1),'deltamfile')
