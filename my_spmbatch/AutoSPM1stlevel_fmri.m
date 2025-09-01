@@ -21,20 +21,22 @@ function AutoSPM1stlevel_fmri
 clear 'all'
 
 params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
+params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICATv40c';
 
 %% Give the basic input information of your data
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [1:8]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:10,13:24]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'stroop'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica_bold';
+params.analysisname = 'dune_bold';
 params.modality = 'fmri'; %'fmri' of 'fasl'
+params.isaslbold = true;
 
 params.use_parallel = false; 
 params.maxprocesses = 2; %Best not too high to avoid memory problems
@@ -42,17 +44,17 @@ params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
+    params.preprocfmridir = 'preproc_dune_bold'; %directory with the preprocessed fMRI data
     params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
-    params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
+    params.dummytime = 8; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
     %In case of multiple runs in the same session exist
     params.func.mruns = false; %true if run number is in filename
     params.func.runs = [1]; %the index of the runs (in filenames run-(index))
-    params.func.use_runs = 'together'; % 'separately' or 'together' (this parameter is ignored if mruns is false)
-    %'separately': a separate analysis is done per run
-    %'together': all runs are combined in 1 analysis
+    params.func.use_runs = 'separately'; % 'separately' or 'together' (this parameter is ignored if mruns is false)
+    %'separately': a separate analysis is done per run (default=separately)
+    %'together': all runs are combined in 1 analysis 
     
     % For ME-fMRI
     params.func.meepi = true; %true if echo number is in filename
@@ -64,8 +66,11 @@ params.keeplogs = false;
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
 %% SPM first level analysis parameters
-    params.analysis_type = 'GLM'; % 'GLM' or 'within_subject' (default='GLM'), 'within_subject' only possible for 'fasl'
+    params.analysis_type = 'GLM'; % 'GLM' 'ICA' or 'within_subject' (default='GLM') 
+    % 'within_subject' only possible for 'fasl'
+    % ICA for a model free analysis at subject level
 
+    params.number_of_components = 10; %Number of components if analysis_type = 'ICA'
     params.confounds_prefix = 'rp_e'; %confounds file of form [confounds_prefix 'sub-ii_task-... .txt']
     params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
     params.add_regressors = false; %if data not denoised set true otherwhise false 
@@ -98,54 +103,42 @@ params.keeplogs = false;
     %   contrast(i).vector=[1 -1];
 
     %% For experiment MANON: STROOP
-    params.contrast(1).conditions = {'congruent','neutral'};
-    params.contrast(1).vector = [1,-1];
+    %params.contrast(1).conditions = {'congruent','neutral'};
+    %params.contrast(1).vector = [1,-1];
 
-    params.contrast(2).conditions = {'congruent','neutral'};
-    params.contrast(2).vector = [-1,1];
+    %params.contrast(2).conditions = {'congruent','neutral'};
+    %params.contrast(2).vector = [-1,1];
 
-    params.contrast(3).conditions = {'incongruent','neutral'};
-    params.contrast(3).vector = [1,-1];
+    %params.contrast(3).conditions = {'incongruent','neutral'};
+    %params.contrast(3).vector = [1,-1];
 
-    params.contrast(4).conditions = {'incongruent','neutral'};
-    params.contrast(4).vector = [-1,1];
+    %params.contrast(4).conditions = {'incongruent','neutral'};
+    %params.contrast(4).vector = [-1,1];
 
-    params.contrast(5).conditions = {'congruent','incongruent'};
-    params.contrast(5).vector = [1,-1];
+    %params.contrast(5).conditions = {'congruent','incongruent'};
+    %params.contrast(5).vector = [1,-1];
 
-    params.contrast(6).conditions = {'congruent','incongruent'};
-    params.contrast(6).vector = [-1,1];
+    %params.contrast(6).conditions = {'congruent','incongruent'};
+    %params.contrast(6).vector = [-1,1];
 
-    params.contrast(7).conditions = {'congruent','incongruent','neutral'};
-    params.contrast(7).vector = [1,1,1];
+    %params.contrast(7).conditions = {'congruent','incongruent','neutral'};
+    %params.contrast(7).vector = [1,1,1];
 
-    params.contrast(8).conditions = {'congruent','incongruent','neutral'};
-    params.contrast(8).vector = [-1,-1,-1];
+    %params.contrast(8).conditions = {'congruent','incongruent','neutral'};
+    %params.contrast(8).vector = [-1,-1,-1];
 
     %% For experiment MANON: Go-NoGO
-    %params.contrast(1).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
-    %params.contrast(1).vector = [1,1,-1,-1];
+    params.contrast(1).conditions = {'Go','NoGo'};
+    params.contrast(1).vector = [1,-1];
 
-    %params.contrast(2).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
-    %params.contrast(2).vector = [-1,-1,1,1];
+    params.contrast(2).conditions = {'Go','NoGo'};
+    params.contrast(2).vector = [-1,1];
 
-    %params.contrast(3).conditions = {'Go_Left','Go_Right'};
-    %params.contrast(3).vector = [1,1];
+    params.contrast(3).conditions = {'Go','NoGo'};
+    params.contrast(3).vector = [1,1];
 
-    %params.contrast(4).conditions = {'Go_Left','Go_Right'};
-    %params.contrast(4).vector = [-1,-1];
-
-    %params.contrast(5).conditions = {'NoGo_Left','NoGo_Right'};
-    %params.contrast(5).vector = [1,1];
-
-    %params.contrast(6).conditions = {'NoGo_Left','NoGo_Right'};
-    %params.contrast(6).vector = [-1,-1];
-
-    %params.contrast(7).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
-    %params.contrast(7).vector = [1,1,1,1];
-
-    %params.contrast(8).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
-    %params.contrast(8).vector = [-1,-1,-1,-1];
+    params.contrast(4).conditions = {'Go','NoGo'};
+    params.contrast(4).vector = [-1,-1];
 
     %% For experiment ASLBOLD: Fingertapping
     %params.contrast(1).conditions = {'Finger'};
@@ -188,6 +181,7 @@ restoredefaultpath
 [params.my_spmbatch_path,~,~] = fileparts(mfilename('fullpath'));
 
 if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
+if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
 if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
 
 old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');

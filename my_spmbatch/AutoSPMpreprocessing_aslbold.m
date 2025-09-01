@@ -33,15 +33,15 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1,3];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_meica_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_meica_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
 
-task ={'stroop'};
+task ={'PREcog'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -58,7 +58,7 @@ params.save_intermediate_results = true; %clean up the directory by deleting unn
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = true; %(default=true)
+params.preprocess_functional = false; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
@@ -70,7 +70,7 @@ params.func.dummytime = 8; %time in seconds (default=2*TR)
 params.func.pepolar = true; %true if fmap scan exist otherwise false (default=true)
 
 %% ASL Parameters
-params.asl.splitaslbold = 'meica'; %'meica' or 'dune' (default='meica') 
+params.asl.splitaslbold = 'dune'; %'meica' or 'dune' (default='meica') 
 %'meica': after filtering, ME-ICA (tedana based)
 %'dune': experimental splitting method
 

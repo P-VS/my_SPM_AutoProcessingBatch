@@ -50,28 +50,28 @@ params.sub_digits = 2; %if 2 the result will be sub-01, if 3 the result will be 
 % deactivating the lines by addinng a % at the beginning
 
 %% Example anatomical T1w scan
-%params.mridata(1).folder = 'ses-001/VBM';
-%params.mridata(1).acqtype = 'anat';
-%params.mridata(1).seqtype = 'T1w';
-%params.mridata(1).task = '';
-%params.mridata(1).session = 1;
-%params.mridata(1).run = 1;
-%params.mridata(1).add_acq = false;
-%params.mridata(1).add_dir = false;
-%params.mridata(1).add_run = false;
-%params.mridata(1).add_echo = false;
-
-%% Example pepolar fmap scan
-params.mridata(1).folder = 'ses-001/PP_ASLBOLD';
-params.mridata(1).acqtype = 'fmap';
-params.mridata(1).seqtype = 'pepolar';
+params.mridata(1).folder = 'ses-001/VBM';
+params.mridata(1).acqtype = 'anat';
+params.mridata(1).seqtype = 'T1w';
 params.mridata(1).task = '';
 params.mridata(1).session = 1;
 params.mridata(1).run = 1;
 params.mridata(1).add_acq = false;
-params.mridata(1).add_dir = true;
+params.mridata(1).add_dir = false;
 params.mridata(1).add_run = false;
-params.mridata(1).add_echo = true;
+params.mridata(1).add_echo = false;
+
+%% Example pepolar fmap scan
+%params.mridata(2).folder = 'ses-001/PP_ASLBOLD';
+%params.mridata(2).acqtype = 'fmap';
+%params.mridata(2).seqtype = 'pepolar';
+%params.mridata(2).task = '';
+%params.mridata(2).session = 1;
+%params.mridata(2).run = 1;
+%params.mridata(2).add_acq = false;
+%params.mridata(2).add_dir = true;
+%params.mridata(2).add_run = false;
+%params.mridata(2).add_echo = true;
 
 %% Example fMRI scan
 %params.mridata(1).folder = 'dcm/SE-fMRI_EFT';
@@ -97,16 +97,16 @@ params.mridata(1).add_echo = true;
 %params.mridata(2).add_echo = true;
 
 %% Example ASLBOLD scan
-%params.mridata(1).folder = 'ses-001/STROOP1';
-%params.mridata(1).acqtype = 'func';
-%params.mridata(1).seqtype = 'aslbold';
-%params.mridata(1).task = 'stroop';
-%params.mridata(1).session = 1;
-%params.mridata(1).run = 1;
-%params.mridata(1).add_acq = false;
-%params.mridata(1).add_dir = true;
-%params.mridata(1).add_run = true;
-%params.mridata(1).add_echo = true;
+%params.mridata(3).folder = 'ses-001/STROOP1';
+%params.mridata(3).acqtype = 'func';
+%params.mridata(3).seqtype = 'aslbold';
+%params.mridata(3).task = 'stroop';
+%params.mridata(3).session = 1;
+%params.mridata(3).run = 1;
+%params.mridata(3).add_acq = false;
+%params.mridata(3).add_dir = true;
+%params.mridata(3).add_run = true;
+%params.mridata(3).add_echo = true;
 
 %params.mridata(4).folder = 'ses-001/PREcog';
 %params.mridata(4).acqtype = 'func';
