@@ -24,9 +24,9 @@ for ir=1:numel(params.iruns)
     % correct events file for dummy scans if needed
     dummys = floor(params.dummytime/tr);
     numparams = 0;
-    try
-        ppparams.ppparams.edat{ir} = tdfread(ppparams.frun(ir).functsvfile,'\t');
-    catch
+    %try
+    %    ppparams.edat{ir} = tdfread(ppparams.frun(ir).functsvfile,'\t');
+    %catch
         T = readtable(ppparams.frun(ir).functsvfile,'FileType','text');
         ppparams.edat{ir}.onset = T.onset;
         ppparams.edat{ir}.duration = T.duration;
@@ -42,7 +42,7 @@ for ir=1:numel(params.iruns)
             else params.add_parametricModulation=false; end
         else params.add_parametricModulation=false;
         end
-    end
+    %end
     ppparams.edat{ir}.onset = ppparams.edat{ir}.onset-dummys*tr;
     if contains(params.modality,'fasl'), ppparams.edat{ir}.onset=ppparams.edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay); end
     
@@ -131,8 +131,8 @@ for ir=1:numel(params.iruns)
     
         matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi = {''};
 
-        if contains(params.modality,'fasl') && contains(params.whichfile,'asl')
-            labels = zeros(1,numel(ppfmridat{ir}.sess{ie}.func));
+        if params.isaslbold %contains(params.modality,'fasl') && contains(params.whichfile,'asl')
+            labels = zeros(1,numel(ppparams.ppfmridat{ir}.sess{ne}.func));
             labels(2:2:end) = 1;
             matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.name = 'labeling';
             matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.val = labels;

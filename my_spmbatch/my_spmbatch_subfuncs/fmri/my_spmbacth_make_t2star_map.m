@@ -7,16 +7,8 @@ voldim = size(tefuncdat);
 
 nechoes = numel(te);
 
-mask = zeros([voldim(1),voldim(2),voldim(3)]);
-
-for ie=1:nechoes
-    iemask = my_spmbatch_mask(tefuncdat(:,:,:,:,ie));
-    mask = mask + iemask;
-
-    clear iemask
-end
-
-mask_ind = find(mask>nechoes-0.5);
+mask = my_spmbatch_mask(tefuncdat(:,:,:,:,1));
+mask_ind = find(mask>0.5);
 
 t2star = zeros(voldim(1),voldim(2),voldim(3),voldim(4));
 
