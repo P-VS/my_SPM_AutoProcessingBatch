@@ -1,6 +1,6 @@
 function icaparms_file = ica_aroma_make_gift_parameters(ica_source_file,t_r,n_sessions,mask,comp_est,ppparams)
 
-[ica_source_path,~,~] = fileparts(ica_source_file)
+[ica_source_path,~,~] = fileparts(ica_source_file);
 
 icaparms_file = fullfile(ppparams.subfuncdir,'input_spatial_ica.m');
 
