@@ -44,7 +44,7 @@ for ir=1:numel(params.iruns)
         end
     %end
     ppparams.edat{ir}.onset = ppparams.edat{ir}.onset-dummys*tr;
-    if contains(params.modality,'fasl'), ppparams.edat{ir}.onset=ppparams.edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay); end
+    if params.isaslbold, ppparams.edat{ir}.onset=ppparams.edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay); end
     
     for it=1:numel(ppparams.edat{ir}.trial_type(:,1))
         ntrial_type(it,1) = convertCharsToStrings(ppparams.edat{ir}.trial_type(it,:));
