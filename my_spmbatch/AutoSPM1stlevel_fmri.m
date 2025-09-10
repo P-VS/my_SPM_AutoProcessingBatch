@@ -27,12 +27,12 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [15:21]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:21]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1,2]; %nsessions>0
  
-params.task = {'PREcog'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %{'PREcog'};  %text string that is in between task_ and _bold in your fNRI nifiti filename
 
 params.analysisname = 'meica_bold';
 params.modality = 'fmri'; %'fmri' of 'fasl'
@@ -138,13 +138,6 @@ params.keeplogs = false;
 
     params.contrast(4).conditions = {'Go','NoGo'};
     params.contrast(4).vector = [-1,-1];
-
-    %% For experiment ASLBOLD: Fingertapping
-    %params.contrast(1).conditions = {'Finger'};
-    %params.contrast(1).vector = [1];
-
-    %params.contrast(2).conditions = {'Finger'};
-    %params.contrast(2).vector = [-1];
 
     %% For experiment ME-fMRI: EFT
     %params.contrast(1).conditions = {'episodic','semantic'};
