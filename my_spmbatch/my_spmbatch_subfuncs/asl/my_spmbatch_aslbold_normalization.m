@@ -10,7 +10,7 @@ end
 
 ppparams.deffile = fullfile(ppparams.subperfdir,['y_' ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile ',1']);
 
-if ~exist(ppparams.deffile,"file")
+%if ~exist(ppparams.deffile,"file")
     m0normest.subj.vol = {fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile ',1'])};
     m0normest.eoptions.biasreg = 0.0001;
     m0normest.eoptions.biasfwhm = 60;
@@ -21,7 +21,7 @@ if ~exist(ppparams.deffile,"file")
     m0normest.eoptions.samp = 3;
     
     spm_run_norm(m0normest);
-end
+%end
 
 delfiles{numel(delfiles)+1} = {ppparams.deffile};
 
@@ -52,22 +52,22 @@ clear Vcbf
 
 %Write the spatially normalised  ASL data
 
-Vasl = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
+%Vasl = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
 
-for i=1:numel(Vasl)
-    waslfiles{i,1} = [Vasl(i).fname ',' num2str(i)];
-end
+%for i=1:numel(Vasl)
+%    waslfiles{i,1} = [Vasl(i).fname ',' num2str(i)];
+%end
 
-aslnormw = cbfnormw;
-aslnormw.subj.resample = waslfiles(:,1);
+%aslnormw = cbfnormw;
+%aslnormw.subj.resample = waslfiles(:,1);
 
-spm_run_norm(aslnormw);
+%spm_run_norm(aslnormw);
 
-keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile])};
+%keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile])};
 
-ppparams.perf(1).waslfile = ['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile];
+%ppparams.perf(1).waslfile = ['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile];
 
-clear Vasl
+%clear Vasl
 
 %Write the spatially normalised  mean CBF data
 

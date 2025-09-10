@@ -1,7 +1,5 @@
 function [ppparams,delfiles,keepfiles] = my_spmbatch_asl_segmentation(ppparams,params,delfiles,keepfiles)
 
-do_reorient = true;
-
 if ~isfield(ppparams.perf(1),'c1m0scanfile') || ~isfield(ppparams.perf(1),'c2m0scanfile') || ~isfield(ppparams.perf(1),'c3m0scanfile')
     if contains(params.asl.GMWM,'M0asl')
         %% Do segmentation on M0 image
@@ -61,7 +59,10 @@ if ~isfield(ppparams.perf(1),'c1m0scanfile') || ~isfield(ppparams.perf(1),'c2m0s
        
         %% Do reoriention
 
-        [ppparams,do_reorient] = search_anat_file(ppparams,do_reorient);
+        ppparams.subanatdir = fullfile(ppparams.subpath,'anat');
+
+        anatfile = search_anat_file(ppparams,ppparams.subanatdir);
+        ppparams.subanat = reorient_anat_file(ppparams.subanatdir,anatfile);
         
         params.vbm.do_normalization = false;
         params.vbm.normvox = params.anat.normvox;
@@ -83,23 +84,31 @@ if ~isfield(ppparams.perf(1),'c1m0scanfile') || ~isfield(ppparams.perf(1),'c2m0s
         movefile(fullfile(ppparams.subanatdir,ppparams.anat.c1im),fullfile(ppparams.subperfdir,ppparams.anat.c1im))
         movefile(fullfile(ppparams.subanatdir,ppparams.anat.c2im),fullfile(ppparams.subperfdir,ppparams.anat.c2im))
         movefile(fullfile(ppparams.subanatdir,ppparams.anat.c3im),fullfile(ppparams.subperfdir,ppparams.anat.c3im))
+        movefile(fullfile(ppparams.subanatdir,ppparams.subanat),fullfile(ppparams.subperfdir,ppparams.subanat))
     
         ppparams.perf(1).c1m0scanfile = ppparams.anat.c1im;
         ppparams.perf(1).c2m0scanfile = ppparams.anat.c2im;
         ppparams.perf(1).c3m0scanfile = ppparams.anat.c3im;
+        ppparams.subanatdir = ppparams.subperfdir;
     end
 end
 
 %% Do Coregistration to M0 image
-if ~contains(params.asl.GMWM,'M0asl')     
+if ~contains(params.asl.GMWM,'M0asl')    
 
-    ppparams = search_anat_file(ppparams,do_reorient);
+    csplit = split(ppparams.perf(1).c1m0scanfile,'p1');
+    ppparams.subanat = ['p0' csplit{end}];
+
+    copyfile(fullfile(ppparams.subperfdir,ppparams.perf(1).c1m0scanfile),fullfile(ppparams.subperfdir,['e' ppparams.perf(1).c1m0scanfile]))
+    copyfile(fullfile(ppparams.subperfdir,ppparams.perf(1).c2m0scanfile),fullfile(ppparams.subperfdir,['e' ppparams.perf(1).c2m0scanfile]))
+    copyfile(fullfile(ppparams.subperfdir,ppparams.perf(1).c3m0scanfile),fullfile(ppparams.subperfdir,['e' ppparams.perf(1).c3m0scanfile]))
+    copyfile(fullfile(ppparams.subperfdir,ppparams.subanat),fullfile(ppparams.subperfdir,['e' ppparams.subanat]))
 
     estwrite.ref(1) = {fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile])};
-    estwrite.source(1) = {fullfile(ppparams.subanatdir,ppparams.subanat)};
-    estwrite.other = {fullfile(ppparams.subperfdir,ppparams.perf(1).c1m0scanfile), ...
-                      fullfile(ppparams.subperfdir,ppparams.perf(1).c2m0scanfile), ...
-                      fullfile(ppparams.subperfdir,ppparams.perf(1).c3m0scanfile)};
+    estwrite.source(1) = {fullfile(ppparams.subperfdir,['e' ppparams.subanat])};
+    estwrite.other = {fullfile(ppparams.subperfdir,['e' ppparams.perf(1).c1m0scanfile]), ...
+                      fullfile(ppparams.subperfdir,['e' ppparams.perf(1).c2m0scanfile]), ...
+                      fullfile(ppparams.subperfdir,['e' ppparams.perf(1).c3m0scanfile])};
     estwrite.eoptions.cost_fun = 'nmi';
     estwrite.eoptions.sep = [4 2];
     estwrite.eoptions.tol = [0.02 0.02 0.02 0.001 0.001 0.001 0.01 0.01 0.01 0.001 0.001 0.001];
@@ -111,16 +120,45 @@ if ~contains(params.asl.GMWM,'M0asl')
     
     out_coreg = spm_run_coreg(estwrite);
     
-    ppparams.perf(1).c1m0scanfile = ['r' ppparams.perf(1).c1m0scanfile];
-    ppparams.perf(1).c2m0scanfile = ['r' ppparams.perf(1).c2m0scanfile];
-    ppparams.perf(1).c3m0scanfile = ['r' ppparams.perf(1).c3m0scanfile];
+    ppparams.perf(1).c1m0scanfile = ['re' ppparams.perf(1).c1m0scanfile];
+    ppparams.perf(1).c2m0scanfile = ['re' ppparams.perf(1).c2m0scanfile];
+    ppparams.perf(1).c3m0scanfile = ['re' ppparams.perf(1).c3m0scanfile];
+    ppparams.subanat = ['re' ppparams.subanat];
 end
 
-function [ppparams,do_reorient] = search_anat_file(ppparams,do_reorient)
+function eanatfile = reorient_anat_file(folder,anatfile)
+
+nm = split(anatfile,'.nii');
+transfile = fullfile(folder,[nm{1} '_reorient.mat']);
+if isfile(transfile)
+    load(transfile,'M')
+    transM = M;
+else        
+    transM = my_spmbatch_vol_set_com(fullfile(folder,anatfile));
+    transM(1:3,4) = -transM(1:3,4);
+end
+
+Vanat = spm_vol(fullfile(folder,anatfile));
+MM = Vanat.private.mat0;
+
+Vanat = my_reset_orientation(Vanat,transM * MM);
+
+anatdat = spm_read_vols(Vanat);
+
+Vanat.fname = fullfile(folder,['e' anatfile]);
+Vanat.descrip = 'reoriented';
+Vanat = spm_create_vol(Vanat);
+Vanat = spm_write_vol(Vanat,anatdat);
+
+auto_acpc_reorient(Vanat.fname,'T1');
+
+eanatfile = ['e' anatfile];
+
+
+
+function anatfile = search_anat_file(ppparams,folder)
 
  %% Search for the anatomical data files
-
-ppparams.subanatdir = fullfile(ppparams.subpath,'anat');
 
 namefilters(1).name = ppparams.substring;
 namefilters(1).required = true;
@@ -133,7 +171,7 @@ namefilters(3).required = true;
 
 % Unprocessed data
 
-anatniilist = my_spmbatch_dirfilelist(ppparams.subanatdir,'nii',namefilters,false);
+anatniilist = my_spmbatch_dirfilelist(folder,'nii',namefilters,false);
 
 if isempty(anatniilist)
     fprintf(['No nifti files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
@@ -147,38 +185,5 @@ if ~isempty(tmp), anatniilist = anatniilist(tmp); end
 prefixlist = split({anatniilist.name},'sub-');
 if numel(anatniilist)==1, prefixlist=prefixlist{1}; else prefixlist = prefixlist(:,:,1); end
 
-if ~do_reorient
-    tmp = find(contains(prefixlist,'e'));
-    if ~isempty(tmp), ppparams.subanat = anatniilist(tmp).name; else do_reorient=true; end
-end
-
-if do_reorient
-    tmp = find(strlength(prefixlist)==0);
-    if ~isempty(tmp), ppparams.subanat = anatniilist(tmp).name; end
-
-    nm = split(ppparams.subanat,'.nii');
-    transfile = fullfile(ppparams.subanatdir,[nm{1} '_reorient.mat']);
-    if isfile(transfile)
-        load(transfile,'M')
-        transM = M;
-    else        
-        transM = my_spmbatch_vol_set_com(fullfile(ppparams.subanatdir,ppparams.subanat));
-        transM(1:3,4) = -transM(1:3,4);
-    end
-    
-    Vanat = spm_vol(fullfile(ppparams.subanatdir,ppparams.subanat));
-    MM = Vanat.private.mat0;
-    
-    Vanat = my_reset_orientation(Vanat,transM * MM);
-    
-    anatdat = spm_read_vols(Vanat);
-    
-    Vanat.fname = fullfile(ppparams.subanatdir,['e' ppparams.subanat]);
-    Vanat.descrip = 'reoriented';
-    Vanat = spm_create_vol(Vanat);
-    Vanat = spm_write_vol(Vanat,anatdat);
-    
-    auto_acpc_reorient(Vanat.fname,'T1');
-    
-    ppparams.subanat = ['e' ppparams.subanat];
-end
+tmp = find(strlength(prefixlist)==0);
+if ~isempty(tmp), anatfile = anatniilist(tmp).name; end

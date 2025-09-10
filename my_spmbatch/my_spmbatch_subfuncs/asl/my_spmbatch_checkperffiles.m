@@ -174,13 +174,13 @@ else
         prefixlist = split({anatniilist.name},'sub-');
         if numel(anatniilist)==1, prefixlist=prefixlist{1}; else prefixlist = prefixlist(:,:,1); end
         
-        tmp=find(and(contains(prefixlist,'p1e'),~contains(prefixlist,'rp1e')));
+        tmp=find(and(contains(prefixlist,'p1e'),and(~contains(prefixlist,'r'),~contains(prefixlist,'ep'))));
         if ~isempty(tmp), ppparams.perf(1).c1m0scanfile = anatniilist(tmp).name; end
         
-        tmp=find(and(contains(prefixlist,'p2e'),~contains(prefixlist,'rp2e')));
+        tmp=find(and(contains(prefixlist,'p2e'),and(~contains(prefixlist,'r'),~contains(prefixlist,'ep'))));
         if ~isempty(tmp), ppparams.perf(1).c2m0scanfile = anatniilist(tmp).name; end
         
-        tmp=find(and(contains(prefixlist,'p3e'),~contains(prefixlist,'rp3e')));
+        tmp=find(and(contains(prefixlist,'p3e'),and(~contains(prefixlist,'r'),~contains(prefixlist,'ep'))));
         if ~isempty(tmp), ppparams.perf(1).c3m0scanfile = anatniilist(tmp).name; end
     end
 end

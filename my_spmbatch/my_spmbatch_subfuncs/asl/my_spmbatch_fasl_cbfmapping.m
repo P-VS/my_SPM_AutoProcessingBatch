@@ -17,9 +17,12 @@ voldim = Vdeltam(1).dim;
 jsondat = fileread(ppparams.func(1).jsonfile);
 jsondat = jsondecode(jsondat);
 tr = jsondat.RepetitionTime;
-te = 1000*jsondat.EchoTime;
+fa = jsondat.FlipAngle * pi/180;
 if isfield(jsondat,'LabelingDuration'), LD = jsondat.LabelingDuration; else LD = params.asl.LabelingDuration; end
 if isfield(jsondat,'PostLabelDelay'), PLD = jsondat.PostLabelDelay; else PLD = params.asl.PostLabelDelay; end
+
+if LD>10, LD=LD/1000; end
+if PLD>10, PLD=PLD/1000; end
 
 if isfield(jsondat,'SliceTiming'), SliceTimes = jsondat.SliceTiming; else SliceTimes = []; end
 if ~(numel(SliceTimes)==voldim(3)), SliceTimes = []; end
@@ -55,8 +58,6 @@ for is=1:voldim(3)
     vol_PLD(:,:,is) = PLD+SliceTimes(is);
 end
 
-reshape(vol_PLD,[voldim(1)*voldim(2),voldim(3)]);
-
 %% Correct M0 for T1 effects
 % The T1 values used, are the averaged T1 values reported in the review of 
 % Bojorquez et al. 2017. What are normal relaxation times of tissues at 3 T? Magnetic Resonance Imaging 35:69-80
@@ -64,12 +65,10 @@ reshape(vol_PLD,[voldim(1)*voldim(2),voldim(3)]);
 
 T1a = 1.650; %longitudinal relaxation time of arterial blood
 lambda = 0.9; %blood-brain partition coefficient for gray matter
-alpha = 0.85; %laeling efficiency
+alpha = 0.85; %labeling efficiency
 
 Vm0 = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile]));
 m0vol = spm_read_vols(Vm0);
-
-mask = my_spmbatch_mask(m0vol);
 
 GM = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).c1m0scanfile));
 WM = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).c2m0scanfile));
@@ -86,8 +85,12 @@ T1csf = 4.190;
 T1dat = (T1gm * gmim + T1wm * wmim + T1csf * csfim);
 
 corr_T1 = zeros(voldim);
-corr_T1(T1dat>0) = 1 ./ (1-exp(-tr./T1dat(T1dat>0)));
+corr_T1(T1dat>0) = (1 - cos(fa) * exp(-tr./T1dat(T1dat>0))) ./ (1-exp(-tr./T1dat(T1dat>0)));
 m0vol = m0vol .* corr_T1;
+
+mask = gmim+wmim;
+mask(mask>0.05) = 1;
+mask(mask<0.5) = 0;
 
 clear gmim wmim csfim T1dat corr_T1 GM WM CSF Vm0 %Vasl fasldata
 
