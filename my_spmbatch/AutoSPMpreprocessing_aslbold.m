@@ -33,15 +33,15 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1,3];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [17:24];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
 
-params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_meica_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_meica_asl'; %name of the folder to save the preprocessed asl data
 
-task ={'PREcog'};
+task ={'POSTcog'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -49,7 +49,7 @@ params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 %% Parallel processing and memory reduction
 params.use_parallel = true; %(default=false)
-params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
+params.maxprocesses = 4; %Best not too high to avoid memory problems %(default=2)
 params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
 
@@ -70,7 +70,7 @@ params.func.dummytime = 8; %time in seconds (default=2*TR)
 params.func.pepolar = true; %true if fmap scan exist otherwise false (default=true)
 
 %% ASL Parameters
-params.asl.splitaslbold = 'dune'; %'meica' or 'dune' (default='meica') 
+params.asl.splitaslbold = 'meica'; %'meica' or 'dune' (default='meica') 
 %'meica': after filtering, ME-ICA (tedana based)
 %'dune': experimental splitting method
 
