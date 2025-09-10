@@ -74,27 +74,16 @@ params.mridata(2).add_run = false;
 params.mridata(2).add_echo = true;
 
 %% Example fMRI scan
-%params.mridata(1).folder = 'dcm/SE-fMRI_EFT';
-%params.mridata(1).acqtype = 'func';
-%params.mridata(1).seqtype = 'fmri';
-%params.mridata(1).task = 'SE-EFT';
-%params.mridata(1).session = 1;
-%params.mridata(1).run = 1;
-%params.mridata(1).add_acq = false;
-%params.mridata(1).add_dir = true;
-%params.mridata(1).add_run = false;
-%params.mridata(1).add_echo = true;
-
-%params.mridata(2).folder = 'dcm/SE-fMRI_EmoFaces';
-%params.mridata(2).acqtype = 'func';
-%params.mridata(2).seqtype = 'fmri';
-%params.mridata(2).task = 'SE-EmoFaces';
-%params.mridata(2).session = 1;
-%params.mridata(2).run = 1;
-%params.mridata(2).add_acq = false;
-%params.mridata(2).add_dir = true;
-%params.mridata(2).add_run = false;
-%params.mridata(2).add_echo = true;
+params.mridata(3).folder = 'dcm/SE-fMRI_EFT';
+params.mridata(3).acqtype = 'func';
+params.mridata(3).seqtype = 'fmri';
+params.mridata(3).task = 'SE-EFT';
+params.mridata(3).session = 1;
+params.mridata(3).run = 1;
+params.mridata(3).add_acq = false;
+params.mridata(3).add_dir = true;
+params.mridata(3).add_run = false;
+params.mridata(3).add_echo = true;
 
 %% Example ASLBOLD scan
 %params.mridata(3).folder = 'ses-001/STROOP1';
@@ -107,39 +96,6 @@ params.mridata(2).add_echo = true;
 %params.mridata(3).add_dir = true;
 %params.mridata(3).add_run = true;
 %params.mridata(3).add_echo = true;
-
-params.mridata(3).folder = 'ses-001/POSTcog';
-params.mridata(3).acqtype = 'func';
-params.mridata(3).seqtype = 'aslbold';
-params.mridata(3).task = 'POSTcog';
-params.mridata(3).session = 1;
-params.mridata(3).run = 1;
-params.mridata(3).add_acq = false;
-params.mridata(3).add_dir = true;
-params.mridata(3).add_run = true;
-params.mridata(3).add_echo = true;
-
-params.mridata(4).folder = 'ses-002/PREcog';
-params.mridata(4).acqtype = 'func';
-params.mridata(4).seqtype = 'aslbold';
-params.mridata(4).task = 'PREcog';
-params.mridata(4).session = 2;
-params.mridata(4).run = 1;
-params.mridata(4).add_acq = false;
-params.mridata(4).add_dir = true;
-params.mridata(4).add_run = true;
-params.mridata(4).add_echo = true;
-
-params.mridata(5).folder = 'ses-002/POSTcog';
-params.mridata(5).acqtype = 'func';
-params.mridata(5).seqtype = 'aslbold';
-params.mridata(5).task = 'POSTcog';
-params.mridata(5).session = 2;
-params.mridata(5).run = 1;
-params.mridata(5).add_acq = false;
-params.mridata(5).add_dir = true;
-params.mridata(5).add_run = true;
-params.mridata(5).add_echo = true;
 
 params.use_parallel = true; %only possible when parallel toolbox is installed
 
