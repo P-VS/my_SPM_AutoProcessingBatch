@@ -24,25 +24,23 @@ for ir=1:numel(params.iruns)
     % correct events file for dummy scans if needed
     dummys = floor(params.dummytime/tr);
     numparams = 0;
-    %try
-    %    ppparams.edat{ir} = tdfread(ppparams.frun(ir).functsvfile,'\t');
-    %catch
-        T = readtable(ppparams.frun(ir).functsvfile,'FileType','text');
-        ppparams.edat{ir}.onset = T.onset;
-        ppparams.edat{ir}.duration = T.duration;
-        ppparams.edat{ir}.trial_type = T.trial_type;
-        if params.add_parametricModulation
-            fnames = fieldnames(T);
-            if numel(fnames)>3
-                for ifield=4:numel(fnames)-3
-                    ppparams.edat{ir}.weight{ifield-3}.name = fnames{ifield};
-                    ppparams.edat{ir}.weight{ifield-3}.value = getfield(T,fnames{ifield});
-                end
-                numparams = numel(fnames)-6;
-            else params.add_parametricModulation=false; end
-        else params.add_parametricModulation=false;
-        end
-    %end
+
+    T = readtable(ppparams.frun(ir).functsvfile,'FileType','text');
+    ppparams.edat{ir}.onset = T.onset;
+    ppparams.edat{ir}.duration = T.duration;
+    ppparams.edat{ir}.trial_type = T.trial_type;
+    if params.add_parametricModulation
+        fnames = fieldnames(T);
+        if numel(fnames)>3
+            for ifield=4:numel(fnames)-3
+                ppparams.edat{ir}.weight{ifield-3}.name = fnames{ifield};
+                ppparams.edat{ir}.weight{ifield-3}.value = getfield(T,fnames{ifield});
+            end
+            numparams = numel(fnames)-6;
+        else params.add_parametricModulation=false; end
+    else params.add_parametricModulation=false;
+    end
+
     ppparams.edat{ir}.onset = ppparams.edat{ir}.onset-dummys*tr;
     if params.isaslbold, ppparams.edat{ir}.onset=ppparams.edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay); end
     

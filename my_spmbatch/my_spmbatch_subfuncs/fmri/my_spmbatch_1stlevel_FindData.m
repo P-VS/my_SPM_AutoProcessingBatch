@@ -143,11 +143,10 @@ for ir=1:numel(params.iruns)
     
     if isempty(functsvlist)
         fprintf(['No events.tsv files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' task '\n'])
-        fprintf('\nPP_Error\n');
-        return
+        ppparams.frun(ir).functsvfile = '';
+    else
+        ppparams.frun(ir).functsvfile = fullfile(functsvlist(1).folder,functsvlist(1).name);
     end
-    
-    ppparams.frun(ir).functsvfile = fullfile(functsvlist(1).folder,functsvlist(1).name);
     
     %json file
 
