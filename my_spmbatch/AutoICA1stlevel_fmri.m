@@ -30,12 +30,12 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Br
 sublist = [1:24]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
  
-params.task = {'stroop'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica_bold';
-params.modality = 'fmri'; %'fmri' of 'fasl'
+params.analysisname = 'meica_asl';
+params.modality = 'fasl'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
 params.use_parallel = false; 
@@ -44,8 +44,8 @@ params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_meica_asl'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 8; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
@@ -69,7 +69,7 @@ params.keeplogs = false;
     % For ICA
         params.number_of_components = 20; %Number of components (default=20)
         params.spatial_networks_masks = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/stroop_networks.nii';
-        params.do_ica = false; %only false for reordering the components that are already determined (default=true)
+        params.do_ica = true; %only false for reordering the components that are already determined (default=true)
 
     % For GLM model
         params.tempsort_SPM_model = false;

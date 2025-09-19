@@ -49,7 +49,7 @@ params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 %% Parallel processing and memory reduction
 params.use_parallel = true; %(default=false)
-params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
+params.maxprocesses = 4; %Best not too high to avoid memory problems %(default=2)
 params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
 
@@ -58,7 +58,7 @@ params.save_intermediate_results = true; %clean up the directory by deleting unn
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = true; %(default=true)
+params.preprocess_functional = false; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
