@@ -16,7 +16,30 @@ end
 if params.do_ica && exist(ppparams.resultmap,'dir'); rmdir(ppparams.resultmap,'s'); end
 if ~exist(ppparams.resultmap,'dir'), mkdir(ppparams.resultmap); end
 
-Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));
+if contains(params.modality,'fmri')
+    boldfile = ppparams.frun(1).func(1).funcfile;
+else
+    namefilters(1).name = ppparams.substring;
+    namefilters(1).required = true;
+    
+    namefilters(2).name = ppparams.sesstring;
+    namefilters(2).required = false;
+
+    namefilters(3).name = ['run-' num2str(run)];
+    namefilters(3).required = false;
+
+    namefilters(4).name = ['task-' task];
+    namefilters(4).required = true;
+
+    namefilters(5).name = '_m0scan';
+    namefilters(5).required = true;
+
+    funcniilist = my_spmbatch_dirfilelist(ppparams.preprocfmridir,'nii',namefilters,false);
+
+    boldfile = funcniilist(1).name;
+end
+
+Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,boldfile));
 nvols = min([numel(Vfunc),50]);
 fdata = spm_read_vols(Vfunc(1:nvols));
 mask = my_spmbatch_mask(fdata);
@@ -202,7 +225,7 @@ end
 if ~isempty(params.spatial_networks_masks)
 
     % Make brain and no-brain masks
-    if ppparams.frun(1).func(1).funcfile(1)=='s', segfunc = ppparams.frun(1).func(1).funcfile(2:end); else segfunc = ppparams.frun(1).func(1).funcfile; end
+    if boldfile(1)=='s', segfunc = boldfile(2:end); else segfunc = boldfile; end
 
     if ~isfile(fullfile(ppparams.preprocfmridir,['c1' segfunc])) || ~isfile(fullfile(ppparams.preprocfmridir,['c2' segfunc]))
         [c1im, c2im, ~] = segment_funcdat(ppparams.preprocfmridir,[segfunc ',1']);
@@ -262,6 +285,8 @@ if ~isempty(params.spatial_networks_masks)
     
                     useComp(inet,ic)=1;
                 end
+            else
+                inFract(inet,ic) = 0;
             end
         
             clear Compdat
