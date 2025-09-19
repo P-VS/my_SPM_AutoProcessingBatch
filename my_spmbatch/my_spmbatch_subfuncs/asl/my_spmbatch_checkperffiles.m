@@ -129,7 +129,7 @@ studyprefix = fpresplit{end};
 
 perfcheck = true;
 while perfcheck
-    tmp = find(strcmp(prefixlist,studyprefix));
+    tmp = find(and(strcmp(prefixlist,studyprefix),~contains(prefixlist,'w')));
     if ~isempty(tmp)
         ppparams.perf(1).m0scanprefix = studyprefix; 
         perfcheck = false;

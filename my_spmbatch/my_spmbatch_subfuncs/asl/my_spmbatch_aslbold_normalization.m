@@ -10,35 +10,45 @@ end
 
 ppparams.deffile = fullfile(ppparams.subperfdir,['y_' ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile ',1']);
 
-%if ~exist(ppparams.deffile,"file")
-    m0normest.subj.vol = {fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile ',1'])};
-    m0normest.eoptions.biasreg = 0.0001;
-    m0normest.eoptions.biasfwhm = 60;
-    m0normest.eoptions.tpm = {fullfile(spm('Dir'),'tpm','TPM.nii')};
-    m0normest.eoptions.affreg = 'mni';
-    m0normest.eoptions.reg = [0 0 0.1 0.01 0.04];
-    m0normest.eoptions.fwhm = 0;
-    m0normest.eoptions.samp = 3;
-    
-    spm_run_norm(m0normest);
-%end
+m0normest.subj.vol = {fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile ',1'])};
+m0normest.eoptions.biasreg = 0.0001;
+m0normest.eoptions.biasfwhm = 60;
+m0normest.eoptions.tpm = {fullfile(spm('Dir'),'tpm','TPM.nii')};
+m0normest.eoptions.affreg = 'mni';
+m0normest.eoptions.reg = [0 0 0.1 0.01 0.04];
+m0normest.eoptions.fwhm = 0;
+m0normest.eoptions.samp = 3;
+
+spm_run_norm(m0normest);
 
 delfiles{numel(delfiles)+1} = {ppparams.deffile};
+
+%Write the spatially normalised  m0scan data
+
+m0normw.woptions = spm_get_defaults('normalise.write');
+m0normw.woptions.vox = params.func.normvox;
+
+dt = Vcbf(1).dt;
+if dt(1)==spm_type('uint16')
+    m0normw.woptions.interp = 4;
+else
+    m0normw.woptions.interp = 1;
+end
+
+m0normw.subj.def = {ppparams.deffile};
+m0normw.subj.resample = {fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile ',1'])};
+
+spm_run_norm(m0normw);
+
+keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile])};
+ppparams.perf(1).wm0file = ['w' ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile];
+
 
 %% Normalise CBF data
 
 %Write the spatially normalised  CBF data
 
-cbfnormw.woptions = spm_get_defaults('normalise.write');
-cbfnormw.woptions.vox = params.func.normvox;
-
-dt = Vcbf(1).dt;
-if dt(1)==spm_type('uint16')
-    cbfnormw.woptions.interp = 4;
-else
-    cbfnormw.woptions.interp = 1;
-end
-
+cbfnormw = m0normw;
 cbfnormw.subj.def = {ppparams.deffile};
 cbfnormw.subj.resample = wcbffiles(:,1);
 
@@ -49,25 +59,6 @@ keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf
 ppparams.perf(1).wcbffile = ['w' ppparams.perf(1).cbfprefix ppparams.perf(1).cbffile];
 
 clear Vcbf
-
-%Write the spatially normalised  ASL data
-
-%Vasl = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
-
-%for i=1:numel(Vasl)
-%    waslfiles{i,1} = [Vasl(i).fname ',' num2str(i)];
-%end
-
-%aslnormw = cbfnormw;
-%aslnormw.subj.resample = waslfiles(:,1);
-
-%spm_run_norm(aslnormw);
-
-%keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile])};
-
-%ppparams.perf(1).waslfile = ['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile];
-
-%clear Vasl
 
 %Write the spatially normalised  mean CBF data
 
