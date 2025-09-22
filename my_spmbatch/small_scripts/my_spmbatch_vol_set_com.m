@@ -38,8 +38,7 @@ MM = V(1).private.mat0;
 % pre-estimated COM of MNI template
 com_reference = [0 -25 -15];
 
-%fprintf('Correct center-of-mass                                            ');
-spm_progress_bar('Init',n,'Set center-of-mass','volumes completed');
+fprintf(['Correct center-of-mass for ' num2str(n) ' volumes']);
 for i=1:n
   V(i).mat = MM;
   Affine = eye(4);
@@ -67,6 +66,6 @@ for i=1:n
   if ~nargout
     clear Affine
   end
-  spm_progress_bar('Set',i);
+  %if mod(i,5)==0, fprintf(['\nCorrect center-of-mass vol ' num2str(i)]); end
 end
-spm_progress_bar('Clear');
+fprintf('\nDone\n');
