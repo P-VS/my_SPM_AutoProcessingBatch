@@ -29,7 +29,7 @@ for ss = 1:Sess
     fprintf('========================================================================\n');
     
     % Defien progress var
-    Pbar = waitbar(0.0,'Setting Parameters','Name','Initialization');
+    %Pbar = waitbar(0.0,'Setting Parameters','Name','Initialization');
     for i=1:72; fprintf('_'); end
     fprintf('\n\n');
     
@@ -37,7 +37,7 @@ for ss = 1:Sess
     
     %Information Progreess
     
-    waitbar(0.1,Pbar,'Reading parameters','Name','Initialization');
+    %waitbar(0.1,Pbar,'Reading parameters','Name','Initialization');
     fprintf('   Reading parameters --------------------------- [  ]');
     
     %--- Parameters ---
@@ -68,7 +68,7 @@ for ss = 1:Sess
     fprintf('\b\b\bOk]\n');
 
     %===== MASCARADA ===========================================================
-    waitbar(0.2,Pbar,'Get data and apply mask');
+    %waitbar(0.2,Pbar,'Get data and apply mask');
     fprintf('   Get data and apply mask ---------------------- [  ]');
     
     Vfunc = spm_vol(VY(iScan).fname);
@@ -87,7 +87,7 @@ for ss = 1:Sess
 
     %=== DETRENDING =======================================================
     fprintf('   Detrending ----------------------------------- [  ]');
-    waitbar(0.81,Pbar,'Detrending');
+    %waitbar(0.81,Pbar,'Detrending');
     
     AuxDat = double(Opt.Dat);
     
@@ -103,11 +103,11 @@ for ss = 1:Sess
     clear('AuxDat');
     
     fprintf('\b\b\bOk]\n');
-    waitbar(0.9,Pbar);
+    %waitbar(0.9,Pbar);
     
     %=== CHEKING PARAMETERS ==========================================
     fprintf('   Checking parameters -------------------------- [  ]');
-    waitbar(0.95,Pbar,'Checking Parameters');
+    %waitbar(0.95,Pbar,'Checking Parameters');
     
     %--- Defaluts --------------------------------------------
     %param.iter  = 3000;           % Number of iterations
@@ -115,7 +115,7 @@ for ss = 1:Sess
     param.Ini   = 'Jdr';          % Initialization mode
     param.mgreg = 'n';            % No post-processing
     param.Preg  = 'n';            % No data reduction
-    param.Verb  = 'y';            % Display verbose
+    param.Verb  = 'n';            % Display verbose
     %---------------------------------------------------------
     
     param.data  = Opt.Dat;           % Data
@@ -129,7 +129,7 @@ for ss = 1:Sess
     fprintf('\b\b\bOk]\n');
     for i=1:72; fprintf('_'); end
     fprintf('\n\n');
-    close(Pbar);
+    %close(Pbar);
     
     %=== CALL IADL ============================================================
     
@@ -141,11 +141,11 @@ for ss = 1:Sess
     for i=1:72; fprintf('_'); end
     fprintf('\n\n');
     fprintf('   Saving results ------------------------------- [  ]');
-    Pbar = waitbar(0,'Save Results...','Name','Save Results');
+    %Pbar = waitbar(0,'Save Results...','Name','Save Results');
     
     %-Remove constant atom
     %---------------------------------------------------------------------------
-    Pbar = waitbar(0,Pbar,'Remove constant atom...');
+    %Pbar = waitbar(0,Pbar,'Remove constant atom...');
     K  = SPM.TEDM.Param(ss).K;
     iB = SPM.TEDM.Param(ss).iB;
     
@@ -157,11 +157,11 @@ for ss = 1:Sess
     
     K = K-1;
     
-    Pbar = waitbar(1,Pbar);
+    %Pbar = waitbar(1,Pbar);
     
     %-Save spatial maps
     %---------------------------------------------------------------------------
-    Pbar = waitbar(0,Pbar,'Saving spatial maps...');
+    %Pbar = waitbar(0,Pbar,'Saving spatial maps...');
     
     %--- Initalise map file ---
     % Parameters, dimensions and orientation
@@ -194,7 +194,7 @@ for ss = 1:Sess
     Vmap = spm_data_hdr_write(Vmap);
    
     % Components
-    Pbar = waitbar(0.1,Pbar);
+    %Pbar = waitbar(0.1,Pbar);
     lns = linspace(0.1,1,K);
     
     for i = 1:K
@@ -204,12 +204,12 @@ for ss = 1:Sess
         Cmp(cmask) = s(i,:)';
         Vmap(i) = spm_data_write(Vmap(i),Cmp);
         
-        Pbar = waitbar(lns(i),Pbar);
+        %Pbar = waitbar(lns(i),Pbar);
     end
     
     % Clear stuff
     clear('Cmp','msk','Vmap','mask','cmask');
-    close(Pbar);
+    %close(Pbar);
     
     % Clear stuff
     clear('Cmp','msk','Vmap');
@@ -368,11 +368,11 @@ else %======== Multi-session experiment =========
 
         SPM.TEDM.Param(ss).Aname = SPM.TEDM.Param(ss).name';
 
-        NSrc_A = handles.SPM.TEDM.Param(ss).NSrc_A;
+        NSrc_A = SPM.TEDM.Param(ss).NSrc_A;
 
 	    Tcheck = repmat({true},1,NSrc_A);
-	    Tnames = handles.SPM.TEDM.Param(ss).name;
-	    Tdata  = num2cell(handles.SPM.TEDM.Param(ss).Sp_A);
+	    Tnames = SPM.TEDM.Param(ss).name;
+	    Tdata  = num2cell(SPM.TEDM.Param(ss).Sp_A);
     
 	    SPM.TEDM.Param(ss).SpDat = [Tcheck' Tnames' Tdata'];
 

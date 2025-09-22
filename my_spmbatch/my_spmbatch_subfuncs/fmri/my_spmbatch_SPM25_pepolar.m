@@ -45,7 +45,7 @@ elseif nt==1
     prefix = 'vdm5';
     outdir = {ppparams.subfuncdir};
 
-    vdm = spm_scope({reffunc},{out_coreg.rfiles{1}},fwhm,reg,rinterp,jac,prefix,outdir{1});
+    vdm = my_spmbatch_scope({reffunc},{out_coreg.rfiles{1}},fwhm,reg,rinterp,jac,prefix,outdir{1});
     ppparams.pepolar.vdm = vdm.dat.fname;
 
     delfiles{numel(delfiles)+1} = {ppparams.pepolar.vdm};
