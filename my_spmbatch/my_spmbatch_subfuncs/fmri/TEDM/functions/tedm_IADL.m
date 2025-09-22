@@ -336,8 +336,8 @@ function [D,S,E] = tedm_IADL(param) % Main Function
 
 	if(Verb); fprintf('\n   - Completed!  \\(^ ^ )\n\n'); end
 
-	waitbar(1,Pbar);
-	close(Pbar);
+	if(Verb); waitbar(1,Pbar); end
+	if(Verb); close(Pbar); end
 
 end
 

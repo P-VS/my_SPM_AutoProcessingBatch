@@ -122,7 +122,7 @@ for ss = 1:Sess
   fprintf('========================================================================\n');
 
   % Defien progress var
-  Pbar = waitbar(0.0,'Setting Parameters','Name','Initialization');
+  %Pbar = waitbar(0.0,'Setting Parameters','Name','Initialization');
   for i=1:72; fprintf('_'); end
   fprintf('\n\n');
 
@@ -131,7 +131,7 @@ for ss = 1:Sess
 
   %Information Progreess
 
-  waitbar(0.1,Pbar,'Reading parameters','Name','Initialization');
+  %waitbar(0.1,Pbar,'Reading parameters','Name','Initialization');
   fprintf('   Reading parameters --------------------------- [  ]');
 
   %--- Parameters ---
@@ -162,7 +162,7 @@ for ss = 1:Sess
   fprintf('\b\b\bOk]\n');
 
   %===== MASCARADA ===========================================================
-  waitbar(0.2,Pbar,'Get data and apply mask');
+  %waitbar(0.2,Pbar,'Get data and apply mask');
   fprintf('   Get data and apply mask ---------------------- [  ]');
 
   %--- Split data into chuncks ---
@@ -209,7 +209,7 @@ for ss = 1:Sess
       Dat = [Dat Y(:,cmask)];
     end
 
-    waitbar(lns(i),Pbar);
+    %waitbar(lns(i),Pbar);
   end
 
   % Store data
@@ -221,7 +221,7 @@ for ss = 1:Sess
 
   %=== DETRENDING =======================================================
   fprintf('   Detrending ----------------------------------- [  ]');
-  waitbar(0.81,Pbar,'Detrending');
+  %waitbar(0.81,Pbar,'Detrending');
 
   AuxDat = double(Opt.Dat);
 
@@ -237,11 +237,11 @@ for ss = 1:Sess
   clear('AuxDat');
 
   fprintf('\b\b\bOk]\n');
-  waitbar(0.9,Pbar);
+  %waitbar(0.9,Pbar);
 
   %=== CHEKING PARAMETERS ==========================================
   fprintf('   Checking parameters -------------------------- [  ]');
-  waitbar(0.95,Pbar,'Checking Parameters');
+  %waitbar(0.95,Pbar,'Checking Parameters');
 
 
   %--- Defaluts --------------------------------------------
@@ -276,7 +276,7 @@ for ss = 1:Sess
   for i=1:72; fprintf('_'); end
   fprintf('\n\n');
   fprintf('   Saving results ------------------------------- [  ]');
-  Pbar = waitbar(0,'Save Mask...','Name','Save Results');
+  %Pbar = waitbar(0,'Save Mask...','Name','Save Results');
 
   %-Initialise mask file
   %--------------------------------------------------------------------------
@@ -299,11 +299,11 @@ for ss = 1:Sess
   % Save mask file
   VM = spm_data_write(VM,mask);
 
-	Pbar = waitbar(1,Pbar);
+	%Pbar = waitbar(1,Pbar);
 
   %-Remove constant atom
   %---------------------------------------------------------------------------
-  Pbar = waitbar(0,Pbar,'Remove constant atom...');
+  %Pbar = waitbar(0,Pbar,'Remove constant atom...');
   K  = handles.SPM.TEDM.Param(ss).K;
   iB = handles.SPM.TEDM.Param(ss).iB;
 
@@ -315,11 +315,11 @@ for ss = 1:Sess
 
   K = K-1;
 
-  Pbar = waitbar(1,Pbar);
+  %Pbar = waitbar(1,Pbar);
 
   %-Save spatial maps
   %---------------------------------------------------------------------------
-  Pbar = waitbar(0,Pbar,'Saving spatial maps...');
+  %Pbar = waitbar(0,Pbar,'Saving spatial maps...');
 
   %--- Initalise map file ---
   % Parameters, dimensions and orientation
@@ -353,7 +353,7 @@ for ss = 1:Sess
 
 
   % Components
-  Pbar = waitbar(0.1,Pbar);
+  %Pbar = waitbar(0.1,Pbar);
   lns = linspace(0.1,1,K);
 
   for i = 1:K
@@ -363,7 +363,7 @@ for ss = 1:Sess
     Cmp(mask) = s(i,:)';
     Vmap(i) = spm_data_write(Vmap(i),Cmp);
 
-    Pbar = waitbar(lns(i),Pbar);
+    %Pbar = waitbar(lns(i),Pbar);
   end
    
 
