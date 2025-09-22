@@ -277,26 +277,26 @@ FT = FT(1:(length(FT)/2) +1,:); % keep postivie frequencies (Hermitian symmetric
                
         funcfname = split([ppparams.func(ppparams.echoes(1)).prefix ppparams.func(ppparams.echoes(1)).funcfile],'.nii');
     
-        if ~params.use_parallel
-            fg = spm_figure('FindWin','Graphics');
+        %if ~params.use_parallel
+        %    fg = spm_figure('FindWin','Graphics');
         
-            for icomp=1:numComp
-                spm_figure('Clear','Graphics');
-                figure(fg);
+        %    for icomp=1:numComp
+        %        spm_figure('Clear','Graphics');
+        %        figure(fg);
         
-                plot([0:t_r:t_r*(tdim(1)-1)],icaTimecourse(:,icomp))
+        %        plot([0:t_r:t_r*(tdim(1)-1)],icaTimecourse(:,icomp))
                 
-                saveas(fg,fullfile(aroma_dir,['comp-' num2str(icomp,'%03d') '_time.png']));
+        %        saveas(fg,fullfile(aroma_dir,['comp-' num2str(icomp,'%03d') '_time.png']));
         
-                spm_figure('Clear','Graphics');
-                figure(fg);
+        %        spm_figure('Clear','Graphics');
+        %        figure(fg);
                 
-                plot(f,FT(:,icomp)./max(FT(:,icomp),[],'all'),f,fcumsum_fract(:,icomp))
-                xline(thr_HFC*Ny)
+        %        plot(f,FT(:,icomp)./max(FT(:,icomp),[],'all'),f,fcumsum_fract(:,icomp))
+        %        xline(thr_HFC*Ny)
                 
-                saveas(fg,fullfile(aroma_dir,['comp-' num2str(icomp,'%03d') '_frequency.png']));
-            end
-        end
+        %        saveas(fg,fullfile(aroma_dir,['comp-' num2str(icomp,'%03d') '_frequency.png']));
+        %    end
+        %end
         
         % Path to noise ICs (might want to change path)
         noise_ICs_dir = fullfile(aroma_dir, strcat('ICA-AROMA_ICs_noise_',funcfname{1},'.txt'));
