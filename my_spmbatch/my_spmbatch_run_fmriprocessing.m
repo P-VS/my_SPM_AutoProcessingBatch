@@ -2,7 +2,7 @@ function out = my_spmbatch_run_fmriprocessing(sub,ses,run,task,datpath,paramsfil
 
 load(paramsfile)
 
-%try
+try
     %% do smoothing first (if not done before)
     if params.do_smoothing
         params = my_spmbatch_fmriprocessing_do_smoothing(sub,ses,run,task,datpath,params);
@@ -17,13 +17,16 @@ load(paramsfile)
         end
     
         if ~isempty(matlabbatch), spm_jobman('run', matlabbatch); end
+
+        FG = spm_figure('GetWin','Graphics');
+        if FG>0, spm_figure('close',allchild(0)); end
     else
         params = my_spmbatch_ica1stlevel(sub,ses,run,task,datpath,params);
     end
-%catch e
-%    fprintf('\nPP_Error\n');
-%    fprintf('\nThe error was: \n%s\n',e.message)
-%end
+catch e
+    fprintf('\nPP_Error\n');
+    fprintf('\nThe error was: \n%s\n',e.message)
+end
 
 fprintf('\nPP_Completed\n');
 

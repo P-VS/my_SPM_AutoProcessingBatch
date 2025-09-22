@@ -30,9 +30,9 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Br
 sublist = [1:24]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1,2]; %nsessions>0
+nsessions = [1]; %nsessions>0
  
-params.task = {'PREcog'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'POSTcog'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
 params.analysisname = 'meica_asl';
 params.modality = 'fasl'; %'fmri' of 'fasl'

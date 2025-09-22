@@ -38,7 +38,7 @@ params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject fold
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_func_SPM25'; %name of the folder to save the preprocessed bold data
+params.func_save_folder = 'preproc_func_test'; %name of the folder to save the preprocessed bold data
 
 task ={'ME-EFT'};
 
@@ -161,15 +161,9 @@ curdir = pwd;
 warnstate = warning;
 warning off;
 
-% User interface.
-SPMid                 = spm('FnBanner',mfilename,'2.10');
-[Finter,Graf,CmdLine] = spm('FnUIsetup','Preproces SPM');
-
 spm('defaults', 'FMRI');
 
 my_spmbatch_start_fmripreprocessing(sublist,nsessions,task,datpath,params)
-
-spm_figure('close',allchild(0));
 
 cd(curdir)
 
@@ -179,6 +173,7 @@ if exist(fullfile(datpath,'derivatives')), rmdir(fullfile(datpath,'derivatives')
 
 fprintf('\nDone\n')
 
+spm('Clean')
 clear all
 
 end

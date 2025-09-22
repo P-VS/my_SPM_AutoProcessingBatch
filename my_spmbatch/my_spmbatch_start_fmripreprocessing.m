@@ -132,12 +132,12 @@ for kt = 1:numel(params.func.runs)
             end
         
             %% plot realignment parameters
-            if params.preprocess_functional && params.func.do_realignment
-                for i = 1:numel(datlist(:,1))
-                    % Print and save realignment paramers  
-                    save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
-                end
-            end
+            %if params.preprocess_functional && params.func.do_realignment
+            %    for i = 1:numel(datlist(:,1))
+            %        % Print and save realignment paramers  
+            %        save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
+            %    end
+            %end
         else
             for i=1:numel(datlist(:,1))
                 itstart = tic;
@@ -145,7 +145,7 @@ for kt = 1:numel(params.func.runs)
                 my_spmbatch_run_fmripreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
     
                 % Print and save realignment paramers  
-                save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
+                %save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
     
                 itstop = toc(itstart);
     

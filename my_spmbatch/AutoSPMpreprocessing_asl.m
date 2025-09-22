@@ -96,15 +96,9 @@ curdir = pwd;
 warnstate = warning;
 warning off;
 
-% User interface.
-SPMid                 = spm('FnBanner',mfilename,'2.10');
-[Finter,Graf,CmdLine] = spm('FnUIsetup','Preproces SPM');
-
 spm('defaults', 'FMRI');
 
 my_spmbatch_start_aslpreprocessing(sublist,nsessions,datpath,params)
-
-spm_figure('close',allchild(0));
 
 cd(curdir)
 
