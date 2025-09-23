@@ -1,5 +1,7 @@
 function my_spmbatch_start_fmriprocessing(sublist,nsessions,datpath,params)
 
+params.analysis_type = 'GLM';
+
 if ~params.func.meepi, params.func.echoes = [1]; end
 if ~params.func.mruns, params.func.runs = [1]; end
 if ~contains(params.modality,'fmri'), params.func.echoes = [1]; end

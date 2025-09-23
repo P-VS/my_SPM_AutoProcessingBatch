@@ -9,18 +9,9 @@ try
     end
 
     %% make batch
-    if ~contains(params.analysis_type,'ICA') 
-        if contains(params.modality,'fasl') && contains(params.analysis_type,'within_subject') 
-            matlabbatch = my_spmbatch_asllevel1processing(sub,ses,run,task,datpath,params); 
-        elseif contains(params.analysis_type,'GLM') 
-            matlabbatch = my_spmbatch_fmrilevel1processing(sub,ses,run,task,datpath,params);
-        end
-    
-        if ~isempty(matlabbatch), spm_jobman('run', matlabbatch); end
-
-        FG = spm_figure('GetWin','Graphics');
-        if FG>0, spm_figure('close',allchild(0)); end
-    else
+    if contains(params.analysis_type,'GLM') 
+        params = my_spmbatch_fmrilevel1processing(sub,ses,run,task,datpath,params);
+    elseif contains(params.analysis_type,'ICA') 
         params = my_spmbatch_ica1stlevel(sub,ses,run,task,datpath,params);
     end
 catch e

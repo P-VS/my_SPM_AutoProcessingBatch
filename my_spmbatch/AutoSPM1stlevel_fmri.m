@@ -27,14 +27,14 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1:21]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1,2]; %nsessions>0
+nsessions = [1]; %nsessions>0
  
-params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'stroop'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica_bold';
+params.analysisname = 'meica_test';
 params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
@@ -44,8 +44,8 @@ params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_func_test'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swdfavure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 8; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
@@ -66,22 +66,19 @@ params.keeplogs = false;
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
 %% SPM first level analysis parameters
-    params.analysis_type = 'GLM'; % 'GLM'or 'within_subject' (default='GLM') 
-    % 'within_subject' only possible for 'fasl'
+    params.confounds_prefix = 'rp_e'; %confounds file of form [confounds_prefix 'sub-ii_task-... .txt']
+    params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
+    params.add_regressors = false; %if data not denoised set true otherwhise false 
+    params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
+    params.optimize_HRF = true; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
+    params.use_ownmask = true;
+    params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
+    params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
 
-    % For GLM
-        params.confounds_prefix = 'rp_e'; %confounds file of form [confounds_prefix 'sub-ii_task-... .txt']
-        params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
-        params.add_regressors = false; %if data not denoised set true otherwhise false 
-        params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
-        params.optimize_HRF = true; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
-        params.use_ownmask = true;
-        params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
-        params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
-
-%% SPM results analysis (for GLM)
+%% SPM results analysis
     %Save SPM results per ccontrast as thresholded map, binary mask, n-aray map (n=cluster number), 
     %csv file, pdf file
+
     params.save_spm_results = true;
     params.threshold_correction = 'none'; %'none' or 'FWE' (default='none')
     params.pthreshold = 0.001; % signifiance p-threshold (default=0.001) 
@@ -91,7 +88,7 @@ params.keeplogs = false;
     params.save_naray = false;
     params.save_csv_file = false;
     params.save_pdf_file = false;
-    params.save_tiff_file = false;
+    params.save_tiff_file = true;
 
 %% Define the contrasts (for GLM)
     %contrast(i) is structure with fields
@@ -102,23 +99,23 @@ params.keeplogs = false;
     %   contrast(i).vector=[1 -1];
 
     %% For experiment MANON: STROOP
-    %params.contrast(1).conditions = {'congruent','neutral'};
-    %params.contrast(1).vector = [1,-1];
+    params.contrast(1).conditions = {'congruent','neutral'};
+    params.contrast(1).vector = [1,-1];
 
-    %params.contrast(2).conditions = {'congruent','neutral'};
-    %params.contrast(2).vector = [-1,1];
+    params.contrast(2).conditions = {'congruent','neutral'};
+    params.contrast(2).vector = [-1,1];
 
-    %params.contrast(3).conditions = {'incongruent','neutral'};
-    %params.contrast(3).vector = [1,-1];
+    params.contrast(3).conditions = {'incongruent','neutral'};
+    params.contrast(3).vector = [1,-1];
 
-    %params.contrast(4).conditions = {'incongruent','neutral'};
-    %params.contrast(4).vector = [-1,1];
+    params.contrast(4).conditions = {'incongruent','neutral'};
+    params.contrast(4).vector = [-1,1];
 
-    %params.contrast(5).conditions = {'congruent','incongruent'};
-    %params.contrast(5).vector = [1,-1];
+    params.contrast(5).conditions = {'congruent','incongruent'};
+    params.contrast(5).vector = [1,-1];
 
-    %params.contrast(6).conditions = {'congruent','incongruent'};
-    %params.contrast(6).vector = [-1,1];
+    params.contrast(6).conditions = {'congruent','incongruent'};
+    params.contrast(6).vector = [-1,1];
 
     %params.contrast(7).conditions = {'congruent','incongruent','neutral'};
     %params.contrast(7).vector = [1,1,1];
@@ -127,11 +124,11 @@ params.keeplogs = false;
     %params.contrast(8).vector = [-1,-1,-1];
 
     %% For experiment MANON: Go-NoGO
-    params.contrast(1).conditions = {'Go','NoGo'};
-    params.contrast(1).vector = [1,-1];
+    %params.contrast(1).conditions = {'Go','NoGo'};
+    %params.contrast(1).vector = [1,-1];
 
-    params.contrast(2).conditions = {'Go','NoGo'};
-    params.contrast(2).vector = [-1,1];
+    %params.contrast(2).conditions = {'Go','NoGo'};
+    %params.contrast(2).vector = [-1,1];
 
     %% For experiment ME-fMRI: EFT
     %params.contrast(1).conditions = {'episodic','semantic'};
