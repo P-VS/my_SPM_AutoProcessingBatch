@@ -204,11 +204,11 @@ for i=1:length(defnames)
     end
 end
 parnames = fieldnames(par);
-for i=1:length(parnames)
-    if ~isfield(defpar,parnames{i})
-        warning('Unknown par field %s',parnames{i});
-    end
-end
+%for i=1:length(parnames)
+%    if ~isfield(defpar,parnames{i})
+%        warning('Unknown par field %s',parnames{i});
+%    end
+%end
 
 %-Resolve ambiguities.
 %--------------------------------------------------------------------------

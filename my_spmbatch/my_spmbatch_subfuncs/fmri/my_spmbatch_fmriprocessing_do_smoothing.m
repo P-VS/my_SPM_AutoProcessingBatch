@@ -17,11 +17,14 @@ ppparams.save_intermediate_results = false;
 
 %% Search for the data folders
 
-ppparams.substring = ['sub-' num2str(sub,'%02d')];
-if ~isfolder(fullfile(datpath,ppparams.substring)), ppparams.substring = ['sub-' num2str(sub,'%03d')]; end
+if isfolder(fullfile(datpath,['sub-' num2str(sub)])), ppparams.substring = ['sub-' num2str(sub)]; end
+if isfolder(fullfile(datpath,['sub-0' num2str(sub)])), ppparams.substring = ['sub-0' num2str(sub)]; end
+if isfolder(fullfile(datpath,['sub-00' num2str(sub)])), ppparams.substring = ['sub-00' num2str(sub)]; end
+if isfolder(fullfile(datpath,['sub-000' num2str(sub)])), ppparams.substring = ['sub-000' num2str(sub)]; end
 
-ppparams.sesstring = ['ses-' num2str(ses,'%02d')];
-if ~isfolder(fullfile(datpath,ppparams.substring,ppparams.sesstring)), ppparams.sesstring = ['ses-' num2str(ses,'%03d')]; end
+if isfolder(fullfile(datpath,ppparams.substring,['ses-' num2str(ses)])), ppparams.sesstring = ['ses-' num2str(ses)]; end
+if isfolder(fullfile(datpath,ppparams.substring,['ses-0' num2str(ses)])), ppparams.sesstring = ['ses-0' num2str(ses)]; end
+if isfolder(fullfile(datpath,ppparams.substring,['ses-00' num2str(ses)])), ppparams.sesstring = ['ses-00' num2str(ses)]; end
 
 ppparams.subpath = fullfile(datpath,ppparams.substring,ppparams.sesstring);
 

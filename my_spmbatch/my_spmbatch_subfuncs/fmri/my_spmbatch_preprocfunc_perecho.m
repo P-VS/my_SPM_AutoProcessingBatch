@@ -70,7 +70,7 @@ for ti=1:nvols:tdim
 
     %% Topup geometric correction
     if do_pepolar
-        [ppparams,delfiles,keepfiles] = my_spmbatch_SPM25_pepolar(numdummy,enum,ti,ppparams,delfiles,keepfiles);
+        [ppparams,delfiles,keepfiles] = my_spmbatch_SPM25_pepolar(numdummy,enum,ti,params,ppparams,delfiles,keepfiles);
     end
 
     %% Realignment

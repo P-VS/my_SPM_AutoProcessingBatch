@@ -1,4 +1,4 @@
-function [ppparams,delfiles,keepfiles] = my_spmbatch_SPM25_pepolar(numdummy,ne,nt,ppparams,delfiles,keepfiles)
+function [ppparams,delfiles,keepfiles] = my_spmbatch_SPM25_pepolar(numdummy,ne,nt,params,ppparams,delfiles,keepfiles)
 
 vdmfile = fullfile(ppparams.subfuncdir,['vdm5' ppparams.func(ne).tprefix ppparams.func(ne).funcfile]);
 if exist(vdmfile,'file')>0

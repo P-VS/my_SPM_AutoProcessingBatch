@@ -15,7 +15,7 @@ if ne==ppparams.echoes(1)
         funcnormest.subj.vol = {reffile}; % {fullfile(ppparams.subfuncdir,[ppparams.func(ne).prefix ppparams.func(ne).funcfile ',1'])};
         funcnormest.eoptions.biasreg = 0.0001;
         funcnormest.eoptions.biasfwhm = 60;
-        funcnormest.eoptions.tpm = {fullfile(spm('Dir'),'tpm','TPM.nii')};
+        funcnormest.eoptions.tpm = {fullfile(params.spm_path,'tpm','TPM.nii')};
         funcnormest.eoptions.affreg = 'mni';
         funcnormest.eoptions.reg = [0 0 0.1 0.01 0.04];
         funcnormest.eoptions.fwhm = 0;
