@@ -105,9 +105,7 @@ if ~exist('flags_mi', 'var')
 end
 
 % Get SPM directory path
-spmDir = which('spm');
-spmDir = spmDir(1:end-5);
-oldNormDir = fullfile(spmDir, 'toolbox','OldNorm');
+oldNormDir = fullfile(spm('Dir'), 'toolbox','OldNorm');
 
 %% Select template to reorient to
 img_type = lower(img_type);
