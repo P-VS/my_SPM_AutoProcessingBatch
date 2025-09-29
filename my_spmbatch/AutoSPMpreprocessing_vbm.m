@@ -39,7 +39,9 @@ nsessions = [1]; %nsessions>0
 
 params.save_folder = 'preproc_anat_vbm';
 
-params.use_parallel = true; 
+%% Parallel processing and memory reduction
+params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
+params.use_parallel = false; 
 params.maxprocesses = 4; %Best not too high to avoid memory problems
 params.keeplogs = false;
 
@@ -59,18 +61,23 @@ params.save_intermediate_results = false;
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %---------------------------------------------------------------------------------------
 
-restoredefaultpath
+global spmpath
+spmpath = params.spm_path;
 
 [params.my_spmbatch_path,~,~] = fileparts(mfilename('fullpath'));
 
-if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
-if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+if ~params.onVSC
+    restoredefaultpath
 
-old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
-new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
-
-if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
-  
+    if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
+    if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+    
+    old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
+    new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
+    
+    if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
+end
+     
 fprintf('Start with preprocessing \n')
 
 curdir = pwd;
@@ -84,8 +91,12 @@ my_spmbatch_start_vbmprocessing(sublist,nsessions,datpath,params);
 
 cd(curdir)
 
-if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+if ~params.onVSC
+    if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+end
 
 fprintf('\nDone\n')
+
+if params.onVSC, exit; else clear 'all'; end
 
 end

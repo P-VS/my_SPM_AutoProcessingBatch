@@ -28,6 +28,7 @@ function AutoSPMpreprocessing_fmri
 
 params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
 params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICATv40c';
+params.runTimePath = '/Applications/MATLAB/MATLAB_Runtime/R2024b';
 
 %% Give the basic input information of your data
 
@@ -50,9 +51,11 @@ params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 params.func.meepi = true; %true if echo number is in filename
 params.func.echoes = [1]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
-params.use_parallel = false; 
+%% Parallel processing and memory reduction
+params.onVSC = true; % !!!Only true if using the VSC with a VUB account!!! 
+params.use_parallel = false; %(default=false)
 params.maxprocesses = 2; %Best not too high to avoid memory problems
-params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 1000)
+params.loadmaxvols = 500; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 1000)
 params.keeplogs = false;
 
 params.save_intermediate_results = true; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
@@ -140,20 +143,25 @@ params.func.pepolar = true; %(default=true)
     params.denoise.DUNE_part = 'bold'; %'bold' or 'nonbold' (default='bold')
    
 %% Start preprocessing
-
-restoredefaultpath
+    
+global spmpath
+spmpath = params.spm_path;
 
 [params.my_spmbatch_path,~,~] = fileparts(mfilename('fullpath'));
 
-if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
-if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
-if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+if ~params.onVSC
+    restoredefaultpath
 
-old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
-new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
-
-if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
-  
+    if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
+    if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
+    if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+    
+    old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
+    new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
+    
+    if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
+end
+     
 fprintf('Start with preprocessing \n')
 
 curdir = pwd;
@@ -167,13 +175,12 @@ my_spmbatch_start_fmripreprocessing(sublist,nsessions,task,datpath,params)
 
 cd(curdir)
 
-if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
-
-if exist(fullfile(datpath,'derivatives')), rmdir(fullfile(datpath,'derivatives'),'s'); end
+if ~params.onVSC
+    if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+end
 
 fprintf('\nDone\n')
 
-spm('Clean')
-clear all
+if params.onVSC, exit; else clear 'all'; end
 
 end

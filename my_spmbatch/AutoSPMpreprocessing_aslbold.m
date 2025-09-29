@@ -26,35 +26,37 @@ function AutoSPMpreprocessing_aslbold
 
 %% Give path to SPM25 and GroupICA
 
-params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
-params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICATv40c';
+params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/spm25';%'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/spm25';
+params.GroupICAT_path = '/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/GroupICATv40c'; %'/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/GroupICATv40c';
+params.runTimePath = '/Applications/MATLAB/MATLAB_Runtime/R2024b';
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/vsc11352/DataManon'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
-sublist = [1:21];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1,2]; %nsessions>0
+nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_meica_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_meica_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_meica_boldtest'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_meica_asltest'; %name of the folder to save the preprocessed asl data
 
-task ={'PREcog','POSTcog'};
+task ={'stroop'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
 params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 %% Parallel processing and memory reduction
-params.use_parallel = true; %(default=false)
-params.maxprocesses = 4; %Best not too high to avoid memory problems %(default=2)
-params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
+params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
+params.use_parallel = false; %(default=false)
+params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
+params.loadmaxvols = 1000; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
 
 %% Save intermediate results needed?
-params.save_intermediate_results = true; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
+params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
@@ -130,18 +132,23 @@ params.asl.splitaslbold = 'meica'; %'meica' or 'dune' (default='meica')
 
 %% Start the analysis
     
-restoredefaultpath
+global spmpath
+spmpath = params.spm_path;
 
 [params.my_spmbatch_path,~,~] = fileparts(mfilename('fullpath'));
 
-if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
-if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
-if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+if ~params.onVSC
+    restoredefaultpath
 
-old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
-new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
-
-if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
+    if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
+    if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
+    if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+    
+    old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
+    new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
+    
+    if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
+end
      
 fprintf('Start with preprocessing \n')
 
@@ -156,10 +163,12 @@ my_spmbatch_start_aslboldpreprocessing(sublist,nsessions,task,datpath,params)
 
 cd(curdir)
 
-if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+if ~params.onVSC
+    if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+end
 
 fprintf('\nDone\n')
 
-clear 'all'
+if params.onVSC, exit; else clear 'all'; end
 
 end

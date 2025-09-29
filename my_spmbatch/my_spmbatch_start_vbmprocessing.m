@@ -1,5 +1,7 @@
 function my_spmbatch_start_vbmprocessing(sublist,nsessions,datpath,params)
 
+if params.onVSC, params.runCompiled=false; end
+
 save(fullfile(datpath,'params.mat'),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),2);
@@ -14,7 +16,7 @@ for i = 1:numel(sublist)
     end
 end
 
-if params.use_parallel
+if params.use_parallel && ~params.onVSC
     numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
 
     for j=1:numpacks

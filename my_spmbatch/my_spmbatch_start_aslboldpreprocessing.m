@@ -48,8 +48,7 @@ for kt = 1:numel(params.func.runs)
         end
         
         numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
-        
-        if params.use_parallel
+        if ~params.onVSC && params.use_parallel
             for j=1:numpacks
                 if (j*params.maxprocesses)<=numel(datlist(:,1))
                     maxruns = params.maxprocesses;
