@@ -26,9 +26,8 @@ function AutoSPMpreprocessing_aslbold
 
 %% Give path to SPM25 and GroupICA
 
-params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/spm25';%'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/spm25';
-params.GroupICAT_path = '/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/GroupICATv40c'; %'/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/GroupICATv40c';
-params.runTimePath = '/Applications/MATLAB/MATLAB_Runtime/R2024b';
+params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/spm25'; %'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/spm25';
+params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/GroupICATv40c'; %'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/GroupICATv40c'; 
 
 %% Give the basic input information of your data
 
@@ -59,9 +58,9 @@ params.keeplogs = false; %(default=false)
 params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 %% Which analyses to do
-params.preprocess_anatomical = false;  %(default=true)  
+params.preprocess_anatomical = true;  %(default=true)  
 params.preprocess_functional = false; %(default=true)
-params.preprocess_asl = true; %(default=true)
+params.preprocess_asl = false; %(default=true)
 
 %% FMRI parameters
 params.func.meepi = true; %true if echo number is in filename (default=true)
@@ -87,7 +86,7 @@ params.asl.splitaslbold = 'meica'; %'meica' or 'dune' (default='meica')
     params.anat.normvox = [2.0 2.0 2.0]; %(default=[2.0 2.0 2.0]) Same as for fMRI!!
 
     % Segmentation using CAT12
-    params.anat.do_segmentation = false; %(default=true)
+    params.anat.do_segmentation = true; %(default=true)
     params.anat.roi_atlas = false; %(default=false)
     
 %% Preprocessing ASL data

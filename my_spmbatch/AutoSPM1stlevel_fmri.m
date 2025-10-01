@@ -21,7 +21,6 @@ function AutoSPM1stlevel_fmri
 clear 'all'
 
 params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
-params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICATv40c';
 
 %% Give the basic input information of your data
 
@@ -38,6 +37,7 @@ params.analysisname = 'meica_test';
 params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
+params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = false; 
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
@@ -158,20 +158,24 @@ params.keeplogs = false;
 
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %--------------------------------------------------------------------------------
-
-restoredefaultpath
+ 
+global spmpath
+spmpath = params.spm_path;
 
 [params.my_spmbatch_path,~,~] = fileparts(mfilename('fullpath'));
 
-if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
-if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
-if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+if ~params.onVSC
+    restoredefaultpath
 
-old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
-new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
-
-if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
-  
+    if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
+    if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+    
+    old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
+    new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
+    
+    if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
+end
+       
 fprintf('Start with processing the data\n')
 
 warnstate = warning;
@@ -185,10 +189,12 @@ my_spmbatch_start_fmriprocessing(sublist,nsessions,datpath,params);
 
 cd(curdir)
 
-if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+if ~params.onVSC
+    if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+end
 
 fprintf('\nDone with processing the data\n')
 
-clear 'all'
+if params.onVSC, exit; else clear 'all'; end
 
 end

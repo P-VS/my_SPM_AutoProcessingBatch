@@ -2,6 +2,8 @@ function my_spmbatch_start_fmriprocessing(sublist,nsessions,datpath,params)
 
 params.analysis_type = 'GLM';
 
+if params.onVSC || params.use_parallel, params.save_spm_results = false; end
+
 if ~params.func.meepi, params.func.echoes = [1]; end
 if ~params.func.mruns, params.func.runs = [1]; end
 if ~contains(params.modality,'fmri'), params.func.echoes = [1]; end
@@ -31,6 +33,12 @@ else
     params.iruns = [1];
 end
 
+if params.onVSC
+    params.use_parallel = false;
+    params.save_intermediate_results = false;
+    params.loadmaxvols = 1000;
+end
+
 save(fullfile(datpath,'params.mat'),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),3);
@@ -51,7 +59,7 @@ end
 numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
 
 for k = 1:numel(params.task)
-    if params.use_parallel
+    if params.use_parallel && ~params.onVSC
         for j=1:numpacks
             if (j*params.maxprocesses)<=numel(datlist(:,1))
                 maxruns = params.maxprocesses;

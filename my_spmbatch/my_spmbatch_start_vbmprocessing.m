@@ -1,6 +1,9 @@
 function my_spmbatch_start_vbmprocessing(sublist,nsessions,datpath,params)
 
-if params.onVSC, params.runCompiled=false; end
+if params.onVSC
+    params.use_parallel = false;
+    params.save_intermediate_results = false;
+end
 
 save(fullfile(datpath,'params.mat'),'params')
 

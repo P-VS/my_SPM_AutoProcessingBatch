@@ -30,6 +30,12 @@ if contains(params.asl.splitaslbold,'dune')
     params.denoise.DUNE_part = 'bold';
 end
 
+if params.onVSC
+    params.use_parallel = false;
+    params.save_intermediate_results = false;
+    params.loadmaxvols = 1000;
+end
+
 save(fullfile(datpath,'params.mat'),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),3);

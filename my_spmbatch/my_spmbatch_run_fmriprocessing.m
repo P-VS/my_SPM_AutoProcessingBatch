@@ -2,6 +2,9 @@ function out = my_spmbatch_run_fmriprocessing(sub,ses,run,task,datpath,paramsfil
 
 load(paramsfile)
 
+global spmpath
+spmpath = params.spm_path;
+
 try
     %% do smoothing first (if not done before)
     if params.do_smoothing
