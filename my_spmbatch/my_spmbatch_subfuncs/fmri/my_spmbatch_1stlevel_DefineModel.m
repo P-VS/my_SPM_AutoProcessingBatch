@@ -1,4 +1,4 @@
-function [matlabbatch,ppparams] = my_spmbatch_1stlevel_DefineModel(sub,ses,run,task,datpath,params,ppparams,matlabbatch)
+function [fmri_spec,ppparams] = my_spmbatch_1stlevel_DefineModel(sub,ses,run,task,datpath,params,ppparams)
 
 %% fMRI model specification
 
@@ -14,11 +14,11 @@ else
     nsl = 1;
 end
 
-matlabbatch{1}.spm.stats.fmri_spec.dir = {ppparams.resultmap};
-matlabbatch{1}.spm.stats.fmri_spec.timing.units = 'secs';
-matlabbatch{1}.spm.stats.fmri_spec.timing.RT = tr;
-matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = nsl;
-matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t0 = 1;
+fmri_spec.dir = {ppparams.resultmap};
+fmri_spec.timing.units = 'secs';
+fmri_spec.timing.RT = tr;
+fmri_spec.timing.fmri_t = nsl;
+fmri_spec.timing.fmri_t0 = 1;
 
 for ir=1:numel(params.iruns)
     % correct events file for dummy scans if needed
@@ -108,51 +108,51 @@ for ir=1:numel(params.iruns)
     for ne=1:numel(params.func.echoes)
         nsess = (ir-1)*numel(params.func.echoes)+ne;
     
-        matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).scans = ppparams.ppfmridat{ir}.sess{ne}.func(:,1);
+        fmri_spec.sess(nsess).scans = ppparams.ppfmridat{ir}.sess{ne}.func(:,1);
     
         for nc=1:numel(ppparams.edat{1}.conditions)
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).name = char(ppparams.edat{ir}.conditions{nc}.name);
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).onset = ppparams.edat{ir}.conditions{nc}.onsets;
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).duration = ppparams.edat{ir}.conditions{nc}.durations;
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).tmod = 0;
+            fmri_spec.sess(nsess).cond(nc).name = char(ppparams.edat{ir}.conditions{nc}.name);
+            fmri_spec.sess(nsess).cond(nc).onset = ppparams.edat{ir}.conditions{nc}.onsets;
+            fmri_spec.sess(nsess).cond(nc).duration = ppparams.edat{ir}.conditions{nc}.durations;
+            fmri_spec.sess(nsess).cond(nc).tmod = 0;
             if ~params.add_parametricModulation
-                matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod = struct('name', {}, 'param', {}, 'poly', {});
+                fmri_spec.sess(nsess).cond(nc).pmod = struct('name', {}, 'param', {}, 'poly', {});
             else
                 for ifield=1:numparams
-                    matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).name = ppparams.edat{ir}.conditions{nc}.weight{ifield}.name;
-                    matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).param = ppparams.edat{ir}.conditions{nc}.weight{ifield}.values;
-                    matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).poly = 1;
+                    fmri_spec.sess(nsess).cond(nc).pmod(ifield).name = ppparams.edat{ir}.conditions{nc}.weight{ifield}.name;
+                    fmri_spec.sess(nsess).cond(nc).pmod(ifield).param = ppparams.edat{ir}.conditions{nc}.weight{ifield}.values;
+                    fmri_spec.sess(nsess).cond(nc).pmod(ifield).poly = 1;
                 end
             end
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).orth = 1;
+            fmri_spec.sess(nsess).cond(nc).orth = 1;
         end
     
-        matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi = {''};
+        fmri_spec.sess(nsess).multi = {''};
 
         if params.isaslbold %contains(params.modality,'fasl') && contains(params.whichfile,'asl')
             labels = zeros(1,numel(ppparams.ppfmridat{ir}.sess{ne}.func));
             labels(2:2:end) = 1;
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.name = 'labeling';
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.val = labels;
+            fmri_spec.sess(nsess).regress.name = 'labeling';
+            fmri_spec.sess(nsess).regress.val = labels;
         else
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress = struct('name', {}, 'val', {});
+            fmri_spec.sess(nsess).regress = struct('name', {}, 'val', {});
         end
     
-        matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi_reg = {ppparams.frun(ir).confoundsfile};
+        fmri_spec.sess(nsess).multi_reg = {ppparams.frun(ir).confoundsfile};
 
-        if ~contains(ppparams.frun(1).func(1).funcfile,'f'), matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).hpf = params.hpf;
+        if ~contains(ppparams.frun(1).func(1).funcfile,'f'), fmri_spec.sess(nsess).hpf = params.hpf;
         else
             Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).hpf = tr * (numel(Vfunc)-1);
+            fmri_spec.sess(nsess).hpf = tr * (numel(Vfunc)-1);
         end
     end
 end
 
-matlabbatch{1}.spm.stats.fmri_spec.fact = struct('name', {}, 'levels', {});
-if ~params.add_derivatives; matlabbatch{1}.spm.stats.fmri_spec.bases.hrf.derivs = [0 0]; 
-else matlabbatch{1}.spm.stats.fmri_spec.bases.hrf.derivs = [1 1]; end
-matlabbatch{1}.spm.stats.fmri_spec.volt = 1;
-matlabbatch{1}.spm.stats.fmri_spec.global = 'None';
+fmri_spec.fact = struct('name', {}, 'levels', {});
+if ~params.add_derivatives; fmri_spec.bases.hrf.derivs = [0 0]; 
+else fmri_spec.bases.hrf.derivs = [1 1]; end
+fmri_spec.volt = 1;
+fmri_spec.global = 'None';
 
 Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));
 nvols = min([numel(Vfunc),50]);
@@ -172,13 +172,13 @@ ppparams.mask_file = Vmask.fname;
 clear fdata mask
 
 if contains(params.modality,'fasl') && contains(params.whichfile,'cbf')
-    matlabbatch{1}.spm.stats.fmri_spec.mthresh = -1.0;
+    fmri_spec.mthresh = -1.0;
 else
-    matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.8; 
+    fmri_spec.mthresh = 0.8; 
 end
 if contains(params.modality,'fasl')
-    matlabbatch{1}.spm.stats.fmri_spec.cvi = params.model_serial_correlations;
+    fmri_spec.cvi = params.model_serial_correlations;
 else
-    matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
+    fmri_spec.cvi = 'AR(1)';
 end
-matlabbatch{1}.spm.stats.fmri_spec.mask = {Vmask.fname};
+fmri_spec.mask = {Vmask.fname};

@@ -2,49 +2,42 @@ function params = my_spmbatch_fmrilevel1processing(sub,ses,run,task,datpath,para
 
 %% Search for the data folders
 
-ppparams = my_spmbatch_1stlevel_FindData(sub,ses,run,task,datpath,params);
+[ppparams,params,datpath] = my_spmbatch_1stlevel_FindData(sub,ses,run,task,datpath,params);
 
 %% fMRI model specification
 
 if params.func.mruns && contains(params.func.use_runs,'separately')
+    ppparams.resultfolder = ['SPMMAT-' task '_' params.analysisname '_run-' num2str(run)];
     ppparams.resultmap = fullfile(ppparams.subpath,['SPMMAT-' task '_' params.analysisname '_run-' num2str(run)]);
 else
+    ppparams.resultfolder = ['SPMMAT-' task '_' params.analysisname];
     ppparams.resultmap = fullfile(ppparams.subpath,['SPMMAT-' task '_' params.analysisname]);
 end
 
 if exist(ppparams.resultmap,'dir'); rmdir(ppparams.resultmap,'s'); end
 mkdir(ppparams.resultmap)
 
-matlabbatch = {};
-[matlabbatch,ppparams] = my_spmbatch_1stlevel_DefineModel(sub,ses,run,task,datpath,params,ppparams,matlabbatch);
+[fmri_spec,ppparams] = my_spmbatch_1stlevel_DefineModel(sub,ses,run,task,datpath,params,ppparams);
+
+spm_run_fmri_spec(fmri_spec);
+
+SPM_file = fullfile(ppparams.resultmap,'SPM.mat');
 
 %% Optimize GLM with TEDM
 
-if params.optimize_HRF
-    spm_jobman('run', matlabbatch)
-
-    clear matlabbatch
-
-    SPM_file = fullfile(ppparams.resultmap,'SPM.mat');
-    SPM_file = my_spmmbatch_tedm(SPM_file,ppparams.resultmap,ppparams.mask_file);
-
-    mbidx = 1;
-    matlabbatch{mbidx}.spm.stats.fmri_est.spmmat(1) = {SPM_file};
-else
-    mbidx = 2;
-    matlabbatch{mbidx}.spm.stats.fmri_est.spmmat(1) = cfg_dep('fMRI model specification: SPM.mat File', substruct('.','val', '{}',{mbidx-1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
-end
+if params.optimize_HRF, SPM_file = my_spmmbatch_tedm(SPM_file,ppparams.resultmap,ppparams.mask_file); end
 
 %% Model estimation
 
-matlabbatch{mbidx}.spm.stats.fmri_est.write_residuals = 0;
-matlabbatch{mbidx}.spm.stats.fmri_est.method.Classical = 1;
+fmri_est.spmmat(1) = {SPM_file};
+fmri_est.write_residuals = 0;
+fmri_est.method.Classical = 1;
   
-mbidx=mbidx+1;
+spm_run_fmri_est(fmri_est);
 
 %% Contrast Manager
 
-matlabbatch{mbidx}.spm.stats.con.spmmat(1) = cfg_dep('Model estimation: SPM.mat File', substruct('.','val', '{}',{mbidx-1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
+con.spmmat(1) = {SPM_file};
 
 for ic=1:numel(params.contrast)
     contrastname='';
@@ -86,20 +79,20 @@ for ic=1:numel(params.contrast)
         weights(negtmp) = weights(negtmp)/numel(negtmp);
     end
 
-    matlabbatch{mbidx}.spm.stats.con.consess{ic}.tcon.name = contrastname;
-    matlabbatch{mbidx}.spm.stats.con.consess{ic}.tcon.weights = weights;
+    con.consess{ic}.tcon.name = contrastname;
+    con.consess{ic}.tcon.weights = weights;
     
-    matlabbatch{mbidx}.spm.stats.con.consess{ic}.tcon.sessrep = 'none';
+    con.consess{ic}.tcon.sessrep = 'none';
 end
 
-matlabbatch{mbidx}.spm.stats.con.delete = 0;
+con.delete = 0;
 
-spm_jobman('run', matlabbatch);
+spm_run_con(con);
 
 %% SPM Results
 
 if params.save_spm_results
-    results.spmmat = {fullfile(ppparams.resultmap,'SPM.mat')};
+    results.spmmat = {SPM_file};
     results.conspec.titlestr = '';
     results.conspec.contrasts = Inf;
     results.conspec.threshdesc = params.threshold_correction;
@@ -137,3 +130,16 @@ if params.save_spm_results
 
     my_spmbatch_run_results(results);
 end
+
+if params.onVSC, [datpath,ppparams] = after_1stlevel_VSC(ppparams,params); end
+
+
+function [datpath,ppparams] = after_1stlevel_VSC(ppparams,params)
+
+fprintf('\nStart copying results\n');
+
+if isfolder(fullfile(params.new_subpath,ppparams.resultfolder)), copyfile(fullfile(params.new_subpath,ppparams.resultfolder),fullfile(params.orig_subpath,ppparams.resultfolder)); end
+
+rmdir(params.new_subpath,'s');
+
+datpath = params.orig_subpath;
