@@ -39,7 +39,9 @@ if params.onVSC
     params.loadmaxvols = 1000;
 end
 
-save(fullfile(datpath,'params.mat'),'params')
+t = datetime('now','Format','yyMMddHHmmss');
+paramsfile = ['params_' char(t) '.mat'];
+save(fullfile(datpath,paramsfile),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),3);
 
@@ -69,7 +71,7 @@ for kt = 1:numel(params.func.runs)
                     i = (j-1)*params.maxprocesses+is;
         
                     t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                    fprintf(['\n'  datestr(t) ' : Start preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                    fprintf(['\n'  char(t) ' : Start preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
             
                     logfile{i} = fullfile(datpath,['fmri_preprocess_logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' task{k} '.txt']);
             
@@ -77,12 +79,12 @@ for kt = 1:numel(params.func.runs)
                     
                     if ispc
                         mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_fmripreprocessing(%d,%d,%d,'%s','%s','%s');exit", ...
-                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
                         
                         system_cmd = sprintf(['start matlab -nodesktop -nosplash -r "%s" -logfile %s'],mtlb_cmd,logfile{i});
                     else
                         mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_fmripreprocessing(%d,%d,%d,''%s'',''%s'',''%s'');exit"', ...
-                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
     
                         system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
                     end
@@ -111,7 +113,7 @@ for kt = 1:numel(params.func.runs)
                                 movefile(logfile{i},nlogfname);
         
                                 t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                                fprintf(['\n'  datestr(t) ' : Error during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                                fprintf(['\n'  char(t) ' : Error during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
                             elseif ~isempty(test)
                                 pfinnished = pfinnished+1;
         
@@ -123,7 +125,7 @@ for kt = 1:numel(params.func.runs)
                                 end
         
                                 t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                                fprintf(['\n'  datestr(t) ' : Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,2)) ' task ' task{k} '\n'])
+                                fprintf(['\n'  char(t) ' : Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,2)) ' task ' task{k} '\n'])
                             end
                         end
                     end
@@ -147,7 +149,7 @@ for kt = 1:numel(params.func.runs)
             for i=1:numel(datlist(:,1))
                 itstart = tic;
     
-                my_spmbatch_run_fmripreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                my_spmbatch_run_fmripreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
     
                 % Print and save realignment paramers  
                 %save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
@@ -160,4 +162,4 @@ for kt = 1:numel(params.func.runs)
     end
 end
 
-delete(fullfile(datpath,'params.mat'))
+delete(fullfile(datpath,paramsfile))

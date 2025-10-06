@@ -26,14 +26,14 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:24]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
 params.task = {'stroop'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica_test';
+params.analysisname = 'meica_noTEDM';
 params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
@@ -70,7 +70,7 @@ params.keeplogs = false;
     params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
     params.add_regressors = false; %if data not denoised set true otherwhise false 
     params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
-    params.optimize_HRF = true; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
+    params.optimize_HRF = false; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
     params.use_ownmask = true;
     params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
     params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
@@ -159,6 +159,8 @@ params.keeplogs = false;
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %--------------------------------------------------------------------------------
  
+params.analysis_type = 'GLM';
+
 global spmpath
 spmpath = params.spm_path;
 

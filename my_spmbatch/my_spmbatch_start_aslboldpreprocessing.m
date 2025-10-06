@@ -29,6 +29,19 @@ if contains(params.asl.splitaslbold,'dune')
     params.denoise.do_DUNE = true;
     params.denoise.DUNE_part = 'bold';
 end
+if contains(params.asl.splitaslbold,'filter')
+    params.func.denoise = true;
+    params.denoise.do_mot_derivatives = true;
+    params.denoise.do_aCompCor = false;
+    params.denoise.Ncomponents = 5; %if in range [0 1] then the number of aCompCor components is equal to the number of components that explain the specified percentage of variation in the signal (default=5)
+    params.denoise.do_bpfilter = true;
+    params.denoise.bpfilter = [0.008 0.1]; %no highpass filter is first 0, no lowpass filter is last Inf, default=[0.008 Inf]
+    params.denoise.polort = 1; %order of the polynomial function used to remove the signal trend (0: only mean, 1: linear trend, 2: quadratic trend, default=2)
+    params.denoise.do_ICA_AROMA = false;
+    params.denoise.do_noiseregression = true;
+    params.denoise.do_DUNE = false;
+    params.denoise.DUNE_part = 'bold';
+end
 
 if params.onVSC
     params.use_parallel = false;
@@ -36,7 +49,9 @@ if params.onVSC
     params.loadmaxvols = 1000;
 end
 
-save(fullfile(datpath,'params.mat'),'params')
+t = datetime('now','Format','yyMMddHHmmss');
+paramsfile = ['params_' char(t) '.mat'];
+save(fullfile(datpath,paramsfile),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),3);
 
@@ -66,7 +81,7 @@ for kt = 1:numel(params.func.runs)
                     i = (j-1)*params.maxprocesses+is;
         
                     t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                    fprintf(['\n' datestr(t) ' : Start preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                    fprintf(['\n' char(t) ' : Start preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
             
                     logfile{i} = fullfile(datpath,['aslbold_preprocess_logfile_' sprintf('%02d',datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' task{k} '.txt']);
             
@@ -74,12 +89,12 @@ for kt = 1:numel(params.func.runs)
                     
                     if ispc
                         mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,'%s','%s','%s');exit", ...
-                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
                        
                         system_cmd = sprintf(['start matlab -nodesktop -nosplash -r "%s" -logfile %s'],mtlb_cmd,logfile{i});
                     else
                         mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,''%s'',''%s'',''%s'');exit"', ...
-                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                                                params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
     
                         system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
                     end
@@ -108,7 +123,7 @@ for kt = 1:numel(params.func.runs)
                                 movefile(logfile{i},nlogfname);
         
                                 t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                                fprintf(['\n'  datestr(t) ' : Error during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                                fprintf(['\n'  char(t) ' : Error during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
                             elseif ~isempty(test)
                                 pfinnished = pfinnished+1;
         
@@ -120,7 +135,7 @@ for kt = 1:numel(params.func.runs)
                                 end
         
                                 t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                                fprintf(['\n'  datestr(t) ' : Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                                fprintf(['\n'  char(t) ' : Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
                             end
                         end
                     end
@@ -144,7 +159,7 @@ for kt = 1:numel(params.func.runs)
             for i=1:numel(datlist(:,1))
                 itstart = tic;
     
-                my_spmbatch_run_aslboldpreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                my_spmbatch_run_aslboldpreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
     
                 % Print and save realignment paramers  
                 %save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
@@ -157,4 +172,4 @@ for kt = 1:numel(params.func.runs)
     end
 end
 
-delete(fullfile(datpath,'params.mat'))
+delete(fullfile(datpath,paramsfile))

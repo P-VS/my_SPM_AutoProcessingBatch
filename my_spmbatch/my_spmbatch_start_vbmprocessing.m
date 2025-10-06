@@ -5,7 +5,9 @@ if params.onVSC
     params.save_intermediate_results = false;
 end
 
-save(fullfile(datpath,'params.mat'),'params')
+t = datetime('now','Format','yyMMddHHmmss');
+paramsfile = ['params_' char(t) '.mat'];
+save(fullfile(datpath,paramsfile),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),2);
 
@@ -33,7 +35,7 @@ if params.use_parallel && ~params.onVSC
             i = (j-1)*params.maxprocesses+is;
 
             t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-            fprintf(['\n'  datestr(t) ' : Start VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
+            fprintf(['\n'  char(t) ' : Start VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
     
             logfile{i} = fullfile(datpath,['logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '.txt']);
     
@@ -41,12 +43,12 @@ if params.use_parallel && ~params.onVSC
             
             if ispc
                 mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_vbmpreprocessing(%d,%d,'%s','%s');exit", ...
-                                    params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datpath,fullfile(datpath,'params.mat'));
+                                    params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datpath,fullfile(datpath,paramsfile));
 
                 system_cmd = sprintf(['start matlab -nodesktop -nosplash -r "%s" -logfile %s'],mtlb_cmd,logfile{i});
             else
                 mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_vbmpreprocessing(%d,%d,''%s'',''%s'');exit"', ...
-                                    params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datpath,fullfile(datpath,'params.mat'));
+                                    params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datpath,fullfile(datpath,paramsfile));
 
                 system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
             end
@@ -75,7 +77,7 @@ if params.use_parallel && ~params.onVSC
                         movefile(logfile{i},nlogfname);
 
                         t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                        fprintf(['\n'  datestr(t) ' : Error during VBM processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
+                        fprintf(['\n'  char(t) ' : Error during VBM processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
                     elseif ~isempty(test)
                         pfinnished = pfinnished+1;
 
@@ -87,7 +89,7 @@ if params.use_parallel && ~params.onVSC
                         end
 
                         t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                        fprintf(['\n'  datestr(t) ' : Done VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
+                        fprintf(['\n'  char(t) ' : Done VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
                     end
                 end
             end
@@ -103,7 +105,7 @@ else
     for i=1:numel(datlist(:,1))
         itstart = tic;
 
-        my_spmbatch_run_vbmpreprocessing(datlist(i,1),datlist(i,2),datpath,fullfile(datpath,'params.mat'));
+        my_spmbatch_run_vbmpreprocessing(datlist(i,1),datlist(i,2),datpath,fullfile(datpath,paramsfile));
 
         itstop = toc(itstart);
 
@@ -111,4 +113,4 @@ else
     end
 end
 
-delete(fullfile(datpath,'params.mat'))
+delete(fullfile(datpath,paramsfile))

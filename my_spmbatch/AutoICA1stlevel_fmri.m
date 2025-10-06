@@ -27,25 +27,26 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [1:24]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'POSTcog'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'stroop'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica_asl';
-params.modality = 'fasl'; %'fmri' of 'fasl'
+params.analysisname = 'meica_bold';
+params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
+params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = false; 
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_meica_asl'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 8; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
@@ -87,27 +88,28 @@ params.keeplogs = false;
 
 params.analysis_type = 'ICA';
 
-restoredefaultpath
+global spmpath
+spmpath = params.spm_path;
 
 [params.my_spmbatch_path,~,~] = fileparts(mfilename('fullpath'));
 
-if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
-if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
-if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+if ~params.onVSC
+    restoredefaultpath
 
-old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
-new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
-
-if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
-  
+    if exist(params.spm_path,'dir'), addpath(genpath(params.spm_path)); end
+    if exist(params.GroupICAT_path,'dir'), addpath(genpath(params.GroupICAT_path)); end
+    if exist(params.my_spmbatch_path,'dir'), addpath(genpath(params.my_spmbatch_path)); end
+    
+    old_spm_read_vols_file=fullfile(spm('Dir'),'spm_read_vols.m');
+    new_spm_read_vols_file=fullfile(spm('Dir'),'old_spm_read_vols.m');
+    
+    if isfile(old_spm_read_vols_file), movefile(old_spm_read_vols_file,new_spm_read_vols_file); end
+end
+    
 fprintf('Start with processing the data\n')
 
 warnstate = warning;
 warning off;
-
-% User interface.
-SPMid                 = spm('FnBanner',mfilename,'2.10');
-[Finter,Graf,CmdLine] = spm('FnUIsetup','Preproces SPM');
 
 spm('defaults', 'FMRI');
 
@@ -115,14 +117,14 @@ curdir = pwd;
 
 my_spmbatch_start_fmriprocessing(sublist,nsessions,datpath,params);
 
-spm_figure('close',allchild(0));
-
 cd(curdir)
 
-if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+if ~params.onVSC
+    if isfile(new_spm_read_vols_file), movefile(new_spm_read_vols_file,old_spm_read_vols_file); end
+end
 
 fprintf('\nDone with processing the data\n')
 
-clear 'all'
+if params.onVSC, exit; else clear 'all'; end
 
 end

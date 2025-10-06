@@ -1,7 +1,5 @@
 function my_spmbatch_start_fmriprocessing(sublist,nsessions,datpath,params)
 
-params.analysis_type = 'GLM';
-
 if params.onVSC || params.use_parallel, params.save_spm_results = false; end
 
 if ~params.func.meepi, params.func.echoes = [1]; end
@@ -39,7 +37,9 @@ if params.onVSC
     params.loadmaxvols = 1000;
 end
 
-save(fullfile(datpath,'params.mat'),'params')
+t = datetime('now','Format','yyMMddHHmmss');
+paramsfile = ['params_' char(t) '.mat'];
+save(fullfile(datpath,paramsfile),'params')
 
 datlist = zeros(numel(sublist)*numel(nsessions),3);
 
@@ -71,7 +71,7 @@ for k = 1:numel(params.task)
                 i = (j-1)*params.maxprocesses+is;
     
                 t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                fprintf(['\n'  datestr(t) ' : Start processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' params.task{k} '\n'])
+                fprintf(['\n'  char(t) ' : Start processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' params.task{k} '\n'])
         
                 logfile{i} = fullfile(datpath,['fmri_process_logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' params.task{k} '.txt']);
         
@@ -79,12 +79,12 @@ for k = 1:numel(params.task)
                 
                 if ispc
                     mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_fmriprocessing(%d,%d,%d,'%s','%s','%s');exit", ...
-                                            params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,'params.mat'));
+                                            params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
 
                     system_cmd = sprintf(['start matlab -nodesktop -nosplash -r "%s" -logfile %s'],mtlb_cmd,logfile{i});
                 else
                     mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_fmriprocessing(%d,%d,%d,''%s'',''%s'',''%s'');exit"', ...
-                                            params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,'params.mat'));
+                                            params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
 
                     system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
                 end
@@ -113,7 +113,7 @@ for k = 1:numel(params.task)
                             nlogfname = fullfile(datpath,['error_fmri_process_logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' params.task{k} '.txt']);
                             movefile(logfile{i},nlogfname);
     
-                            fprintf(['\n'  datestr(t) ' : Error during processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' params.task{k} '\n'])
+                            fprintf(['\n'  char(t) ' : Error during processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' params.task{k} '\n'])
                         elseif ~isempty(test)
                             pfinnished = pfinnished+1;
     
@@ -125,7 +125,7 @@ for k = 1:numel(params.task)
                             end
     
                             t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
-                            fprintf(['\n'  datestr(t) ' : Done processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' params.task{k} '\n'])
+                            fprintf(['\n'  char(t) ' : Done processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' params.task{k} '\n'])
                         end
                     end
                 end
@@ -139,9 +139,9 @@ for k = 1:numel(params.task)
         end
     else            
         for i=1:numel(datlist(:,1))
-            my_spmbatch_run_fmriprocessing(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,'params.mat'));
+            my_spmbatch_run_fmriprocessing(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
         end
     end
 end
 
-delete(fullfile(datpath,'params.mat'),'params')
+delete(fullfile(datpath,paramsfile))
