@@ -210,9 +210,22 @@ if params.denoise.do_noiseregression || params.denoise.do_ICA_AROMA
             
             Vfunc = myspm_write_vol_4d(Vfunc,fafuncdat);
 
-            %delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,['d' fpref{end} fname{1} '_asl.nii'])};
-
             clear fafuncdat fVfunc
+        elseif params.func.isaslbold && contains(params.asl.splitaslbold,'filter')
+            ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+            if ~isfolder(ppparams.subperfdir), mkdir(ppparams.subperfdir); end
+
+            fname = split(ppparams.func(ie).funcfile,'_bold.nii');
+            fpref = split(ppparams.func(ie).prefix,'d');
+        
+            for k=1:numel(Vfunc)
+                Vfunc(k).fname = fullfile(ppparams.subperfdir,['d' fpref{end} fname{1} '_asl.nii']);
+                Vfunc(k).descrip = 'my_spmbatch - meica';
+                Vfunc(k).pinfo = [1,0,0];
+                Vfunc(k).n = [k 1];
+            end
+            
+            Vfunc = myspm_write_vol_4d(Vfunc,funcdat);
         end
 
         clear funcdat Vfunc
