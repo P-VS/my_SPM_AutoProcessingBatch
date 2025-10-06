@@ -2,14 +2,14 @@ function params = my_spmbatch_ica1stlevel(sub,ses,run,task,datpath,params)
 
 curdir = pwd;
 
-matlabbatch = {};
-
 %% Search for the data folders
-ppparams = my_spmbatch_1stlevel_FindData(sub,ses,run,task,datpath,params);
+[ppparams,params,datpath] = my_spmbatch_1stlevel_FindData(sub,ses,run,task,datpath,params);
 
 if params.func.mruns && contains(params.func.use_runs,'separately')
+    ppparams.resultfolder = ['ICA-' task '_' params.analysisname '_run-' num2str(run)];
     ppparams.resultmap = fullfile(ppparams.subpath,['ICA-' task '_' params.analysisname '_run-' num2str(run)]);
 else
+    ppparams.resultfolder = ['ICA-' task '_' params.analysisname];
     ppparams.resultmap = fullfile(ppparams.subpath,['ICA-' task '_' params.analysisname]);
 end
 
@@ -61,22 +61,14 @@ if params.tempsort_SPM_model
     if exist(ppparams.resultmap,'dir'); rmdir(ppparams.resultmap,'s'); end
     mkdir(ppparams.resultmap)
     
-    [matlabbatch,ppparams] = my_spmbatch_1stlevel_DefineModel(sub,ses,run,task,datpath,params,ppparams,matlabbatch);
+    [fmri_spec,ppparams] = my_spmbatch_1stlevel_DefineModel(sub,ses,run,task,datpath,params,ppparams);
     
-    spm_jobman('run', matlabbatch)
-    
+    spm_run_fmri_spec(fmri_spec);
+
     SPM_file = fullfile(ppparams.resultmap,'SPM.mat');
     
     %% Optimize GLM with TEDM
-    if params.optimize_HRF
-        SPM_file = my_spmmbatch_tedm(SPM_file,ppparams.resultmap,ppparams.mask_file);
-        
-        load(SPM_file)
-    
-        SPM.xX.X = SPM.TEDM.Param.Del;
-    
-        save(SPM_file,'SPM')
-    end
+    if params.optimize_HRF, SPM_file = my_spmmbatch_tedm(SPM_file,ppparams.resultmap,ppparams.mask_file); end
     
     ppparams.resultmap = tmp_resultmap;
 end
@@ -254,6 +246,8 @@ if ~isempty(params.spatial_networks_masks)
     atlasVol = reshape(atlasVol, [prod(dim(1:3)),numNetworks]);
     braindat = reshape(braindat, [prod(dim(1:3)),1]);
 
+    szTC = size(icaTimecourse);
+
     % Spatial sorting
     nvoxbrain = sum(braindat>0);
     useComp = zeros(numNetworks,numComp);
@@ -261,6 +255,8 @@ if ~isempty(params.spatial_networks_masks)
     for inet=1:numNetworks
         regmap = zeros(HInfo.DIM(1:3));
         thregmap = zeros(HInfo.DIM(1:3));
+
+        NetworkTC = zeros(szTC(1),1);
 
         bpercnetwork(inet) = sum(atlasVol(:,inet)>0)/nvoxbrain;
 
@@ -282,6 +278,8 @@ if ~isempty(params.spatial_networks_masks)
                 if inFract(inet,ic)>bpercnetwork(inet)*1.2
                     regmap = regmap+utcompData(:,:,:,ic); 
                     thregmap = thregmap+compData(:,:,:,ic);
+
+                    NetworkTC = NetworkTC+icaTimecourse(:,ic);
     
                     useComp(inet,ic)=1;
                 end
@@ -291,6 +289,8 @@ if ~isempty(params.spatial_networks_masks)
         
             clear Compdat
         end
+
+        save(fullfile(ppparams.resultmap,['TC_atlas-' atlasname '_network-' num2str(T.Index(inet),'%03d') '-' T.Name{inet} '.txt']),'NetworkTC','-ascii')
 
         V = spm_vol(compFiles);
 
@@ -356,3 +356,16 @@ spm_preproc_run(preproc);
 c1im = fullfile(folder,['c1' segfunc]);
 c2im = fullfile(folder,['c2' segfunc]);
 c3im = fullfile(folder,['c3' segfunc]);
+
+if params.onVSC, [datpath,ppparams] = after_1stlevel_VSC(ppparams,params); end
+
+
+function [datpath,ppparams] = after_1stlevel_VSC(ppparams,params)
+
+fprintf('\nStart copying results\n');
+
+if isfolder(fullfile(params.new_subpath,ppparams.resultfolder)), copyfile(fullfile(params.new_subpath,ppparams.resultfolder),fullfile(params.orig_subpath,ppparams.resultfolder)); end
+
+rmdir(params.new_subpath,'s');
+
+datpath = params.orig_subpath;
