@@ -66,6 +66,7 @@ for ip=1:numel(prefixlist)
     pref = prefixlist{ip};
     if contains(params.asl.splitaslbold,'meica'), test = strcmp(pref(1),'d'); end
     if contains(params.asl.splitaslbold,'dune'), test = strcmp(pref(1:2),'cd'); end
+    if contains(params.asl.splitaslbold,'filter'), test = strcmp(pref(1),'d'); end
 
     if test
         ppparams.perf(1).aslprefix = pref; 
