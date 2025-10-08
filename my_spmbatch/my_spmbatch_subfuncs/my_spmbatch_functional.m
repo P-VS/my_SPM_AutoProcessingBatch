@@ -48,12 +48,7 @@ end
 if params.func.pepolar
     ppparams.subfmapdir = fullfile(ppparams.subpath,'fmap');
 
-    if ~isfolder(ppparams.subfmapdir)
-        fprintf(['No fmap data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-        fprintf('\nPP_Error\n');
-
-        ppparams.subfmapdir = ppparams.subfuncdir;
-    end
+    if ~isfolder(ppparams.subfmapdir), ppparams.subfmapdir = ppparams.subfuncdir; end
 end
 
 %% Search for the data files

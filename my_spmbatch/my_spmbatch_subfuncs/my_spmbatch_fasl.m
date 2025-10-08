@@ -47,8 +47,6 @@ if params.func.pepolar
 
     if ~isfolder(ppparams.subfmapdir)
         fprintf(['No fmap data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-        fprintf('\nPP_Error\n');
-
         ppparams.subfmapdir = ppparams.subfuncdir;
     end
 end
