@@ -59,7 +59,7 @@ end
 numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
 
 for k = 1:numel(params.task)
-    if params.use_parallel && ~params.onVSC
+    if params.use_parallel && ~params.onVSC  && params.run_background
         for j=1:numpacks
             if (j*params.maxprocesses)<=numel(datlist(:,1))
                 maxruns = params.maxprocesses;
@@ -137,7 +137,23 @@ for k = 1:numel(params.task)
                 end
             end
         end
-    else            
+    elseif params.use_parallel
+        for j=1:numpacks
+            if (j*params.maxprocesses)<=numel(datlist(:,1))
+                maxruns = params.maxprocesses;
+            else
+                maxruns = params.maxprocesses-((j*params.maxprocesses)-numel(datlist(:,1)));
+            end
+
+            parfor is = 1:maxruns
+                i = (j-1)*params.maxprocesses+is;
+
+                my_spmbatch_run_fmriprocessing(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
+    
+                fprintf(['subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+            end
+        end
+    else  
         for i=1:numel(datlist(:,1))
             my_spmbatch_run_fmriprocessing(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
         end

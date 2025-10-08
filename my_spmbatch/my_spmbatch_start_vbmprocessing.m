@@ -1,7 +1,6 @@
 function my_spmbatch_start_vbmprocessing(sublist,nsessions,datpath,params)
 
 if params.onVSC
-    params.use_parallel = false;
     params.save_intermediate_results = false;
 end
 
@@ -21,7 +20,7 @@ for i = 1:numel(sublist)
     end
 end
 
-if params.use_parallel && ~params.onVSC
+if ~params.onVSC && params.use_parallel && params.run_background
     numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
 
     for j=1:numpacks
@@ -100,6 +99,24 @@ if params.use_parallel && ~params.onVSC
                 pause(60);
             end
         end
+    end
+elseif params.use_parallel
+    for j=1:numpacks
+        if (j*params.maxprocesses)<=numel(datlist(:,1))
+            maxruns = params.maxprocesses;
+        else
+            maxruns = params.maxprocesses-((j*params.maxprocesses)-numel(datlist(:,1)));
+        end
+
+        parfor is = 1:maxruns
+            i = (j-1)*params.maxprocesses+is;
+
+            my_spmbatch_run_vbmpreprocessing(datlist(i,1),datlist(i,2),datpath,fullfile(datpath,paramsfile));
+            
+            fprintf(['subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+        end
+
+        delete(gcp("nocreate"));
     end
 else
     for i=1:numel(datlist(:,1))

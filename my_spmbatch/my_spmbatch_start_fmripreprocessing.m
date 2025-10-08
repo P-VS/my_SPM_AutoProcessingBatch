@@ -34,9 +34,8 @@ if params.denoise.do_DUNE
 end
 
 if params.onVSC
-    params.use_parallel = false;
     params.save_intermediate_results = false;
-    params.loadmaxvols = 1000;
+    params.loadmaxvols = 800;
 end
 
 t = datetime('now','Format','yyMMddHHmmss');
@@ -59,7 +58,7 @@ for kt = 1:numel(params.func.runs)
         end
         
         numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
-        if ~params.onVSC && params.use_parallel
+        if ~params.onVSC && params.use_parallel && params.run_background
             for j=1:numpacks
                 if (j*params.maxprocesses)<=numel(datlist(:,1))
                     maxruns = params.maxprocesses;
@@ -138,21 +137,29 @@ for kt = 1:numel(params.func.runs)
                 end
             end
         
-            %% plot realignment parameters
-            %if params.preprocess_functional && params.func.do_realignment
-            %    for i = 1:numel(datlist(:,1))
-            %        % Print and save realignment paramers  
-            %        save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
-            %    end
-            %end
+        elseif params.use_parallel
+            for j=1:numpacks
+                if (j*params.maxprocesses)<=numel(datlist(:,1))
+                    maxruns = params.maxprocesses;
+                else
+                    maxruns = params.maxprocesses-((j*params.maxprocesses)-numel(datlist(:,1)));
+                end
+
+                parfor is = 1:maxruns
+                    i = (j-1)*params.maxprocesses+is;
+        
+                    my_spmbatch_run_fmripreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
+        
+                    fprintf(['Done preprocessing data for ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+                end
+
+                delete(gcp("nocreate"));
+            end
         else
             for i=1:numel(datlist(:,1))
                 itstart = tic;
     
                 my_spmbatch_run_fmripreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
-    
-                % Print and save realignment paramers  
-                %save_rp_plot(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,params);
     
                 itstop = toc(itstart);
     

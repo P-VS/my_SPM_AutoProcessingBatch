@@ -22,7 +22,7 @@ for kt = 1:numel(params.asl.runs)
     
     numpacks = ceil(numel(datlist(:,1))/params.maxprocesses);
     
-    if params.use_parallel
+    if params.use_parallel  && params.run_background
         for j=1:numpacks
             if (j*params.maxprocesses)<=numel(datlist(:,1))
                 maxruns = params.maxprocesses;

@@ -19,53 +19,31 @@ function Affine = my_spmbatch_vol_set_com(V)
 % ______________________________________________________________________
 % $Id: 2170 2023-01-26 $
 
-
-if nargin == 1
-  if isstruct(V)
+if isstruct(V)
     V = V;
-  else
+else
     P = char(V);
     V = spm_vol(P);
-  end
-else
-  P = spm_select(Inf,'image','Select images to filter');
-  V = spm_vol(P);
 end
-n = numel(V);
+V = V(1);
 
 MM = V(1).private.mat0;
 
 % pre-estimated COM of MNI template
 com_reference = [0 -25 -15];
 
-fprintf(['Correct center-of-mass for ' num2str(n) ' volumes']);
-for i=1:n
-  V(i).mat = MM;
-  Affine = eye(4);
-  if isfield(V(i),'dat')
-    vol(:,:,:) = V(i).dat(:,:,:);
-  else
-    vol = spm_read_vols(V(i));
-  end
-  avg = mean(vol(:));
-  avg = mean(vol(vol>avg));
-  
-  % don't use background values
-  [x,y,z] = ind2sub(size(vol),find(vol>avg));
-  com = V(i).mat(1:3,:)*[mean(x) mean(y) mean(z) 1]';
-  com = com';
+V(1).mat = MM;
+Affine = eye(4);
 
-  %M = spm_get_space(V(i).fname);
-  Affine(1:3,4) = (com - com_reference)';
-  
-  if nargin < 1
-    spm_get_space(V(i).fname,Affine\MM);
-    fprintf('\n');
-  end
-  
-  if ~nargout
-    clear Affine
-  end
-  %if mod(i,5)==0, fprintf(['\nCorrect center-of-mass vol ' num2str(i)]); end
-end
-fprintf('\nDone\n');
+vol = spm_read_vols(V(1));
+
+avg = mean(vol(:));
+avg = mean(vol(vol>avg));
+
+% don't use background values
+[x,y,z] = ind2sub(size(vol),find(vol>avg));
+com = V(1).mat(1:3,:)*[mean(x) mean(y) mean(z) 1]';
+com = com';
+
+%M = spm_get_space(V(i).fname);
+Affine(1:3,4) = (com - com_reference)';
