@@ -12,7 +12,10 @@ ica_dir = fullfile(ppparams.subfuncdir, ['ica-dir_' fname{1}]); % path to ICs co
 
 if ~exist(ica_dir,"dir")
     mkdir(ica_dir);
-    
+
+    curdir = pwd;
+    cd(ica_dir)
+
     if params.func.meepi
         for ie=ppparams.echoes
             Vtemp = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ie).prefix ppparams.func(ie).funcfile]));
@@ -39,13 +42,12 @@ if ~exist(ica_dir,"dir")
         clear Vtemp funcdat
 
     else
-        ica_source_file = fullfile(ppparams.subfuncdir,[ppparams.func(1).prefix ppparams.func(1).funcfile]);
+        copyfile(fullfile(ppparams.subfuncdir,[ppparams.func(1).prefix ppparams.func(1).funcfile]),fullfile(ica_dir,[ppparams.func(1).prefix ppparams.func(1).funcfile]));
+        ica_source_file = fullfile(ica_dir,[ppparams.func(1).prefix ppparams.func(1).funcfile]);
     end
     
     %% ICA step
     
-    curdir = pwd;
-
     fprintf('Start ICA \n') 
 
     do_ica(ica_source_file,ppparams.fmask, t_r, ppparams); 
