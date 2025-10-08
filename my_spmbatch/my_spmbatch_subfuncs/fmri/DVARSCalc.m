@@ -190,7 +190,7 @@ end
 % Add toolbox to open the images-------------------------------------------
 if isempty(strfind(path,'Nifti_Util'))
     if verbose; disp('-Nifti_Util added to the path.'); end;
-    addpath(genpath('Nifti_Util'));
+    %addpath(genpath('Nifti_Util'));
 end
 
 %--------------------------------------------------------------------------

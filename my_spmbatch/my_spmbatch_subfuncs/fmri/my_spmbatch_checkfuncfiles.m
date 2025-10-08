@@ -121,10 +121,8 @@ for ie=params.func.echoes
             end
         else
             %% For preprocessing
-            tmp = find(strlength(prefixlist)==0);
-            if ~isempty(tmp), ppparams.func(ie).funcfile = edirniilist(tmp).name; end
-        
             ppparams.func(ie).prefix = '';
+            ppparams.func(ie).funcfile = '';
             studyprefix = 'e';
         
             if params.func.do_realignment, studyprefix = ['r' studyprefix]; end
@@ -144,15 +142,19 @@ for ie=params.func.echoes
                 tmp = find(strcmp(prefixlist,studyprefix));
                 if ~isempty(tmp)
                     ppparams.func(ie).prefix = studyprefix; 
+
+                    splitfname = split(edirniilist(tmp).name,studyprefix);
+                    ppparams.func(ie).funcfile = splitfname{end};
+
                     perfcheck = false;
                 else 
                     studyprefix = studyprefix(2:end); 
                     if length(studyprefix) == 0; perfcheck = false; end
                 end
-            end
-        
-            if params.func.do_realignment && ~(contains(ppparams.func(ie).prefix,'r') || contains(ppparams.func(ie).prefix,'u'))
-                if ~isfile(fullfile(ppparams.subfuncdir,['e' ppparams.func(params.func.echoes(1)).funcfile])), ppparams.func(params.func.echoes(1)).prefix = ''; end
+                if isempty(ppparams.func(ie).funcfile)
+                    tmp = find(strlength(prefixlist)==0);
+                    if ~isempty(tmp), ppparams.func(ie).funcfile = edirniilist(tmp).name; end
+                end
             end
         end
     end
@@ -241,7 +243,7 @@ end
 
 %% fmap data for geometric correction
 if for_functional
-    if params.func.pepolar
+    if params.func.pepolar && isfield(ppparams,'subfmapdir')
         
         fmfilters(1).name = ppparams.substring;
         fmfilters(1).required = true;
@@ -262,56 +264,41 @@ if for_functional
         fmapjsonlist = my_spmbatch_dirfilelist(ppparams.subfmapdir,'json',fmfilters,true);
     
         if isempty(fmapniilist) || isempty(fmapjsonlist)
-            params.func.pepolar = false;
-    
             fprintf(['No fmap files found for ' ppparams.substring ' ' ppparams.sesstring ' run ' num2str(ppparams.run) ' task-' ppparams.task '\n'])
-        end
-
-        tmp=find(~contains({fmapniilist.name},'_e_'));
-        if ~isempty(tmp), fmapniilist = fmapniilist(tmp); end
-    
-        %% check for fmap data in case of pepolar
-        for ie=params.func.echoes
-            if params.func.meepi %Filter list based on echo number
-                tmp = find(or(contains({fmapniilist.name},['echo-' num2str(ie)]),contains({fmapniilist.name},['_e' num2str(ie)])));
-                if isempty(tmp)
-                    fprintf(['no fmap data found for echo ' num2str(ie) '\n'])
-                    fprintf('\nPP_Error\n');
-                    ppparams.error = true;
-                    return
+        else 
+            tmp=find(~contains({fmapniilist.name},'_e_'));
+            if ~isempty(tmp), fmapniilist = fmapniilist(tmp); end
+            
+            %% check for fmap data in case of pepolar
+            for ie=params.func.echoes
+                if params.func.meepi %Filter list based on echo number
+                    tmp = find(or(contains({fmapniilist.name},['echo-' num2str(ie)]),contains({fmapniilist.name},['_e' num2str(ie)])));
+                    if isempty(tmp)
+                        fprintf(['no fmap data found for echo ' num2str(ie) '\n'])
+                    else
+                        efmapniilist = fmapniilist(tmp);
+                    end
+            
+                    jstmp = find(or(contains({fmapjsonlist.name},['echo-' num2str(ie)]),contains({fmapjsonlist.name},['_e' num2str(ie)])));
+                    if isempty(jstmp)
+                        fprintf(['no fmap json file found for echo ' num2str(ie) '\n'])
+                    else
+                        ppparams.func(ie).fmapjsonfile = fullfile(fmapjsonlist(jstmp(1)).folder,fmapjsonlist(jstmp(1)).name);
+                    end
+                else
+                    efmapniilist = fmapniilist;
+            
+                    ppparams.func(ie).fmapjsonfile = fullfile(fmapjsonlist(1).folder,fmapjsonlist(1).name);
                 end
             
-                efmapniilist = fmapniilist(tmp);
+                fmprefixlist = split({efmapniilist.name},'sub-');
+                fmprefixlist = fmprefixlist(:,:,1);
+                    
+                tmp = find(strlength(fmprefixlist)==0);
+                if ~isempty(tmp), ppparams.func(ie).fmapfile = efmapniilist(tmp).name; end
         
-                jstmp = find(or(contains({fmapjsonlist.name},['echo-' num2str(ie)]),contains({fmapjsonlist.name},['_e' num2str(ie)])));
-                if isempty(jstmp)
-                    fprintf(['no fmap json file found for echo ' num2str(ie) '\n'])
-                    fprintf('\nPP_Error\n');
-                    ppparams.error = true;
-                    return
-                end
-        
-                ppparams.func(ie).fmapjsonfile = fullfile(fmapjsonlist(jstmp(1)).folder,fmapjsonlist(jstmp(1)).name);
-    
-            else
-                efmapniilist = fmapniilist;
-        
-                ppparams.func(ie).fmapjsonfile = fullfile(fmapjsonlist(1).folder,fmapjsonlist(1).name);
+                ppparams.func(ie).fmap_prefix = '';
             end
-        
-            fmprefixlist = split({efmapniilist.name},'sub-');
-            fmprefixlist = fmprefixlist(:,:,1);
-                
-            tmp = find(strlength(fmprefixlist)==0);
-            if ~isempty(tmp)
-                ppparams.func(ie).fmapfile = efmapniilist(tmp).name; 
-            else
-                fprintf(['no fmap data found for echo ' num2str(ie) '\n'])
-                fprintf('\nPP_Error\n');
-                params.func.pepolar = false;
-            end
-    
-            ppparams.func(ie).fmap_prefix = '';
         end
     end
 end

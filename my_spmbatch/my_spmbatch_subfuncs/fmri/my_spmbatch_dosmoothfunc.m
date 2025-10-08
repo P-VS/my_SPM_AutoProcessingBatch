@@ -4,7 +4,6 @@ Vfunc = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ie).prefix ppparams.
 
 tdim = numel(Vfunc);
 nvols = params.loadmaxvols;
-spm_progress_bar('Init',numel(Vfunc),'Smoothing','volumes completed');
 for ti=1:nvols:tdim
     if ti+nvols>tdim, nvols=tdim-ti+1; end
     funcdat = spm_read_vols(Vfunc(ti:ti+nvols-1));
@@ -18,14 +17,11 @@ for ti=1:nvols:tdim
         Vout(iv).n = [ti+iv-1 1];
         Vout(iv) = spm_write_vol(Vout(iv),sfuncdat);
 
-        spm_progress_bar('Set',ti+iv-1);
-
         clear sfuncdat
     end
 
     clear Vout funcdat
 end
-spm_progress_bar('Clear');
 
 keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subfuncdir,['s' ppparams.func(ie).prefix ppparams.func(ie).funcfile])};    
 

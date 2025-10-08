@@ -8,7 +8,13 @@ dim = size(funcdat);
 % Search for bad volumes
 % ------------------------ 
 %  Based on Afyouni and Nichols 2018: https://www.sciencedirect.com/science/article/pii/S1053811917311229
-    [DVARS,StatDVARS]=DVARSCalc(reshape(funcdat,[dim(1)*dim(2)*dim(3),dim(4)]));
+
+    mask = mean(funcdat,4)>max(funcdat,[],'all')*0.015;
+    rfuncdat = reshape(funcdat,[dim(1)*dim(2)*dim(3),dim(4)]);
+
+    [DVARS,StatDVARS]=DVARSCalc(rfuncdat(mask>0,:));
+
+    clear rfuncdat
 
     fname = split(ppparams.func(ne).funcfile,'.nii');
     save(fullfile(ppparams.subfuncdir,['DVARS_' fname{1} '.mat']),'DVARS','StatDVARS');
