@@ -39,6 +39,7 @@ params.isaslbold = true;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = false; 
+params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false;

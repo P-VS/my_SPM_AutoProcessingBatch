@@ -35,6 +35,7 @@ nsessions = [2]; %nsessions>0
 params.save_folder = 'preproc_aslge_test';
 
 params.use_parallel = false; 
+params.run_background = true;
 params.maxprocesses = 4; %Best not too high to avoid memory problems
 params.keeplogs = false;
 

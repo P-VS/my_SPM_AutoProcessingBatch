@@ -28,20 +28,19 @@ function AutoSPMpreprocessing_fmri
 
 params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
 params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICATv40c';
-params.runTimePath = '/Applications/MATLAB/MATLAB_Runtime/R2024b';
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';
+datpath = '/Volumes/KINGSTON';
 
-sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
-params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
+sublist = [402];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+params.sub_digits = 3; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_func_test'; %name of the folder to save the preprocessed bold data
+params.func_save_folder = 'preproc_func'; %name of the folder to save the preprocessed bold data
 
-task ={'ME-EFT'};
+task ={'emo'};
 
 %In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -52,8 +51,9 @@ params.func.meepi = true; %true if echo number is in filename
 params.func.echoes = [1]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
 %% Parallel processing and memory reduction
-params.onVSC = true; % !!!Only true if using the VSC with a VUB account!!! 
+params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!! 
 params.use_parallel = false; %(default=false)
+params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 500; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 1000)
 params.keeplogs = false;

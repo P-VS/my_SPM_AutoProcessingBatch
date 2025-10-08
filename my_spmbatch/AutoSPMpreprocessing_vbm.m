@@ -42,6 +42,7 @@ params.save_folder = 'preproc_anat_vbm';
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = false; 
+params.run_background = true;
 params.maxprocesses = 4; %Best not too high to avoid memory problems
 params.keeplogs = false;
 
