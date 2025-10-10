@@ -30,8 +30,6 @@ function sout = my_spmbatch_smooth(V,P,Q,s,dtype)
 if numel(s) == 1, s = [s s s]; end
 if nargin < 4, dtype = 0; end
 
-if ischar(P), P = spm_vol(P); end
-
 sout = smooth1(V,P,Q,s,dtype);
 
 
@@ -40,48 +38,7 @@ sout = smooth1(V,P,Q,s,dtype);
 %==========================================================================
 function sV = smooth1(V,P,Q,s,dtype)
 
-if isstruct(P)
-    VOX = sqrt(sum(P.mat(1:3,1:3).^2));
-else
-    VOX = [1 1 1];
-end
-
-if ischar(Q) && isstruct(P)
-    [pth,nam,ext,num] = spm_fileparts(Q);
-    Q         = P;
-    Q.fname   = fullfile(pth,[nam,ext]);
-    if ~isempty(num)
-        Q.n   = str2num(num);
-    end
-    if ~isfield(Q,'descrip'), Q.descrip = sprintf('SPM compatible'); end
-    Q.descrip = sprintf('%s - conv(%g,%g,%g)',Q.descrip, s);
-
-    if dtype~=0 % Need to figure out some rescaling
-        Q.dt(1) = dtype;
-        if ~isfinite(spm_type(Q.dt(1),'maxval')),
-            Q.pinfo = [1 0 0]'; % float or double, so scalefactor of 1
-        else
-            % Need to determine the range of intensities
-            if isfinite(spm_type(P.dt(1),'maxval')),
-                % Integer types have a defined maximum value
-                maxv = spm_type(P.dt(1),'maxval')*P.pinfo(1) + P.pinfo(2);
-            else
-                % Need to find the max and min values in original image
-                mx = -Inf;
-                mn =  Inf;
-                for pl=1:P.dim(3)
-                    tmp = spm_slice_vol(P,spm_matrix([0 0 pl]),P.dim(1:2),0);
-                    tmp = tmp(isfinite(tmp));
-                    mx  = max(max(tmp),mx);
-                    mn  = min(min(tmp),mn);
-                end
-                maxv = max(mx,-mn);
-            end
-            sf      = maxv/spm_type(Q.dt(1),'maxval');
-            Q.pinfo = [sf 0 0]';
-        end
-    end
-end
+VOX = [1 1 1];
 
 %-Compute parameters for spm_conv_vol
 %--------------------------------------------------------------------------
@@ -96,10 +53,6 @@ i  = (length(x) - 1)/2;
 j  = (length(y) - 1)/2;
 k  = (length(z) - 1)/2;
 
-if isstruct(Q), Q = spm_create_vol(Q); end
-
 sV=zeros([P.dim(1),P.dim(2),P.dim(3)]);
 
 spm_conv_vol(V,sV,x,y,z,-[i,j,k]);
-
-if ischar(Q), Q = spm_write_vol(Q,sV); end
