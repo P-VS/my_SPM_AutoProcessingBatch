@@ -21,33 +21,6 @@ fasldata = reshape(fasldata,[voldim(1)*voldim(2)*voldim(3),voldim(4)]);
 ncondat = fasldata(mask>0,:);
 nlabdat = fasldata(mask>0,:);
 
-%Remove background signal
-%for p=1:voldim(4)
-%    if sum(conidx==p)==0
-        % 6 point sinc interpolation
-%        idx=p+[-5 -3 -1 1 3 5];
-%        idx(find(idx<min(conidx)))=min(conidx);
-%        idx(find(idx>max(conidx)))=max(conidx);
-%        normloc=3.5;
-
-%        ncondat(:,p)=sinc_interpVec(fasldata(mask>0,idx),normloc);
-%    end
-%    if sum(labidx==p)==0
-        % 6 point sinc interpolation
-%        idx=p+[-5 -3 -1 1 3 5];
-%        idx(find(idx<min(labidx)))=min(labidx);
-%        idx(find(idx>max(labidx)))=max(labidx);
-%        normloc=3.5;
-    
-%        nlabdat(:,p)=sinc_interpVec(fasldata(mask>0,idx),normloc);
-%    end
-%end
-
-%bl_signal = fasldata(mask>0,:)-(ncondat+nlabdat)/2;
-
-%ncondat = bl_signal;
-%nlabdat = bl_signal;
-
 %Do subtraction
 for p=1:voldim(4)
     if sum(conidx==p)==0
