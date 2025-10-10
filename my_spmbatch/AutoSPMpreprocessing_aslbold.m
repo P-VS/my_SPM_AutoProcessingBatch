@@ -33,13 +33,13 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/vsc11352/DataManon'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
-sublist = [6];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:24];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_dune_nobg_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune_nobg_asl'; %name of the folder to save the preprocessed asl data
 
 task ={'stroop'};
 
@@ -49,8 +49,8 @@ params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
-params.use_parallel = false; %(default=false)
-params.run_background = true;
+params.use_parallel = true; %(default=false)
+params.run_background = false;
 params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
 params.loadmaxvols = 300; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
@@ -60,7 +60,7 @@ params.save_intermediate_results = true; %clean up the directory by deleting unn
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = true; %(default=true)
+params.preprocess_functional = false; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
