@@ -19,6 +19,7 @@ if isfield(params,'perf_save_folder')
     end
 end
 if isfolder(fullfile(params.new_subpath,'anat')), rmdir(fullfile(params.new_subpath,'anat'),'s'); end
+if isfolder(fullfile(params.new_subpath,'fmap')), rmdir(fullfile(params.new_subpath,'fmap'),'s'); end
 if isfolder(fullfile(params.new_subpath,'func')), rmdir(fullfile(params.new_subpath,'func'),'s'); end
 if isfolder(fullfile(params.new_subpath,'perf')), rmdir(fullfile(params.new_subpath,'perf'),'s'); end
 
