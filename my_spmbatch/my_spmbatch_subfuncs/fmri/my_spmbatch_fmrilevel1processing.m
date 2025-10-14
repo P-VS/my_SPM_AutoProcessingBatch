@@ -14,6 +14,8 @@ else
     ppparams.resultmap = fullfile(ppparams.subpath,['SPMMAT-' task '_' params.analysisname]);
 end
 
+params.resultmap = ppparams.resultfolder;
+
 if exist(ppparams.resultmap,'dir'); rmdir(ppparams.resultmap,'s'); end
 mkdir(ppparams.resultmap)
 
@@ -130,16 +132,3 @@ if params.save_spm_results
 
     my_spmbatch_run_results(results);
 end
-
-if params.onVSC, [datpath,ppparams] = after_1stlevel_VSC(ppparams,params); end
-
-
-function [datpath,ppparams] = after_1stlevel_VSC(ppparams,params)
-
-fprintf('\nStart copying results\n');
-
-if isfolder(fullfile(params.new_subpath,ppparams.resultfolder)), copyfile(fullfile(params.new_subpath,ppparams.resultfolder),fullfile(params.orig_subpath,ppparams.resultfolder)); end
-
-rmdir(params.new_subpath,'s');
-
-datpath = params.orig_subpath;

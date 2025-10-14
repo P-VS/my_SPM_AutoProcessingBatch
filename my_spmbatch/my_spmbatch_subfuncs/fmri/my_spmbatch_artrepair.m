@@ -129,7 +129,7 @@ dim = size(funcdat);
             funcdat(:,:,:,1) = funcdat(:,:,:,goodind(1));
         end
         if ~isempty(find(glout_idx==dim(4)))
-            funcdat(:,:,:,1) = funcdat(:,:,:,goodind(end));
+            funcdat(:,:,:,dim(4)) = funcdat(:,:,:,goodind(end));
         end
 
         tmp = find(and(glout_idx>1,glout_idx<dim(4)));
@@ -138,7 +138,7 @@ dim = size(funcdat);
             goodind = find(~ismember([1:dim(4)],glout_idx));
 
             funcdat = reshape(funcdat,[dim(1)*dim(2)*dim(3),dim(4)]);
-            funcdat(:,glout_idx) = spline((goodind-1)*tr,funcdat(:,goodind),(glout_idx-1)*tr);
+            funcdat(mask>0,glout_idx) = spline((goodind-1)*tr,funcdat(mask>0,goodind),(glout_idx-1)*tr);
 
             funcdat = reshape(funcdat,[dim(1),dim(2),dim(3),dim(4)]);
         end
