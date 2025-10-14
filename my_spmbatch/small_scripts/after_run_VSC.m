@@ -23,4 +23,14 @@ if isfolder(fullfile(params.new_subpath,'fmap')), rmdir(fullfile(params.new_subp
 if isfolder(fullfile(params.new_subpath,'func')), rmdir(fullfile(params.new_subpath,'func'),'s'); end
 if isfolder(fullfile(params.new_subpath,'perf')), rmdir(fullfile(params.new_subpath,'perf'),'s'); end
 
+if isfield(params,'preprocfmridir')
+    if isfolder(fullfile(params.new_subpath,params.preprocfmridir)), rmdir(fullfile(params.new_subpath,params.preprocfmridir),'s'); end
+end
+if isfield(params,'resultmap') 
+    if isfolder(fullfile(params.new_subpath,params.resultmap))
+        copyfile(fullfile(params.new_subpath,params.resultmap),fullfile(params.orig_subpath,params.resultmap)); 
+        rmdir(fullfile(params.new_subpath,params.resultmap),'s');
+    end
+end
+
 datpath = params.orig_subpath;

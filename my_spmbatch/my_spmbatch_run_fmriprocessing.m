@@ -5,12 +5,9 @@ load(paramsfile)
 global spmpath
 spmpath = params.spm_path;
 
-try
-    %% do smoothing first (if not done before)
-    if params.do_smoothing
-        params = my_spmbatch_fmriprocessing_do_smoothing(sub,ses,run,task,datpath,params);
-    end
+if params.onVSC, [datpath,params] = before_run_VSC(datpath,sub,ses,params); end
 
+try
     %% make batch
     if contains(params.analysis_type,'GLM') 
         params = my_spmbatch_fmrilevel1processing(sub,ses,run,task,datpath,params);
@@ -21,6 +18,8 @@ catch e
     fprintf('\nPP_Error\n');
     fprintf('\nThe error was: \n%s\n',e.message)
 end
+
+if params.onVSC, [datpath,params] = after_run_VSC(datpath,sub,ses,params); end
 
 fprintf('\nPP_Completed\n');
 

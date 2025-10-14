@@ -33,7 +33,7 @@ nsessions = [1]; %nsessions>0
  
 params.task = {'stroop'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica_noTEDM';
+params.analysisname = 'meica';
 params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
