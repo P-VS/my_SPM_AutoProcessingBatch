@@ -37,6 +37,14 @@ for si=1:numel(params.mridata)
                     dir(fullfile(infolder,['**' filesep '*.DCM']))];
 
         if isempty(dirlist)
+            dirlist = dir(fullfile(infolder,['**' filesep '*.*']));
+        
+            tmp = find(strlength({dirlist.name})>4); %Remove '.' and '..'
+            if ~isempty(tmp), dirlist = dirlist(tmp); end
+               
+            tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
+            if ~isempty(tmp), dirlist = dirlist(tmp); end
+    
             tmp = find(contains({dirlist.name},'.zip'));    
             if ~isempty(tmp)
                 for iz=1:numel(tmp)
@@ -48,10 +56,10 @@ for si=1:numel(params.mridata)
             end
     
             dirlist = [dir(fullfile(infolder,['**' filesep '*MRDC*.*'])),...
-                        dir(fullfile(infolder,['**' filesep '*.dcm'])),...
-                        dir(fullfile(infolder,['**' filesep '*.DCM']))];
-
-            if ~isempty(tmp)
+                    dir(fullfile(infolder,['**' filesep '*.dcm'])),...
+                    dir(fullfile(infolder,['**' filesep '*.DCM']))];
+            
+            if ~isempty(dirlist)
                 fprintf('No dicom files found')
                 return
             end
