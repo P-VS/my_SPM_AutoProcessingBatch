@@ -24,28 +24,19 @@ for si=1:numel(params.mridata)
         if contains(params.mridata(si).seqtype,'fmri') || contains(params.mridata(si).seqtype,'aslbold'), outfname=[outfname '_task-' params.mridata(si).task]; end
         if params.mridata(si).add_run, outfname=[outfname '_run-' num2str(params.mridata(1).run)]; end
     
-        dirlist = dir(fullfile(infolder,['**' filesep '*.*']));
-    
-        tmp = find(strlength({dirlist.name})>4); %Remove '.' and '..'
-        if ~isempty(tmp), dirlist = dirlist(tmp); end
-           
-        tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
-        if ~isempty(tmp), dirlist = dirlist(tmp); end
-    
         dirlist = [dir(fullfile(infolder,['**' filesep '*MRDC*.*'])),...
                     dir(fullfile(infolder,['**' filesep '*.dcm'])),...
                     dir(fullfile(infolder,['**' filesep '*.DCM']))];
 
+        tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
+        if ~isempty(tmp), dirlist = dirlist(tmp); end
+  
         if isempty(dirlist)
-            dirlist = dir(fullfile(infolder,['**' filesep '*.*']));
+            dirlist = dir(fullfile(infolder,['**' filesep '*.zip']));
         
-            tmp = find(strlength({dirlist.name})>4); %Remove '.' and '..'
-            if ~isempty(tmp), dirlist = dirlist(tmp); end
-               
             tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
             if ~isempty(tmp), dirlist = dirlist(tmp); end
-    
-            tmp = find(contains({dirlist.name},'.zip'));    
+      
             if ~isempty(tmp)
                 for iz=1:numel(tmp)
                     fname = split(dirlist(tmp(iz)).name,'.zip');
@@ -59,6 +50,9 @@ for si=1:numel(params.mridata)
                     dir(fullfile(infolder,['**' filesep '*.dcm'])),...
                     dir(fullfile(infolder,['**' filesep '*.DCM']))];
             
+            tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
+            if ~isempty(tmp), dirlist = dirlist(tmp); end
+      
             if ~isempty(dirlist)
                 fprintf('No dicom files found')
                 return
