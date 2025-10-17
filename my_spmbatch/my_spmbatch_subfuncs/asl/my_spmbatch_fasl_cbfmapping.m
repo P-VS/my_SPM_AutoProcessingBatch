@@ -70,6 +70,15 @@ alpha = 0.85; %labeling efficiency
 Vm0 = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile]));
 m0vol = spm_read_vols(Vm0);
 
+Vasl=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
+conidx = 2:2:numel(Vasl);
+fasldata = spm_read_vols(Vasl(conidx));
+
+scf = mean(fasldata,"all")/mean(m0vol,"all");
+m0vol = m0vol * scf;
+
+clear Vasl fasldata
+
 GM = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).c1m0scanfile));
 WM = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).c2m0scanfile));
 CSF = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).c3m0scanfile));
@@ -115,8 +124,8 @@ for ti=1:nvols:tdim
     cbfdata = reshape(cbfdata,[voldim(1),voldim(2),voldim(3),nvols]);
 
     cbfdata = cbfdata.*repmat(mask,[1,1,1,nvols]);
-    cbfdata(cbfdata<-40) = 0;
-    cbfdata(cbfdata>150) = 0;
+    cbfdata(cbfdata<-500) = 0;
+    cbfdata(cbfdata>1000) = 0;
 
     for iv=1:nvols
         Vout(iv).fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).deltamprefix nfname{1} '_cbf.nii']);
@@ -143,8 +152,8 @@ cbfdata(cm0vol>0) = cbfdata(cm0vol>0)./cm0vol(cm0vol>0);
 cbfdata = reshape(cbfdata,[voldim(1),voldim(2),voldim(3)]);
 
 cbfdata = cbfdata.*mask;
-cbfdata(cbfdata<-40) = 0;
-cbfdata(cbfdata>150) = 0;
+cbfdata(cbfdata<-500) = 0;
+cbfdata(cbfdata>1000) = 0;
 
 Vout = Vmeandm;
 Vout.fname = fullfile(ppparams.subperfdir,[meand_nfname{1} '_cbf.nii']);
