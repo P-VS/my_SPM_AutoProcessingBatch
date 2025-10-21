@@ -37,11 +37,12 @@ for si=1:numel(params.mridata)
             tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
             if ~isempty(tmp), dirlist = dirlist(tmp); end
       
-            if ~isempty(tmp)
-                for iz=1:numel(tmp)
-                    fname = split(dirlist(tmp(iz)).name,'.zip');
-                    if ~isfolder(fullfile(dirlist(tmp(iz)).folder,fname{1}))
-                        unzip(fullfile(dirlist(tmp(iz)).folder,dirlist(tmp(iz)).name),infolder)
+            if ~isempty(dirlist)
+                for iz=1:numel(dirlist)
+                    fname = split(dirlist(iz).name,'.zip');
+                    if ~isfolder(fullfile(dirlist(iz).folder,fname{1}))
+                        fprintf('Start to unzip \n')
+                        unzip(fullfile(dirlist(iz).folder,dirlist(iz).name),infolder)
                     end
                 end
             end
@@ -53,12 +54,14 @@ for si=1:numel(params.mridata)
             tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
             if ~isempty(tmp), dirlist = dirlist(tmp); end
       
-            if ~isempty(dirlist)
-                fprintf('No dicom files found')
+            if isempty(dirlist)
+                fprintf('No dicom files found \n')
                 return
             end
         end
     
+        fprintf('Start dcm2nii conversion \n')
+
         my_spmdicm2niix(infolder, outfolder, '.nii', outfname, useparfor);
     
         namefilters(1).name = outfname;
