@@ -141,12 +141,34 @@ end
 
 %% Denoising the ME/SE fMRI data
 if (params.func.isaslbold || params.func.denoise) && ~contains(ppparams.func(ppparams.echoes(1)).prefix,'d')
+
+    techoes = ppparams.echoes;
+    for ie=techoes
+        ndfuncfile(ie).file = [ppparams.func(ie).prefix ppparams.func(ie).funcfile];
+    end
     
     [ppparams,delfiles,keepfiles] = my_spmbatch_fmridenoising(ppparams,params,delfiles,keepfiles);
 
     if params.denoise.do_DUNE
-        boldfile = fullfile(ppparams.subfuncdir,[ppparams.func(params.echoes(1)).prefix ppparams.func(ppparams.echoes(1)).funcfile]);
-        if ~exist(boldfile,"file"), return; end
+        boldfile = fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(1)).prefix ppparams.func(ppparams.echoes(1)).funcfile]);
+        if ~exist(boldfile,"file")
+            if params.onVSC
+                [~,fname,~]=fileparts(ppparams.fmask);
+                copyfile(fullfile(params.new_subpath,'func',[fname '.nii']),fullfile(params.orig_subpath,'func',[fname '.nii'])); 
+                [~,fname,~]=fileparts(ppparams.fc1im);
+                copyfile(fullfile(params.new_subpath,'func',[fname '.nii']),fullfile(params.orig_subpath,'func',[fname '.nii'])); 
+                [~,fname,~]=fileparts(ppparams.fc2im);
+                copyfile(fullfile(params.new_subpath,'func',[fname '.nii']),fullfile(params.orig_subpath,'func',[fname '.nii'])); 
+                [~,fname,~]=fileparts(ppparams.fc3im);
+                copyfile(fullfile(params.new_subpath,'func',[fname '.nii']),fullfile(params.orig_subpath,'func',[fname '.nii'])); 
+                [~,fname,~]=fileparts(ppparams.der_file);
+                copyfile(fullfile(params.new_subpath,'func',[fname '.txt']),fullfile(params.orig_subpath,'func',[fname '.txt'])); 
+                for ie=techoes
+                    copyfile(fullfile(params.new_subpath,'func',ndfuncfile(ie).file),fullfile(params.orig_subpath,'func',ndfuncfile(ie).file)); 
+                end
+            end
+            return; 
+        end
     end
 end
 
