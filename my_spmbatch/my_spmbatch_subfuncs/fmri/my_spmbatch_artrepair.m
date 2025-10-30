@@ -138,7 +138,10 @@ dim = size(funcdat);
             goodind = find(~ismember([1:dim(4)],glout_idx));
 
             funcdat = reshape(funcdat,[dim(1)*dim(2)*dim(3),dim(4)]);
-            funcdat(mask>0,glout_idx) = spline((goodind-1)*tr,funcdat(mask>0,goodind),(glout_idx-1)*tr);
+            tmp = find(mask>0);
+            for ip=1:5000:numel(tmp)
+                funcdat(mask(tmp(ip:min(numel(tmp),ip+5000))),glout_idx) = spline((goodind-1)*tr,funcdat(mask(tmp(ip:min(numel(tmp),ip+5000))),goodind),(glout_idx-1)*tr);
+            end
 
             funcdat = reshape(funcdat,[dim(1),dim(2),dim(3),dim(4)]);
         end
