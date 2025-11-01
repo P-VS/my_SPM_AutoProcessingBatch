@@ -70,8 +70,8 @@ for ip=1:numel(prefixlist)
 
     if test
         ppparams.perf(1).aslprefix = pref; 
-        fsplit = split(aslniilist(ip).name,ppparams.perf(1).aslprefix);
-        ppparams.perf(1).aslfile = fsplit{2};
+        fsplit = split(aslniilist(ip).name,[ppparams.perf(1).aslprefix) 'sub-'];
+        ppparams.perf(1).aslfile = ['sub-' fsplit{2}];
     end
 end
 
@@ -101,8 +101,8 @@ if ~isempty(tmp)
     ppparams.perf(1).labelprefix = prefixlist{tmp};
 
     ffile = labelniilist(tmp).name;
-    fsplit = split(ffile,ppparams.perf(1).labelprefix);
-    ppparams.perf(1).labelfile = fsplit{end};
+    fsplit = split(ffile,[ppparams.perf(1).labelprefix) 'sub-'];
+    ppparams.perf(1).labelfile = ['sub-' fsplit{end}];
 end
 
 %% m0scan data
@@ -144,8 +144,8 @@ end
 
 if ~isempty(tmp)
     ffile = m0scanniilist(tmp).name;
-    fsplit = split(ffile,ppparams.perf(1).m0scanprefix);
-    ppparams.perf(1).m0scanfile = fsplit{2};
+    fsplit = split(ffile,[ppparams.perf(1).m0scanprefix) 'sub-'];
+    ppparams.perf(1).m0scanfile = ['sub-' fsplit{2}];
 end
 
 %% Segmentation maps
