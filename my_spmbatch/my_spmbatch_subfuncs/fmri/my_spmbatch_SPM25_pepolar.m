@@ -41,7 +41,7 @@ elseif nt==1
     fwhm = [8 4 2 1 0];
     reg = [0 10 100];
     rinterp = 2;
-    jac = 0;
+    jac = 1;
     prefix = 'vdm5';
     outdir = {ppparams.subfuncdir};
 

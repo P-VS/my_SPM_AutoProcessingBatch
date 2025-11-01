@@ -4,7 +4,7 @@ Vref = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ne).tprefix ppparams.
 Vfunc = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ne).tprefix ppparams.func(ne).funcfile]));
 
 wrap = [0 0 0];
-%if params.func.pepolar, wrap(ppparams.pepolar.pedim) = 1; end
+if params.func.pepolar, wrap(ppparams.pepolar.pedim) = 1; end
 
 %% estimate the realignment parameters
 if ne==params.func.echoes(1)
@@ -102,7 +102,7 @@ if params.func.pepolar
     uweflags.order     = uweoptions.basfcn;
     uweflags.regorder  = uweoptions.regorder;
     uweflags.lambda    = uweoptions.regwgt;
-    uweflags.jm        = uwroptions.jm;
+    uweflags.jm        = 1; %uwroptions.jm;
     uweflags.fot       = uweoptions.foe;
     
     if ~isempty(uweoptions.soe)
@@ -118,7 +118,7 @@ if params.func.pepolar
         sotmat = [];
     end
     uweflags.sot       = sotmat;
-    uweflags.fwhm      = uweoptions.fwhm;
+    uweflags.fwhm      = 2;%uweoptions.fwhm;
     uweflags.rem       = 0;
     uweflags.noi       = uweoptions.noi;
     uweflags.exp_round = 'First';

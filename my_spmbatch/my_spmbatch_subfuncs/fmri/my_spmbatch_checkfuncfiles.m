@@ -143,8 +143,8 @@ for ie=params.func.echoes
                 if ~isempty(tmp)
                     ppparams.func(ie).prefix = studyprefix; 
 
-                    splitfname = split(edirniilist(tmp).name,studyprefix);
-                    ppparams.func(ie).funcfile = splitfname{end};
+                    splitfname = split(edirniilist(tmp).name,[studyprefix 'sub-']);
+                    ppparams.func(ie).funcfile = ['sub-' splitfname{end}];
 
                     perfcheck = false;
                 else 
