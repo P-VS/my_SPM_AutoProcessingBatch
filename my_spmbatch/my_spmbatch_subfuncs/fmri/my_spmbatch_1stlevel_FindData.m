@@ -2,11 +2,13 @@ function [ppparams,params,datpath] = my_spmbatch_1stlevel_FindData(sub,ses,run,t
 
 %% Search for the data folders
 
+ppparams.substring = ['sub-' num2str(sub)];
 if isfolder(fullfile(datpath,['sub-' num2str(sub)])), ppparams.substring = ['sub-' num2str(sub)]; end
 if isfolder(fullfile(datpath,['sub-0' num2str(sub)])), ppparams.substring = ['sub-0' num2str(sub)]; end
 if isfolder(fullfile(datpath,['sub-00' num2str(sub)])), ppparams.substring = ['sub-00' num2str(sub)]; end
 if isfolder(fullfile(datpath,['sub-000' num2str(sub)])), ppparams.substring = ['sub-000' num2str(sub)]; end
 
+ppparams.sesstring = ['ses-' num2str(ses)];
 if isfolder(fullfile(datpath,ppparams.substring,['ses-' num2str(ses)])), ppparams.sesstring = ['ses-' num2str(ses)]; end
 if isfolder(fullfile(datpath,ppparams.substring,['ses-0' num2str(ses)])), ppparams.sesstring = ['ses-0' num2str(ses)]; end
 if isfolder(fullfile(datpath,ppparams.substring,['ses-00' num2str(ses)])), ppparams.sesstring = ['ses-00' num2str(ses)]; end
