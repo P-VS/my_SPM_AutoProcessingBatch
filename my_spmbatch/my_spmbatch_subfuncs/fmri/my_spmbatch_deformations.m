@@ -410,7 +410,6 @@ if job.mask
 end
 
 oM = zeros(4,4);
-spm_progress_bar('Init',numel(PI),'Resampling','volumes completed');
 for m=1:numel(PI)
 
     % Generate headers etc for output images
@@ -534,9 +533,7 @@ for m=1:numel(PI)
         end
     end
     %fprintf('\n');
-    spm_progress_bar('Set',m);
 end
-spm_progress_bar('Clear');
 
 dat = NO.dat;
 

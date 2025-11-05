@@ -157,7 +157,6 @@ if ~isfinite(flags.interp) % Use Fourier method
 end
 
 if flags.mask || flags.mean
-    spm_progress_bar('Init',P(1).dim(3),'Computing available voxels','planes completed');
     x1    = repmat((1:P(1).dim(1))',1,P(1).dim(2));
     x2    = repmat( 1:P(1).dim(2)  ,P(1).dim(1),1);
     if flags.mean
@@ -172,7 +171,6 @@ if flags.mask || flags.mean
         end
         if flags.mask, msk{x3} = find(tmp ~= numel(P)); end
         if flags.mean, Count(:,:,x3) = tmp; end
-        spm_progress_bar('Set',x3);
     end
 end
 
@@ -181,7 +179,6 @@ if ~flags.mean
     if flags.which == 1, nread = nread - 1; end
     if flags.which == 0, nread = 0; end
 end
-spm_progress_bar('Init',nread,'Reslicing','volumes completed');
 
 [x1,x2] = ndgrid(1:P(1).dim(1),1:P(1).dim(2));
 nread   = 0;
@@ -263,7 +260,6 @@ for i = 1:numel(P)
 
         nread = nread + 1;
     end
-    spm_progress_bar('Set',nread);
 end
 
 if flags.mean
@@ -280,7 +276,6 @@ if flags.mean
     spm_write_vol(PO,Integral);
 end
 
-spm_progress_bar('Clear');
 
 
 %==========================================================================

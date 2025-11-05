@@ -38,7 +38,6 @@ function nvol = do_spm_hb_stc(vol,Vin,nimgo,nimg,nslices,shiftamount)
 nvol=vol;
 
 task = sprintf('Correcting acquisition delay: session %d', 1);
-spm_progress_bar('Init',nslices,task,'planes complete');
 fprintf('Start Slice Time correction\n')
 
 mask = vol(:,:,:,1)>max(vol(:,:,:,1),[],'all')*0.015;
@@ -100,7 +99,5 @@ for k=1:nslices
         nvol(:,:,k,:) = newslices;
     end
 
-    spm_progress_bar('Set',k);
 end
 
-spm_progress_bar('Clear');

@@ -6,6 +6,11 @@ Vfunc = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ne).tprefix ppparams
 wrap = [0 0 0];
 if params.func.pepolar, wrap(ppparams.pepolar.pedim) = 1; end
 
+fsplit = split(ppparams.func(1).funcfile,'.nii');
+Rfile = fullfile(ppparams.subfuncdir,['Rmat_' ppparams.func(1).tprefix fsplit{1} '.mat']);
+
+if exist(Rfile,"file"), load(Rfile); end
+
 %% estimate the realignment parameters
 if ne==params.func.echoes(1)
     funcdat = spm_read_vols(Vfunc(nt:nt+nvols-1));
@@ -70,8 +75,10 @@ if ne==params.func.echoes(1)
             save(ppparams.rp_file,'MP','-append','-ascii');
         end
     
-        ppparams.realign.R(nt+iv-1).mat = R2{1}(iv).mat;
+        R(nt+iv-1).mat = R2{1}(iv).mat;
     end
+
+    save(Rfile,'R')
 
     clear R1 R2 funcdat
 end
@@ -86,7 +93,7 @@ if ~params.func.pepolar
 
     P = Vfunc(nt:nt+nvols-1);
     for i=1:nvols
-        P(i).mat = ppparams.realign.R(nt+i-1).mat;
+        P(i).mat = R(nt+i-1).mat;
     end
 
     % Reslice to reference image grid
@@ -102,7 +109,7 @@ if params.func.pepolar
     uweflags.order     = uweoptions.basfcn;
     uweflags.regorder  = uweoptions.regorder;
     uweflags.lambda    = uweoptions.regwgt;
-    uweflags.jm        = 1; %uwroptions.jm;
+    uweflags.jm        = 1;
     uweflags.fot       = uweoptions.foe;
     
     if ~isempty(uweoptions.soe)
@@ -118,7 +125,7 @@ if params.func.pepolar
         sotmat = [];
     end
     uweflags.sot       = sotmat;
-    uweflags.fwhm      = 2;%uweoptions.fwhm;
+    uweflags.fwhm      = 2;
     uweflags.rem       = 0;
     uweflags.noi       = uweoptions.noi;
     uweflags.exp_round = 'First';
@@ -129,7 +136,7 @@ if params.func.pepolar
     uwrflags.mask      = 1;
     uwrflags.which     = 2;
     uwrflags.mean      = 0;
-    uwrflags.jm        = uwroptions.jm;
+    uwrflags.jm        = 0;
     pref    = 'ur';
     
     if uweflags.jm == 1
@@ -141,7 +148,7 @@ if params.func.pepolar
     sfP = spm_vol(ppparams.pepolar.vdm);
     P = Vfunc(nt:nt+nvols-1);
     for i=1:nvols
-        P(i).mat = ppparams.realign.R(nt+i-1).mat;
+        P(i).mat = R(nt+i-1).mat;
     end
 
     %-Unwarp Estimate
@@ -159,4 +166,4 @@ end
 
 if nt==1, prefix = [pref prefix]; end
 
-clear Vref Vfunc P
+clear Vref Vfunc P R

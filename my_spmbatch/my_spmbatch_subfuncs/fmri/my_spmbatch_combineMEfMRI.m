@@ -20,8 +20,6 @@ voldim = tefunc{1}.Vfunc(1).dim;
 
 nfname = split(ppparams.func(1).funcfile,'_echo-');
 
-spm_progress_bar('Init',tdim,'Combine TE images','volumes completed');
-
 nvols = params.loadmaxvols;
 for ti=1:nvols:tdim
     if ti+nvols>tdim, nvols=tdim-ti+1; end
@@ -114,9 +112,7 @@ for ti=1:nvols:tdim
 
     clear tefuncdat funcdat Vfunc 
 
-    spm_progress_bar('Set',ti);
 end    
-spm_progress_bar('Clear');
 
 nfname = split(ppparams.func(1).funcfile,'_echo-');
 

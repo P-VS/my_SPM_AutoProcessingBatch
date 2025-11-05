@@ -173,8 +173,6 @@ end
 %--------------------------------------------------------------------------
 if flags.mask || flags.mean
     fprintf('%-40s: %30s', 'Computing mask...', '');                    %-#
-    spm_progress_bar('Init', ntot, 'Computing available voxels', ...
-        'volumes completed');
 
     dm        = P11.dim;
     [x, y, z] = ndgrid(1:dm(1), 1:dm(2), 1:dm(3));
@@ -194,7 +192,6 @@ if flags.mask || flags.mean
             txyz      = get_image_def(P11.mat, ds(s), i, xyz, def_array);
             sess_msk  = maskfun(sess_msk, txyz, ds(s).P(i).dim, flags.wrap);
             tv        = tv + 1;
-            spm_progress_bar('Set', tv);
         end
         msk = msk + sess_msk;
         if flags.mean
@@ -222,7 +219,6 @@ end
 %-Reslicing images
 %--------------------------------------------------------------------------
 fprintf('%-40s: %30s', 'Reslicing images...', '');                      %-#
-spm_progress_bar('Init', ntot, 'Reslicing', 'volumes completed');
 
 jP       = P11;
 jP       = rmfield(jP, {'fname', 'descrip', 'n', 'private'});
@@ -253,14 +249,12 @@ for s = 1:numel(ds)
             Integral = Integral + nan2zero(ima);
         end
         tv = tv + 1;
-        spm_progress_bar('Set', tv);
     end
 
     if isfield(ds(s), 'sfield') && ~isempty(ds(s).sfield)
         ds(s).sfield = [];
     end
 end
-spm_progress_bar('Clear');
 fprintf('%s%30s\n', repmat(sprintf('\b'), 1, 30), '...done');           %-#
 
 if flags.mean

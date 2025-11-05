@@ -267,7 +267,6 @@ end
 %-Loop over images
 %--------------------------------------------------------------------------
 
-spm_progress_bar('Init',numel(P)-1,'Registering Images');
 AA = A0'*A0;
 AA = AA + eye(size(AA))*(max(diag(AA))*1e-5);
 
@@ -316,9 +315,7 @@ for i=1:numel(P)
         grad2(msk) = grad2(msk) + dG2*sc;
         grad3(msk) = grad3(msk) + dG3*sc;
     end
-    spm_progress_bar('Set',i-1);
 end
-spm_progress_bar('Clear');
 
 if ~flags.rtm, return; end
 
@@ -333,7 +330,6 @@ clear ave grad1 grad2 grad3
 
 % Loop over images
 %--------------------------------------------------------------------------
-spm_progress_bar('Init',length(P),'Registering Images to Mean');
 AA = A0'*A0;
 AA = AA + eye(size(AA))*(max(diag(AA))*1e-5);
 
@@ -369,9 +365,7 @@ for i=1:numel(P)
             countdown = countdown -1;
         end
     end
-    spm_progress_bar('Set',i);
 end
-spm_progress_bar('Clear');
 
 % Aligning everything to the first image
 %--------------------------------------------------------------------------
