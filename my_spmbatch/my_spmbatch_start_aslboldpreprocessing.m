@@ -43,6 +43,8 @@ if contains(params.asl.splitaslbold,'filter')
     params.denoise.DUNE_part = 'bold';
 end
 
+if ~isfield(params,'onVSC'), params.onVSC=false; end
+
 if params.onVSC
     params.save_intermediate_results = false;
     params.loadmaxvols = 1500;
@@ -159,7 +161,7 @@ for kt = 1:numel(params.func.runs)
 
                     my_spmbatch_run_aslboldpreprocessing(datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,paramsfile));
         
-                    fprintf(['Done preprocessing data for ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+                    fprintf(['Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
                 end
 
                 delete(gcp("nocreate"));

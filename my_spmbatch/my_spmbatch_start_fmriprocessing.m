@@ -30,6 +30,8 @@ else
     params.iruns = [1];
 end
 
+if ~isfield(params,'onVSC'), params.onVSC=false; end
+
 if params.onVSC
     params.use_parallel = false;
     params.save_intermediate_results = false;
