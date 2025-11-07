@@ -91,6 +91,8 @@ for ie=params.func.echoes
         ppparams.func(ie).jsonfile = fullfile(funcjsonlist(1).folder,funcjsonlist(1).name);
     end
 
+
+
     if ~isempty(edirniilist)
         prefixlist = split({edirniilist.name},'sub-');
         if numel(edirniilist)==1, prefixlist=prefixlist(1); else prefixlist = prefixlist(:,:,1); end
@@ -124,23 +126,30 @@ for ie=params.func.echoes
             ppparams.func(ie).prefix = '';
             ppparams.func(ie).funcfile = '';
             studyprefix = 'e';
-        
+
             if params.func.do_realignment, studyprefix = ['r' studyprefix]; end
             if params.func.pepolar, studyprefix = ['u' studyprefix]; end
             if params.func.isaslbold, studyprefix = ['f' studyprefix]; end
             if params.func.do_ArtRepair, studyprefix = ['v' studyprefix]; end
             if params.func.do_slicetime, studyprefix = ['a' studyprefix]; end
             if params.func.isaslbold, studyprefix = ['l' studyprefix]; end
-            if ~params.func.isaslbold && params.func.denoise && params.denoise.do_bpfilter, studyprefix = ['f' studyprefix]; end
-            if params.func.denoise && (params.denoise.do_noiseregression || params.denoise.do_ICA_AROMA), studyprefix = ['d' studyprefix]; end
+            if ~params.func.isaslbold && ~params.denoise.do_DUNE && params.func.denoise && params.denoise.do_bpfilter, studyprefix = ['f' studyprefix]; end
+            if params.func.denoise && (params.denoise.do_noiseregression || params.denoise.do_ICA_AROMA || params.denoise.do_DUNE), studyprefix = ['d' studyprefix]; end
             if params.func.meepi && params.func.do_echocombination, studyprefix = ['c' studyprefix]; end
             if params.func.do_normalization, studyprefix = ['w' studyprefix]; end
             if params.func.do_smoothing, studyprefix = ['s' studyprefix]; end
-        
+
             perfcheck = true;
             while perfcheck
                 tmp = find(strcmp(prefixlist,studyprefix));
                 if ~isempty(tmp)
+                    if params.denoise.do_DUNE
+                        ptest = contains(studyprefix,'d');
+                        if ptest
+                            ftest = find(contains({edirniilist(tmp).name},['-' params.denoise.DUNE_part]));
+                            tmp = tmp(ftest);
+                        end
+                    end
                     ppparams.func(ie).prefix = studyprefix; 
 
                     splitfname = split(edirniilist(tmp).name,[studyprefix 'sub-']);
@@ -157,6 +166,12 @@ for ie=params.func.echoes
                 end
             end
         end
+    end
+end
+
+if params.func.meepi
+    if contains(ppparams.func(1).prefix,'c')
+        ppparams.echoes = [1];
     end
 end
 
