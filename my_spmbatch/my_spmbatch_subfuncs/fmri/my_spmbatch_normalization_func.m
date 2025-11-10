@@ -7,12 +7,12 @@ for i=1:numel(Vfunc)
 end
 
 %% Normalization of the functional scan
+ppparams.deffile = fullfile(ppparams.subfuncdir,['y_' ppparams.reffunc]);
 if ne==ppparams.echoes(1)
-    ppparams.deffile = fullfile(ppparams.subfuncdir,['y_' ppparams.reffunc]);
     if ~exist(ppparams.deffile,"file")
         reffile = fullfile(ppparams.subfuncdir,ppparams.reffunc);
     
-        funcnormest.subj.vol = {reffile}; % {fullfile(ppparams.subfuncdir,[ppparams.func(ne).prefix ppparams.func(ne).funcfile ',1'])};
+        funcnormest.subj.vol = {reffile};
         funcnormest.eoptions.biasreg = 0.0001;
         funcnormest.eoptions.biasfwhm = 60;
         funcnormest.eoptions.tpm = {fullfile(params.spm_path,'tpm','TPM.nii')};
