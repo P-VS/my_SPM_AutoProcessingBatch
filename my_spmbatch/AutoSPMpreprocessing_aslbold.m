@@ -33,15 +33,15 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/vsc11352/DataManon'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
-sublist = [1:24];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_dune_nobg_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_nobg_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
 
-task ={'stroop'};
+task ={'PREcog'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -50,7 +50,7 @@ params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; %(default=false)
-params.run_background = false;
+params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
 params.loadmaxvols = 300; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
@@ -60,8 +60,8 @@ params.save_intermediate_results = true; %clean up the directory by deleting unn
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = false; %(default=true)
-params.preprocess_asl = true; %(default=true)
+params.preprocess_functional = true; %(default=true)
+params.preprocess_asl = false; %(default=true)
 
 %% FMRI parameters
 params.func.meepi = true; %true if echo number is in filename (default=true)
@@ -125,6 +125,7 @@ params.asl.splitaslbold = 'dune'; %'filter','meica' or 'dune' (default='meica')
     % Normalization
     params.func.do_normalization = true; %(default=true)
     params.func.normvox = [2.0 2.0 2.0]; %(default=[2.0 2.0 2.0])
+    params.func.normscript = 'newnorm'; %'newnorm' = SPM12/25 normalization / 'oldnorm' = SPM8 normalization
      
     % Smoothing
     params.func.do_smoothing = true; %(default=true)
