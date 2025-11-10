@@ -118,6 +118,8 @@ for si=1:numel(params.mridata)
             movefile(niifile,fullfile(outfolder,[noutfname '.nii']));
             movefile(jsonfile,fullfile(outfolder,[noutfname '.json']));
         end
-    catch
+    catch e
+        fprintf('\nDCM2NII Error\n');
+        fprintf('\nThe error was: \n%s\n',e.message)
     end
 end
