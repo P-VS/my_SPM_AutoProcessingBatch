@@ -52,16 +52,16 @@ params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; %(default=false)
 params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
-params.loadmaxvols = 300; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
+params.loadmaxvols = 500; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
 
 %% Save intermediate results needed?
-params.save_intermediate_results = true; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
+params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
 params.preprocess_functional = true; %(default=true)
-params.preprocess_asl = false; %(default=true)
+params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
 params.func.meepi = true; %true if echo number is in filename (default=true)
@@ -72,7 +72,7 @@ params.func.dummytime = 8; %time in seconds (default=2*TR)
 params.func.pepolar = true; %true if fmap scan exist otherwise false (default=true)
 
 %% ASL Parameters
-params.asl.splitaslbold = 'dune'; %'filter','meica' or 'dune' (default='meica') 
+params.asl.splitaslbold = 'meica'; %'filter','meica' or 'dune' (default='meica') 
 %'meica': after filtering, ME-ICA (tedana based)
 %'dune': experimental splitting method
 
