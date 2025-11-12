@@ -199,7 +199,12 @@ for ie=ppparams.echoes
     if params.func.do_normalization && ~contains(ppparams.func(ie).prefix,'w')
         fprintf('Do normalization\n')
     
-        [ppparams,delfiles,keepfiles] = my_spmbatch_normalization_func(ie,ppparams,params,delfiles,keepfiles);
+        switch params.func.normscript
+            case 'newnorm'
+                [ppparams,delfiles,keepfiles] = my_spmbatch_normalization_func(ie,ppparams,params,delfiles,keepfiles);
+            case 'oldnorm'
+                [ppparams,delfiles,keepfiles] = my_spmbatch_oldnormalization(ie,ppparams,params,delfiles,keepfiles);
+        end
     end
 
     %% Smooth func        
