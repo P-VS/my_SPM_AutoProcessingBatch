@@ -1,4 +1,4 @@
-function out = my_spmbatch_run_fmriprocessing(sub,ses,run,task,datpath,paramsfile)
+function out = my_spmbatch_run_localrsfmriprocessing(sub,ses,run,task,datpath,paramsfile)
 
 load(paramsfile)
 
@@ -9,8 +9,7 @@ if params.onVSC, [datpath,params] = before_run_VSC(datpath,sub,ses,params); end
 
 try
     %% make batch
-    params = my_spmbatch_fmrilevel1processing(sub,ses,run,task,datpath,params);
-
+    params = my_spmbatch_localrsfmriprocessing(sub,ses,run,task,datpath,params);
 catch e
     fprintf('\nPP_Error\n');
     fprintf('\nThe error was: \n%s\n',e.message)

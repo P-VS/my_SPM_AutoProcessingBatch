@@ -218,7 +218,7 @@ FT = FT(1:(length(FT)/2) +1,:); % keep postivie frequencies (Hermitian symmetric
     Ny = Fs/2;
     
 %   Determine which frequencies are associated with every row in the melodic_FTmix file  (assuming the rows range from 0Hz to Nyquist)
-    f = Ny * (1 : size(FT, 1)) / size(FT, 1);
+    f = 0 : Ny/(size(FT, 1)-1) : Ny;
     
 %   Only include frequencies higher than 0.01Hz
     fincl = find(f > 0.01); %get indices
