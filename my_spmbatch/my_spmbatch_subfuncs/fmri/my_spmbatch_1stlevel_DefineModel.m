@@ -179,6 +179,6 @@ end
 if contains(params.modality,'fasl')
     fmri_spec.cvi = params.model_serial_correlations;
 else
-    fmri_spec.cvi = 'AR(1)';
+    fmri_spec.cvi = params.model_serial_correlations; %'AR(1)';
 end
 fmri_spec.mask = {Vmask.fname};
