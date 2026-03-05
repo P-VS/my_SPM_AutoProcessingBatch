@@ -7,7 +7,7 @@ function my_spmdcm2niibatch(sub,params,useparfor)
 substring = ['sub-' num2str(sub,['%0' num2str(params.sub_digits) 'd'])];
 
 for si=1:numel(params.mridata)
-    %try
+    try
         sesstring = ['ses-' num2str(params.mridata(si).session,'%03d')];
     
         subpath = fullfile(params.datpath,substring,sesstring);
@@ -67,10 +67,10 @@ for si=1:numel(params.mridata)
         namefilters(1).name = outfname;
         namefilters(1).required = true;
     
-        niidirlist = my_spmbatch_dirfilelist(outfolder,'.nii',namefilters,false)
+        niidirlist = my_spmbatch_dirfilelist(outfolder,'.nii',namefilters,false);
     
         for ifile=1:numel({niidirlist.name})
-            fname = split(niidirlist(ifile).name,'.nii')
+            fname = split(niidirlist(ifile).name,'.nii');
     
             if contains(fname{1},'_e'), params.mridata(si).add_echo = true; end
     
@@ -118,8 +118,8 @@ for si=1:numel(params.mridata)
             movefile(niifile,fullfile(outfolder,[noutfname '.nii']));
             movefile(jsonfile,fullfile(outfolder,[noutfname '.json']));
         end
-    %catch e
-    %    fprintf('\nDCM2NII Error\n');
-    %    fprintf('\nThe error was: \n%s\n',e.message)
-    %end
+    catch e
+        fprintf('\nDCM2NII Error\n');
+        fprintf('\nThe error was: \n%s\n',e.message)
+    end
 end
