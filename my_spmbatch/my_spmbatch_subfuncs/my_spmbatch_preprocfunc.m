@@ -171,6 +171,35 @@ if (params.func.isaslbold || params.func.denoise) && ~contains(ppparams.func(ppp
         end
     end
 end
+if params.func.denoise && params.denoise.do_DUNE
+    boldfile = fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile]);
+    if exist(boldfile,"file")
+        V = spm_vol(boldfile);
+
+        [V,~] = my_spmbatch_readSEfMRI(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile],1,ppparams,numel(V));
+        auto_acpc_reorient([fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile]) ',1'],'EPI');
+        V2 = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile ',1']));
+        MM = V2.mat;
+
+        for iv=1:numel(V)
+            V(iv) = my_reset_orientation(V(iv),MM);
+            V(iv) = spm_create_vol(V(iv));
+        end
+
+        clear V V2
+    end
+    nfname = split([ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile],'_dune-bold_bold');
+    aslfile = [nfname{1} '_dune-asl_asl.nii'];
+    if exist(fullfile(ppparams.subfuncdir,aslfile),"file")
+        if ~exist(fullfile(ppparams.subpath,'perf'),'dir'), mkdir(fullfile(ppparams.subpath,'perf')); end
+        ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+    
+        oldfile = fullfile(ppparams.subfuncdir,aslfile);
+        newfile = fullfile(ppparams.subperfdir,aslfile);
+    
+        movefile(oldfile,newfile);
+    end
+end
 
 for ie=ppparams.echoes
     if params.func.isaslbold && contains(ppparams.func(ie).funcfile,'_aslbold.nii')
@@ -199,6 +228,8 @@ for ie=ppparams.echoes
     if params.func.do_normalization && ~contains(ppparams.func(ie).prefix,'w')
         fprintf('Do normalization\n')
     
+        if ~isfield(params.func,'normscript'), params.func.normscript='newnorm'; end
+
         switch params.func.normscript
             case 'newnorm'
                 [ppparams,delfiles,keepfiles] = my_spmbatch_normalization_func(ie,ppparams,params,delfiles,keepfiles);
