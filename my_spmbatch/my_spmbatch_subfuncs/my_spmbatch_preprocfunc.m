@@ -171,20 +171,32 @@ if (params.func.isaslbold || params.func.denoise) && ~contains(ppparams.func(ppp
         end
     end
 end
-if params.func.denoise && params.denoise.do_DUNE
+if ppparams.func(ppparams.echoes(1)).prefix(1:2)=='cd' && params.func.denoise && params.denoise.do_DUNE
     boldfile = fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile]);
     if exist(boldfile,"file")
+        nfname = split([ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile],'_dune-bold_bold');
+        lfile = [nfname{1} '_echo-1_aslbold.nii'];
+        lfile = lfile(3:end);
+
         V = spm_vol(boldfile);
-
-        [V,~] = my_spmbatch_readSEfMRI(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile],1,ppparams,numel(V));
-        auto_acpc_reorient([fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile]) ',1'],'EPI');
-        V2 = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile ',1']));
-        MM = V2.mat;
-
-        for iv=1:numel(V)
-            V(iv) = my_reset_orientation(V(iv),MM);
-            V(iv) = spm_create_vol(V(iv));
+        V2 = spm_vol(fullfile(ppparams.subfuncdir,lfile));
+        mat = V2(1).mat;
+        for i=1:numel(V)
+            V(i).mat = mat;
+            V(i).private.mat0 = mat;
+            V(i).private.mat = mat;
+            V(i) = spm_create_vol(V(i));
         end
+
+        %[V,~] = my_spmbatch_readSEfMRI(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile],1,ppparams,numel(V));
+        %auto_acpc_reorient([fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile]) ',1'],'EPI');
+        %V2 = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile ',1']));
+        %MM = V2.mat;
+
+        %for iv=1:numel(V)
+        %    V(iv) = my_reset_orientation(V(iv),MM);
+        %    V(iv) = spm_create_vol(V(iv));
+        %end
 
         clear V V2
     end
