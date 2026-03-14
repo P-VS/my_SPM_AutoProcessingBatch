@@ -8,12 +8,15 @@ end
 
 %% Normalization of the functional scan
 reffile = fullfile(ppparams.subfuncdir,ppparams.reffunc);
-ppparams.deffile = spm_file(reffile, 'suffix','_sn', 'ext','.mat');
+ppparams.deffile = spm_file(fullfile(ppparams.subfuncdir,['b' ppparams.reffunc]), 'suffix','_sn', 'ext','.mat');
 if ne==ppparams.echoes(1)
     if ~exist(ppparams.deffile,"file")
+        [reffolder,refname,~] = fileparts(reffile);
+        [breffile,delfiles] = my_spmbatch_bet(reffolder,[refname '.nii'],ppparams,params,delfiles,keepfiles);
+
         template = {fullfile(params.spm_path,'toolbox','OldNorm','EPI.nii')};
 
-        funcnormest.subj.source = {reffile};
+        funcnormest.subj.source = {fullfile(ppparams.subfuncdir,breffile)};
         funcnormest.subj.wtsrc = '';
         funcnormest.eoptions.weight = '';
         funcnormest.eoptions.smosrc = 8;

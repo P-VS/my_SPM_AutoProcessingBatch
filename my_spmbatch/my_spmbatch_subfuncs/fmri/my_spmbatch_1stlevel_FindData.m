@@ -103,6 +103,25 @@ for ir=1:numel(params.iruns)
             ppparams.ppfmridat{ir}.sess{ie}.func{i,1} = [Vfunc(i).fname ',' num2str(i)];
         end
     end
+
+    if contains(params.modality,'fasl') && contains(params.whichfile,'cbf') 
+        m0scanfilters(1) = namefilters(1);
+        m0scanfilters(2) = namefilters(2);
+        m0scanfilters(3) = namefilters(3);
+        m0scanfilters(4) = namefilters(4);
+        m0scanfilters(5).name = '_m0scan'; 
+        m0scanfilters(5).required = true;
+
+        m0scanniilist = my_spmbatch_dirfilelist(ppparams.preprocfmridir,'nii',namefilters,false);
+
+        jstmp = find(contains({m0scanniilist.name},'echo-1'));
+        m0scanniilist = m0scanniilist(jstmp);
+
+        if ~isempty(m0scanniilist)
+            tmp = find(startsWith({m0scanniilist.name},'w'));
+            if ~isempty(tmp), ppparams.frun(ir).m0scan = m0scanniilist(tmp).name; end
+        end
+    end
     
     %confound file
     

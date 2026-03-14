@@ -129,7 +129,7 @@ for ir=1:numel(params.iruns)
     
         fmri_spec.sess(nsess).multi = {''};
 
-        if params.isaslbold %contains(params.modality,'fasl') && contains(params.whichfile,'asl')
+        if params.isaslbold && contains(params.modality,'fmri')
             labels = zeros(1,numel(ppparams.ppfmridat{ir}.sess{ne}.func));
             labels(2:2:end) = 1;
             fmri_spec.sess(nsess).regress.name = 'labeling';
@@ -154,10 +154,16 @@ else fmri_spec.bases.hrf.derivs = [1 1]; end
 fmri_spec.volt = 1;
 fmri_spec.global = 'None';
 
-Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));
-nvols = min([numel(Vfunc),50]);
-fdata = spm_read_vols(Vfunc(1:nvols));
-mask = my_spmbatch_mask(fdata);
+if contains(params.modality,'fasl') && contains(params.whichfile,'cbf') && isfield(ppparams.frun(ir),'m0scan')
+    Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(ir).m0scan));
+    fdata = spm_read_vols(Vfunc);
+    mask = my_spmbatch_mask(fdata);
+else
+    Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));
+    nvols = min([numel(Vfunc),50]);
+    fdata = spm_read_vols(Vfunc(1:nvols));
+    mask = my_spmbatch_mask(fdata);
+end
 
 Vmask = Vfunc(1);
 rmfield(Vmask,'pinfo');
@@ -169,16 +175,16 @@ Vmask = spm_write_vol(Vmask,mask);
 
 ppparams.mask_file = Vmask.fname;
 
-clear fdata mask
+clear fdata mask Vfunc
 
-if contains(params.modality,'fasl') && contains(params.whichfile,'cbf')
-    fmri_spec.mthresh = -1.0;
+if params.isaslbold
+    fmri_spec.mthresh = -Inf;
 else
     fmri_spec.mthresh = 0.8; 
 end
-if contains(params.modality,'fasl')
-    fmri_spec.cvi = params.model_serial_correlations;
-else
+%if contains(params.modality,'fasl')
+%    fmri_spec.cvi = params.model_serial_correlations;
+%else
     fmri_spec.cvi = params.model_serial_correlations; %'AR(1)';
-end
+%end
 fmri_spec.mask = {Vmask.fname};

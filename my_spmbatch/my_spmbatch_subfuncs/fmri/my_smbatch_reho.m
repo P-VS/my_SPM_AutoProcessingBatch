@@ -1,4 +1,4 @@
-function rehobrain = my_smbatch_reho(AllVolume,Vfunc,mask,NVoxel)
+function rehobrain = my_smbatch_reho(AllVolume,mask,NVoxel)
 
 % Info on the approach based on the reho: 
 % Zang YF, Jiang TZ, Lu YL, He Y and Tian LX, Regional Homogeneity Approach
@@ -6,8 +6,6 @@ function rehobrain = my_smbatch_reho(AllVolume,Vfunc,mask,NVoxel)
 
 [nDim1 nDim2 nDim3 nDimTimePoints]=size(AllVolume);
 M=nDim1;N=nDim2;O=nDim3;
-isize = [nDim1 nDim2 nDim3]; 
-vsize = sqrt(sum(Vfunc(1).mat(1:3,1:3).^2));
 
 AllVolume=reshape(AllVolume,[],nDimTimePoints)';
 
