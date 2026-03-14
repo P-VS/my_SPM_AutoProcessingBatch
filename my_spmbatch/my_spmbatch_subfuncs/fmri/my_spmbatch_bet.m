@@ -6,7 +6,7 @@ function [outfile,delfiles] = my_spmbatch_bet(infolder,infile,ppparams,params,de
 fprintf('Start brain extraction \n')
 
 fprintf('Do segmentation \n')
-fullfile(infolder,[infile ',1'])
+
 preproc.channel.vols = {fullfile(infolder,[infile ',1'])};
 preproc.channel.biasreg = 0.001;
 preproc.channel.biasfwhm = 60;
