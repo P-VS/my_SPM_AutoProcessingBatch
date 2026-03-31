@@ -1,5 +1,11 @@
 function [ppparams,keepfiles,delfiles] = my_spmbatch_dune(ppparams,params,keepfiles,delfiles)
 
+%[headdat,braindat,nonbraindat,noisedat] = my_spmbatch_LoadDataForDune(ppparams,params,true);
+
+%net = DUNE_model(numel(ppparams.echoes),size(braindat,3));
+
+%net = my_spmbatch_DUNE_trainNet(net,braindat,nonbraindat,noisedat,params,ppparams);
+
 if params.func.isaslbold && contains(ppparams.func(1).funcfile,'_aslbold.nii')
     fname = split(ppparams.func(1).funcfile,'_aslbold.nii');
     ppparams.func(1).funcfile = [fname{1} '_bold.nii'];
