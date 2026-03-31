@@ -149,14 +149,41 @@ for ir=1:numel(params.iruns)
 end
 
 fmri_spec.fact = struct('name', {}, 'levels', {});
-if ~params.add_derivatives; fmri_spec.bases.hrf.derivs = [0 0]; 
-else fmri_spec.bases.hrf.derivs = [1 1]; end
+switch params.analysis_type
+    case 'GLM'
+        if ~params.add_derivatives; fmri_spec.bases.hrf.derivs = [0 0]; 
+        else fmri_spec.bases.hrf.derivs = [1 1]; end
+    case 'FIR'
+        fmri_spec.bases.fir.length = 20;
+        fmri_spec.bases.fir.order = floor(20/tr);
+end
 fmri_spec.volt = 1;
 fmri_spec.global = 'None';
 
-if contains(params.modality,'fasl') && contains(params.whichfile,'cbf') && isfield(ppparams.frun(ir),'m0scan')
+if contains(params.modality,'fasl') && contains(params.whichfile,'cbf')
+    if ~isfield(ppparams.frun(ir),'m0scan')
+        namefilters(1).name = ppparams.substring;
+        namefilters(1).required = true;
+        namefilters(2).name = ppparams.sesstring;
+        namefilters(2).required = false;
+        namefilters(3).name = ['run-' num2str(run)];
+        namefilters(3).required = false;
+        namefilters(4).name = ['task-' task];
+        namefilters(4).required = true;
+        namefilters(5).name = '_m0scan'; 
+        namefilters(5).required = true;
+        namefilters(6).name = '_echo-1'; 
+        namefilters(6).required = true;
+    
+        m0scanniilist = my_spmbatch_dirfilelist(ppparams.preprocfmridir,'nii',namefilters,false);
+    
+        tmp = find(startsWith({m0scanniilist.name},'w'));
+        if ~isempty(tmp), ppparams.frun(ir).m0scan = m0scanniilist(tmp).name; end
+    end
+
     Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(ir).m0scan));
     fdata = spm_read_vols(Vfunc);
+    if ~(ppparams.frun(ir).m0scan=='s'),fdata = my_spmbatch_smooth(fdata,Vfunc(1),[],[6 6 6],0); end
     mask = my_spmbatch_mask(fdata);
 else
     Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));
@@ -182,9 +209,7 @@ if params.isaslbold
 else
     fmri_spec.mthresh = 0.8; 
 end
-%if contains(params.modality,'fasl')
-%    fmri_spec.cvi = params.model_serial_correlations;
-%else
-    fmri_spec.cvi = params.model_serial_correlations; %'AR(1)';
-%end
+
+fmri_spec.cvi = params.model_serial_correlations; %'AR(1)';
+
 fmri_spec.mask = {Vmask.fname};

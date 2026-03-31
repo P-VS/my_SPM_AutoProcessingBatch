@@ -27,7 +27,16 @@ SPM_file = fullfile(ppparams.resultmap,'SPM.mat');
 
 %% Optimize GLM with TEDM
 
-if params.optimize_HRF, SPM_file = my_spmmbatch_tedm(SPM_file,ppparams.resultmap,ppparams.mask_file); end
+if params.optimize_HRF && contains(params.analysis_type,'GLM')
+    load(SPM_file)
+    Sess = SPM.Sess;
+
+    SPM_file = my_spmmbatch_tedm(SPM_file,ppparams.resultmap,ppparams.mask_file); 
+
+    load(SPM_file)
+    SPM.Sess = Sess;
+    save(SPM_file,'SPM')
+end
 
 %% Model estimation
 
@@ -46,8 +55,13 @@ for ic=1:numel(params.contrast)
     weights = [];
 
     for ir=1:numel(params.iruns)
-        if ~params.add_derivatives; ncondcol = 1; else ncondcol = 3; end
-        if params.add_parametricModulation, ncondcol=ncondcol+numel(ppparams.edat{ir}.weight); end
+        switch params.analysis_type
+            case 'GLM'
+                if ~params.add_derivatives; ncondcol = 1; else ncondcol = 3; end
+                if params.add_parametricModulation, ncondcol=ncondcol+numel(ppparams.edat{ir}.weight); end
+            case 'FIR'
+                ncondcol = fmri_spec.bases.fir.order;
+        end
 
         subweights = zeros(1,ncondcol*numel(numel(ppparams.edat{ir}.onset)));
 
@@ -61,10 +75,17 @@ for ic=1:numel(params.contrast)
         
             indx=0;
             for icn2=1:numel(ppparams.edat{ir}.conditions)
-                if strcmp(lower(params.contrast(ic).conditions{icn}),lower(ppparams.edat{ir}.conditions{icn2}.name)); indx=(icn2-1)*ncondcol+1; end
+                if strcmp(lower(params.contrast(ic).conditions{icn}),lower(ppparams.edat{ir}.conditions{icn2}.name)) 
+                    switch params.analysis_type
+                        case 'GLM'
+                            indx=(icn2-1)*ncondcol+1; 
+                        case 'FIR'
+                            indx=(icn2-1)*ncondcol+1:icn2*ncondcol; 
+                    end
+                end
             end
     
-            if indx>0; subweights(indx)=params.contrast(ic).vector(icn); end
+            if indx(1)>0; subweights(indx)=params.contrast(ic).vector(icn); end
         end
 
         subweights = repmat(subweights,1,numel(params.func.echoes));
