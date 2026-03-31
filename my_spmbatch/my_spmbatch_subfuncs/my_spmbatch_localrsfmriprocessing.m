@@ -89,7 +89,7 @@ if params.do_ReHo
 
     fdata = reshape(fdata,[Vfunc(1).dim(1),Vfunc(1).dim(2),Vfunc(3).dim(1),numel(Vfunc)]);
 
-    rehomap = my_smbatch_reho(fdata,Vfunc,mask,params.Nvoxels);
+    rehomap = my_smbatch_reho(fdata,mask,params.Nvoxels);
     
     Vreho = Vfunc(1);
     rmfield(Vreho,'pinfo');
