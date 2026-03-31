@@ -24,31 +24,30 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1:24]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:22,24:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [2]; %nsessions>0
  
-params.task = {'stroop'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'meica';
+params.analysisname = 'MEICA-BOLD_OPTHRF';
 params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = false; 
-params.run_background = true;
+params.run_background = false;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
-params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false;
 
 %% fMRI data parameters
     params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
     params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
-    params.dummytime = 8; %only if the timings in the _events.tsv file should be corrected for dummy scans
+    params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
     %In case of multiple runs in the same session exist
     params.func.mruns = false; %true if run number is in filename
@@ -59,7 +58,7 @@ params.keeplogs = false;
     
     % For ME-fMRI
     params.func.meepi = true; %true if echo number is in filename
-    params.func.echoes = [1]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+    params.func.echoes = [1:3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
     % For Functional ASL 
     params.whichfile = 'cbf'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
@@ -67,11 +66,12 @@ params.keeplogs = false;
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
 %% SPM first level analysis parameters
+    params.analysis_type = 'GLM'; % 'GLM' or 'FIR' (default='GLM')
     params.confounds_prefix = 'rp_e'; %confounds file of form [confounds_prefix 'sub-ii_task-... .txt']
     params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
     params.add_regressors = false; %if data not denoised set true otherwhise false 
     params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
-    params.optimize_HRF = false; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
+    params.optimize_HRF = true; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
     params.use_ownmask = true;
     params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
     params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
@@ -80,16 +80,16 @@ params.keeplogs = false;
     %Save SPM results per ccontrast as thresholded map, binary mask, n-aray map (n=cluster number), 
     %csv file, pdf file
 
-    params.save_spm_results = true;
+    params.save_spm_results = false;
     params.threshold_correction = 'none'; %'none' or 'FWE' (default='none')
-    params.pthreshold = 0.001; % signifiance p-threshold (default=0.001) 
+    params.pthreshold = 0.005; % signifiance p-threshold (default=0.001) 
     params.kthreshold = 0; %ccluster extend threshold (default=0)
     params.save_thresholded_map = true;
-    params.save_binary_mask = true;
+    params.save_binary_mask = false;
     params.save_naray = false;
     params.save_csv_file = false;
     params.save_pdf_file = false;
-    params.save_tiff_file = true;
+    params.save_tiff_file = false;
 
 %% Define the contrasts (for GLM)
     %contrast(i) is structure with fields
@@ -99,24 +99,31 @@ params.keeplogs = false;
     %   contrast(i).conditions={'condition 1','condition 2'};
     %   contrast(i).vector=[1 -1];
 
+    %% For practicum fMRI
+    %params.contrast(1).conditions = {'language','baseline'};
+    %params.contrast(1).vector = [1,-1];
+
+    %params.contrast(2).conditions = {'language','baseline'};
+    %params.contrast(2).vector = [-1,1];
+
     %% For experiment MANON: STROOP
-    params.contrast(1).conditions = {'congruent','neutral'};
-    params.contrast(1).vector = [1,-1];
+    %params.contrast(1).conditions = {'congruent','neutral'};
+    %params.contrast(1).vector = [1,-1];
 
-    params.contrast(2).conditions = {'congruent','neutral'};
-    params.contrast(2).vector = [-1,1];
+    %params.contrast(2).conditions = {'congruent','neutral'};
+    %params.contrast(2).vector = [-1,1];
 
-    params.contrast(3).conditions = {'incongruent','neutral'};
-    params.contrast(3).vector = [1,-1];
+    %params.contrast(3).conditions = {'incongruent','neutral'};
+    %params.contrast(3).vector = [1,-1];
 
-    params.contrast(4).conditions = {'incongruent','neutral'};
-    params.contrast(4).vector = [-1,1];
+    %params.contrast(4).conditions = {'incongruent','neutral'};
+    %params.contrast(4).vector = [-1,1];
 
-    params.contrast(5).conditions = {'congruent','incongruent'};
-    params.contrast(5).vector = [1,-1];
+    %params.contrast(5).conditions = {'congruent','incongruent'};
+    %params.contrast(5).vector = [1,-1];
 
-    params.contrast(6).conditions = {'congruent','incongruent'};
-    params.contrast(6).vector = [-1,1];
+    %params.contrast(6).conditions = {'congruent','incongruent'};
+    %params.contrast(6).vector = [-1,1];
 
     %params.contrast(7).conditions = {'congruent','incongruent','neutral'};
     %params.contrast(7).vector = [1,1,1];
@@ -125,42 +132,14 @@ params.keeplogs = false;
     %params.contrast(8).vector = [-1,-1,-1];
 
     %% For experiment MANON: Go-NoGO
-    %params.contrast(1).conditions = {'Go','NoGo'};
-    %params.contrast(1).vector = [1,-1];
+    params.contrast(1).conditions = {'Go','NoGo'};
+    params.contrast(1).vector = [1,-1];
 
-    %params.contrast(2).conditions = {'Go','NoGo'};
-    %params.contrast(2).vector = [-1,1];
-
-    %% For experiment ME-fMRI: EFT
-    %params.contrast(1).conditions = {'episodic','semantic'};
-    %params.contrast(1).vector = [1,-1];
-    
-    %params.contrast(2).conditions = {'episodic','semantic'};
-    %params.contrast(2).vector = [-1,1];
-    
-    %% For experiment ME-fMRI: EFT
-    %params.contrast(1).conditions = {'sad','neutral'};
-    %params.contrast(1).vector = [1,-1];
-    
-    %params.contrast(2).conditions = {'sad','neutral'};
-    %params.contrast(2).vector = [-1,1];
-    
-    %params.contrast(3).conditions = {'happy','neutral'};
-    %params.contrast(3).vector = [1,-1];
-    
-    %params.contrast(4).conditions = {'happy','neutral'};
-    %params.contrast(4).vector = [-1,1];
-    
-    %params.contrast(5).conditions = {'sad','happy'};
-    %params.contrast(5).vector = [1,-1];
-    
-    %params.contrast(6).conditions = {'sad','happy'};
-    %params.contrast(6).vector = [-1,1];
+    params.contrast(2).conditions = {'Go','NoGo'};
+    params.contrast(2).vector = [-1,1];
 
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %--------------------------------------------------------------------------------
- 
-params.analysis_type = 'GLM';
 
 global spmpath
 spmpath = params.spm_path;

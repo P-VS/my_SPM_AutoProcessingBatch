@@ -31,16 +31,16 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';
+datpath = '/Volumes/USB512DISK1/PracticumfMRI';
 
-sublist = [1:10];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
 params.func_save_folder = 'preproc_func'; %name of the folder to save the preprocessed bold data
 
-task ={'ME-EFT'};
+task ={'language'};
 
 %In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -48,11 +48,11 @@ params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 % For ME-fMRI
 params.func.meepi = false; %true if echo number is in filename
-params.func.echoes = [1]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+params.func.echoes = [1,2]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!! 
-params.use_parallel = false; %(default=false)
+params.use_parallel = true; %(default=false)
 params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 1000; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 1000)
@@ -141,7 +141,7 @@ params.func.pepolar = true; %(default=true)
 
     % Prepare data for DUNE denoising in python (WIP)
     params.denoise.do_DUNE = false; %(default=false)
-    params.denoise.DUNE_part = 'nonbold'; %'bold' or 'nonbold' (default='bold')
+    params.denoise.DUNE_part = 'bold'; %'bold' or 'nonbold' (default='bold')
    
 %% Start preprocessing
     

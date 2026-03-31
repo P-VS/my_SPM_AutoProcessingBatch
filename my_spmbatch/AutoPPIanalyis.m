@@ -1,6 +1,6 @@
-function AutoLocalRSfMRI_fMRI
+function AutoPPIanalyis
 
-%Script to do the auto local RS fMRI processing in REST ((f)ALFF and ReHo)
+%Script to do the auto 1st level fMRI processing in SPM25
 %
 %Preparation:
 %* Organise the data in BIDS format
@@ -24,51 +24,44 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1,2,3:11]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'ME-EmoFaces'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'ME-DUNE-NonBOLD';
+%% In case of multiple runs in the same session exist
+params.func.mruns = true; %true if run number is in filename
+params.func.runs = [1]; %the index of the runs (in filenames run-(index))
+
+params.SPMMAT_analysisname = 'DUNE-BOLD_OPTHRF';
 params.modality = 'fmri'; %'fmri' of 'fasl'
-params.isaslbold = false;
+params.isaslbold = true;
+
+params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = false; 
-params.run_background = true;
+params.run_background = false;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.keeplogs = false;
 
-%% fMRI data parameters
-    params.preprocfmridir = 'preproc_func_ME-DUNE-NonBOLD'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swcdavure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
-    
-    %In case of multiple runs in the same session exist
-    params.func.mruns = false; %true if run number is in filename
-    params.func.runs = [1]; %the index of the runs (in filenames run-(index))
-    params.func.use_runs = 'separately'; % 'separately' or 'together' (this parameter is ignored if mruns is false)
-    %'separately': a separate analysis is done per run (default=separately)
-    %'together': all runs are combined in 1 analysis 
-    
-    % For ME-fMRI
-    params.func.meepi = true; %true if echo number is in filename
-    params.func.echoes = [1,2]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+%% PPI/BSC data parameters
 
-%% Analysis parameters
-    params.do_ALFF = false;
-    params.do_fALFF = true;
-    params.do_ReHo = false; %KCC Kendall’s coefficient of concordance for N neighbouring voxels
+params.PPI_analysisname = 'ResponsInhibition_8ROIs';
+params.VOIfolder = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/VOI_PPI_GoNoGo';
 
-    params.LF_band = [0.008 0.1]; %BOLD frequency band for (f)ALFF (default=[0.008 0.1])
-    params.Nvoxels = 27; %number of neighbouring voxels (27, 19, or 7) (default=27)
+params.doPPI = true;
+params.doBSC = true;
 
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %--------------------------------------------------------------------------------
  
+params.analysis_type = 'GLM';
+
 global spmpath
 spmpath = params.spm_path;
 
@@ -95,7 +88,7 @@ spm('defaults', 'FMRI');
 
 curdir = pwd;
 
-my_spmbatch_start_LocalRSfmriprocessing(sublist,nsessions,datpath,params);
+my_spmbatch_start_ppianalysis(sublist,nsessions,datpath,params);
 
 cd(curdir)
 

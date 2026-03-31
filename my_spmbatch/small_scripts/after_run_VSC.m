@@ -18,6 +18,48 @@ if isfield(params,'perf_save_folder')
         rmdir(fullfile(params.new_subpath,params.perf_save_folder),'s');
     end
 end
+
+if isfolder(fullfile(params.new_subpath,'perf'))
+    if ~isfolder(fullfile(params.orig_subpath,'perf')), mkdir(fullfile(params.orig_subpath,'perf')); end
+
+    dirlist = dir(fullfile(params.new_subpath,'perf')); %Make list of alll files
+    
+    tmp = find(strlength({dirlist.name})>4); %Remove '.' and '..'
+    if ~isempty(tmp)
+        dirlist = dirlist(tmp);
+    
+        tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
+        if ~isempty(tmp)
+            dirlist = dirlist(tmp);
+    
+            tmp = find(contains({dirlist.name},'_label'));
+            if ~isempty(tmp)
+                for i=1:numel(tmp), copyfile(fullfile(params.new_subpath,'perf',dirlist(tmp(i)).name),fullfile(params.orig_subpath,'perf',dirlist(tmp(i)).name)); end
+            end
+            tmp = find(and(contains({dirlist.name},'_m0scan'),~startsWith({dirlist.name},'w')));
+            if ~isempty(tmp)
+                for i=1:numel(tmp), copyfile(fullfile(params.new_subpath,'perf',dirlist(tmp(i)).name),fullfile(params.orig_subpath,'perf',dirlist(tmp(i)).name)); end
+            end
+            tmp = find(contains({dirlist.name},'_asl'));
+            if ~isempty(tmp)
+                for i=1:numel(tmp), copyfile(fullfile(params.new_subpath,'perf',dirlist(tmp(i)).name),fullfile(params.orig_subpath,'perf',dirlist(tmp(i)).name)); end
+            end
+            tmp = find(startsWith({dirlist.name},'p0e'));
+            if ~isempty(tmp)
+                for i=1:numel(tmp), copyfile(fullfile(params.new_subpath,'perf',dirlist(tmp(i)).name),fullfile(params.orig_subpath,'perf',dirlist(tmp(i)).name)); end
+            end
+            tmp = find(startsWith({dirlist.name},'p1e'));
+            if ~isempty(tmp)
+                for i=1:numel(tmp), copyfile(fullfile(params.new_subpath,'perf',dirlist(tmp(i)).name),fullfile(params.orig_subpath,'perf',dirlist(tmp(i)).name)); end
+            end
+            tmp = find(startsWith({dirlist.name},'p2e'));
+            if ~isempty(tmp)
+                for i=1:numel(tmp), copyfile(fullfile(params.new_subpath,'perf',dirlist(tmp(i)).name),fullfile(params.orig_subpath,'perf',dirlist(tmp(i)).name)); end
+            end
+        end
+    end
+end
+
 if isfolder(fullfile(params.new_subpath,'anat')), rmdir(fullfile(params.new_subpath,'anat'),'s'); end
 if isfolder(fullfile(params.new_subpath,'fmap')), rmdir(fullfile(params.new_subpath,'fmap'),'s'); end
 if isfolder(fullfile(params.new_subpath,'func')), rmdir(fullfile(params.new_subpath,'func'),'s'); end

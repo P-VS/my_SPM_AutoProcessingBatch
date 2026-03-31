@@ -28,7 +28,7 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 params.datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/RawData';
 
-sublist = [1:21];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [25];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the result will be sub-01, if 3 the result will be sub-001
 
 %Add per sequence to convert an extra ssequence object to the mri_data structure as (folder,seqtype,name,task,[session],add_run,add_echo,add_acq)
@@ -50,40 +50,40 @@ params.sub_digits = 2; %if 2 the result will be sub-01, if 3 the result will be 
 % deactivating the lines by addinng a % at the beginning
 
 %% Example anatomical T1w scan
-params.mridata(1).folder = 'ses-002/VBM';
-params.mridata(1).acqtype = 'anat';
-params.mridata(1).seqtype = 'T1w';
+%params.mridata(1).folder = 'ses-002/VBM';
+%params.mridata(1).acqtype = 'anat';
+%params.mridata(1).seqtype = 'T1w';
+%params.mridata(1).task = '';
+%params.mridata(1).session = 2;
+%params.mridata(1).run = 1;
+%params.mridata(1).add_acq = false;
+%params.mridata(1).add_dir = false;
+%params.mridata(1).add_run = false;
+%params.mridata(1).add_echo = false;
+
+%% Example pepolar fmap scan
+params.mridata(1).folder = 'ses-002/PP_ASLBOLD';
+params.mridata(1).acqtype = 'fmap';
+params.mridata(1).seqtype = 'pepolar';
 params.mridata(1).task = '';
 params.mridata(1).session = 2;
 params.mridata(1).run = 1;
 params.mridata(1).add_acq = false;
-params.mridata(1).add_dir = false;
+params.mridata(1).add_dir = true;
 params.mridata(1).add_run = false;
-params.mridata(1).add_echo = false;
-
-%% Example pepolar fmap scan
-params.mridata(2).folder = 'ses-002/PP_ASLBOLD';
-params.mridata(2).acqtype = 'fmap';
-params.mridata(2).seqtype = 'pepolar';
-params.mridata(2).task = '';
-params.mridata(2).session = 2;
-params.mridata(2).run = 1;
-params.mridata(2).add_acq = false;
-params.mridata(2).add_dir = true;
-params.mridata(2).add_run = false;
-params.mridata(2).add_echo = true;
+params.mridata(1).add_echo = true;
 
 %% Example fMRI scan
-%params.mridata(1).folder = 'dcm/SE-fMRI_EFT';
-%params.mridata(1).acqtype = 'func';
-%params.mridata(1).seqtype = 'fmri';
-%params.mridata(1).task = 'SE-EFT';
-%params.mridata(1).session = 1;
-%params.mridata(1).run = 1;
-%params.mridata(1).add_acq = false;
-%params.mridata(1).add_dir = true;
-%params.mridata(1).add_run = false;
-%params.mridata(1).add_echo = true;
+%params.mridata(2).folder = 'ses-001/dcm/fMRI';
+%params.mridata(2).acqtype = 'func';
+%params.mridata(2).seqtype = 'fmri';
+%params.mridata(2).task = 'language';
+%params.mridata(2).session = 1;
+%params.mridata(2).run = 1;
+%params.mridata(2).add_acq = false;
+%params.mridata(2).add_dir = true;
+%params.mridata(2).add_run = false;
+%params.mridata(2).add_echo = true;
 
 %params.mridata(2).folder = 'dcm/SE-fMRI_EmoFaces';
 %params.mridata(2).acqtype = 'func';
@@ -97,49 +97,49 @@ params.mridata(2).add_echo = true;
 %params.mridata(2).add_echo = true;
 
 %% Example ASLBOLD scan
-%params.mridata(3).folder = 'ses-001/STROOP1';
+%params.mridata(1).folder = 'ses-001/dcm/STROOP1';
+%params.mridata(1).acqtype = 'func';
+%params.mridata(1).seqtype = 'aslbold';
+%params.mridata(1).task = 'stroop';
+%params.mridata(1).session = 1;
+%params.mridata(1).run = 1;
+%params.mridata(1).add_acq = false;
+%params.mridata(1).add_dir = true;
+%params.mridata(1).add_run = true;
+%params.mridata(1).add_echo = true;
+
+%params.mridata(2).folder = 'ses-001/dcm/STROOP1';
+%params.mridata(2).acqtype = 'func';
+%params.mridata(2).seqtype = 'aslbold';
+%params.mridata(2).task = 'stroop';
+%params.mridata(2).session = 1;
+%params.mridata(2).run = 2;
+%params.mridata(2).add_acq = false;
+%params.mridata(2).add_dir = true;
+%params.mridata(2).add_run = true;
+%params.mridata(2).add_echo = true;
+
+%params.mridata(3).folder = 'ses-002/PREcog';
 %params.mridata(3).acqtype = 'func';
 %params.mridata(3).seqtype = 'aslbold';
-%params.mridata(3).task = 'stroop';
-%params.mridata(3).session = 1;
+%params.mridata(3).task = 'PREcog';
+%params.mridata(3).session = 2;
 %params.mridata(3).run = 1;
 %params.mridata(3).add_acq = false;
 %params.mridata(3).add_dir = true;
 %params.mridata(3).add_run = true;
 %params.mridata(3).add_echo = true;
 
-params.mridata(3).folder = 'ses-001/POSTcog';
-params.mridata(3).acqtype = 'func';
-params.mridata(3).seqtype = 'aslbold';
-params.mridata(3).task = 'POSTcog';
-params.mridata(3).session = 1;
-params.mridata(3).run = 1;
-params.mridata(3).add_acq = false;
-params.mridata(3).add_dir = true;
-params.mridata(3).add_run = true;
-params.mridata(3).add_echo = true;
-
-params.mridata(4).folder = 'ses-002/PREcog';
-params.mridata(4).acqtype = 'func';
-params.mridata(4).seqtype = 'aslbold';
-params.mridata(4).task = 'PREcog';
-params.mridata(4).session = 2;
-params.mridata(4).run = 1;
-params.mridata(4).add_acq = false;
-params.mridata(4).add_dir = true;
-params.mridata(4).add_run = true;
-params.mridata(4).add_echo = true;
-
-params.mridata(5).folder = 'ses-002/POSTcog';
-params.mridata(5).acqtype = 'func';
-params.mridata(5).seqtype = 'aslbold';
-params.mridata(5).task = 'POSTcog';
-params.mridata(5).session = 2;
-params.mridata(5).run = 1;
-params.mridata(5).add_acq = false;
-params.mridata(5).add_dir = true;
-params.mridata(5).add_run = true;
-params.mridata(5).add_echo = true;
+%params.mridata(5).folder = 'ses-002/POSTcog';
+%params.mridata(5).acqtype = 'func';
+%params.mridata(5).seqtype = 'aslbold';
+%params.mridata(5).task = 'POSTcog';
+%params.mridata(5).session = 2;
+%params.mridata(5).run = 1;
+%params.mridata(5).add_acq = false;
+%params.mridata(5).add_dir = true;
+%params.mridata(5).add_run = true;
+%params.mridata(5).add_echo = true;
 
 params.use_parallel = true; %only possible when parallel toolbox is installed
 

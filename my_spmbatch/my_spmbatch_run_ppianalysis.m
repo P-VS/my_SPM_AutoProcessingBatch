@@ -1,0 +1,63 @@
+function my_spmbatch_run_ppianalysis(sub,ses,run,task,datpath,paramsfile)
+
+load(paramsfile)
+
+global spmpath
+spmpath = params.spm_path;
+
+if params.onVSC, [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,params); end
+
+try
+    %% make batch
+    params = my_spmbatch_ppianalysis(sub,ses,run,task,datpath,params);
+
+catch e
+    fprintf('\nPP_Error\n');
+    fprintf('\nThe error was: \n%s\n',e.message)
+end
+
+if params.onVSC, [datpath,params] = after_run_VSC(datpath,sub,ses,params); end
+
+fprintf('\nPP_Completed\n');
+
+out = 1;
+
+%----------------------------------------------------------------------
+function [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,params)
+
+fprintf('\nStart copying results\n');
+
+orig_datpath = datpath;
+pathsplit = split(datpath,'/data/');
+new_datpath = ['/scratch/' pathsplit{end}];
+
+try
+    if ~isfolder(new_datpath), mkdir(new_datpath); end
+
+    substring = ['sub-' num2str(sub,['%0' num2str(params.sub_digits) 'd'])];
+
+    sesstring = ['ses-' num2str(ses,'%02d')];
+    if ~isfolder(fullfile(datpath,substring,sesstring)), sesstring = ['ses-' num2str(ses,'%03d')]; end
+    
+    orig_subpath = fullfile(orig_datpath,substring,sesstring);
+    new_subpath = fullfile(new_datpath,substring,sesstring);
+    
+    if ~isfolder(orig_subpath)
+        orig_subpath = fullfile(datpath,substring); 
+        new_subpath = fullfile(new_datpath,substring); 
+    end
+
+    if ~isfolder(new_subpath), mkdir(new_subpath); end
+
+    if isfolder(fullfile(orig_subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname])), copyfile(fullfile(orig_subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname]),fullfile(new_subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname])); end
+    if isfield(params,'preprocfmridir') && isfolder(fullfile(orig_subpath,params.preprocfmridir)), copyfile(fullfile(orig_subpath,params.preprocfmridir),fullfile(new_subpath,params.preprocfmridir)); end
+
+    datpath = new_datpath;
+
+    params.orig_subpath = orig_subpath;
+    params.new_subpath = new_subpath;
+    
+    params.save_intermediate_results = false;
+catch
+    params.onVSC = false;
+end
