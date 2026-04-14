@@ -5,7 +5,7 @@ load(paramsfile)
 global spmpath
 spmpath = params.spm_path;
 
-if params.onVSC, [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,params); end
+if params.onVSC, [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,task,params); end
 
 try
     %% make batch
@@ -23,7 +23,7 @@ fprintf('\nPP_Completed\n');
 out = 1;
 
 %----------------------------------------------------------------------
-function [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,params)
+function [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,task,params)
 
 fprintf('\nStart copying results\n');
 
@@ -49,7 +49,9 @@ try
 
     if ~isfolder(new_subpath), mkdir(new_subpath); end
 
-    if isfolder(fullfile(orig_subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname])), copyfile(fullfile(orig_subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname]),fullfile(new_subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname])); end
+    params.resultmap = ['SPMMAT-' task '_' params.SPMMAT_analysisname];
+
+    if isfolder(fullfile(orig_subpath,params.resultmap)), copyfile(fullfile(orig_subpath,params.resultmap),fullfile(new_subpath,params.resultmap)); end
     if isfield(params,'preprocfmridir') && isfolder(fullfile(orig_subpath,params.preprocfmridir)), copyfile(fullfile(orig_subpath,params.preprocfmridir),fullfile(new_subpath,params.preprocfmridir)); end
 
     datpath = new_datpath;

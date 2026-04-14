@@ -37,25 +37,25 @@ params.task = {'PREcog'}; %text string that is in between task_ and _bold in you
 params.func.mruns = true; %true if run number is in filename
 params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
-params.SPMMAT_analysisname = 'DUNE-BOLD_OPTHRF';
+params.SPMMAT_analysisname = 'MEICA-BOLD_OPTHRF';
 params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
 params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
-params.use_parallel = false; 
-params.run_background = false;
+params.use_parallel = true; 
+params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.keeplogs = false;
 
 %% PPI/BSC data parameters
 
-params.PPI_analysisname = 'ResponsInhibition_8ROIs';
-params.VOIfolder = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/VOI_PPI_GoNoGo';
+params.PPI_analysisname = 'MF_9ROIs';
+params.VOIfolder = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/PPI_Regios_MF';
 
 params.doPPI = true;
-params.doBSC = true;
+params.doBSC = false;
 
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %--------------------------------------------------------------------------------
