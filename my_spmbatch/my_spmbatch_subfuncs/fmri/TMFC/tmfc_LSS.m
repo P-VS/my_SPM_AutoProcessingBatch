@@ -92,7 +92,7 @@ if ~isfield(tmfc.subjects,'name')
 end
 
 spm('defaults','fmri');
-spm_jobman('initcfg');
+%spm_jobman('initcfg');
 spm_get_defaults('cmdline',true);
 spm_get_defaults('stats.resmem',tmfc.defaults.resmem);
 spm_get_defaults('stats.maxmem',tmfc.defaults.maxmem);
@@ -176,21 +176,21 @@ for iSub = start_sub:nSub
             end
             
             mkdir(fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name,['LSS_Sess_' num2str(sess_num(jSess)) '_Trial_' num2str(kTrial)]));
-            matlabbatch{1}.spm.stats.fmri_spec.dir = {fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name,['LSS_Sess_' num2str(sess_num(jSess)) '_Trial_' num2str(kTrial)])};
-            matlabbatch{1}.spm.stats.fmri_spec.timing.units = SPM.xBF.UNITS;
-            matlabbatch{1}.spm.stats.fmri_spec.timing.RT = SPM.xY.RT;
-            matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = SPM.xBF.T;
-            matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t0 = SPM.xBF.T0;
+            fmri_spec.dir = {fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name,['LSS_Sess_' num2str(sess_num(jSess)) '_Trial_' num2str(kTrial)])};
+            fmri_spec.timing.units = SPM.xBF.UNITS;
+            fmri_spec.timing.RT = SPM.xY.RT;
+            fmri_spec.timing.fmri_t = SPM.xBF.T;
+            fmri_spec.timing.fmri_t0 = SPM.xBF.T0;
                         
             % Functional images
             if SPM_concat(iSub) == 0
                 for image = 1:SPM.nscan(sess_num(jSess))
-                    matlabbatch{1}.spm.stats.fmri_spec.sess.scans{image,1} = [SPM.xY.VY(SPM.Sess(sess_num(jSess)).row(image)).fname ',' ...
+                    fmri_spec.sess.scans{image,1} = [SPM.xY.VY(SPM.Sess(sess_num(jSess)).row(image)).fname ',' ...
                                                                               num2str(SPM.xY.VY(SPM.Sess(sess_num(jSess)).row(image)).n(1))];       
                 end
             else
                 for image = 1:size(SPM.xY.VY,1)
-                    matlabbatch{1}.spm.stats.fmri_spec.sess.scans{image,1} = [SPM.xY.VY(SPM.Sess(jSess).row(image)).fname ',' ...
+                    fmri_spec.sess.scans{image,1} = [SPM.xY.VY(SPM.Sess(jSess).row(image)).fname ',' ...
                                                                               num2str(SPM.xY.VY(SPM.Sess(jSess).row(image)).n(1))];
                 end
             end
@@ -203,48 +203,48 @@ for iSub = start_sub:nSub
             other_trials_dur = [dur_of_int(other_trials); dur_of_no_int];
             
             % Conditions
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).name = 'Current_trial';
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).onset = current_trial_ons;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).duration = current_trial_dur;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).tmod = 0;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).pmod = struct('name', {}, 'param', {}, 'poly', {});
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).orth = 1;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).name = 'Other_trials';
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).onset = other_trials_ons;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).duration = other_trials_dur;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).tmod = 0;
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).pmod = struct('name', {}, 'param', {}, 'poly', {});
-            matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).orth = 1;
+            fmri_spec.sess.cond(1).name = 'Current_trial';
+            fmri_spec.sess.cond(1).onset = current_trial_ons;
+            fmri_spec.sess.cond(1).duration = current_trial_dur;
+            fmri_spec.sess.cond(1).tmod = 0;
+            fmri_spec.sess.cond(1).pmod = struct('name', {}, 'param', {}, 'poly', {});
+            fmri_spec.sess.cond(1).orth = 1;
+            fmri_spec.sess.cond(2).name = 'Other_trials';
+            fmri_spec.sess.cond(2).onset = other_trials_ons;
+            fmri_spec.sess.cond(2).duration = other_trials_dur;
+            fmri_spec.sess.cond(2).tmod = 0;
+            fmri_spec.sess.cond(2).pmod = struct('name', {}, 'param', {}, 'poly', {});
+            fmri_spec.sess.cond(2).orth = 1;
 
             % Confounds       
             for conf = 1:length(SPM.Sess(sess_num(jSess)).C.name)
-                matlabbatch{1}.spm.stats.fmri_spec.sess.regress(conf).name = SPM.Sess(sess_num(jSess)).C.name{1,conf};
-                matlabbatch{1}.spm.stats.fmri_spec.sess.regress(conf).val = SPM.Sess(sess_num(jSess)).C.C(:,conf);
+                fmri_spec.sess.regress(conf).name = SPM.Sess(sess_num(jSess)).C.name{1,conf};
+                fmri_spec.sess.regress(conf).val = SPM.Sess(sess_num(jSess)).C.C(:,conf);
             end   
 
-            matlabbatch{1}.spm.stats.fmri_spec.sess.multi = {''};
-            matlabbatch{1}.spm.stats.fmri_spec.sess.multi_reg = {''};
+            fmri_spec.sess.multi = {''};
+            fmri_spec.sess.multi_reg = {''};
     
             % HPF, HRF, mask 
-            matlabbatch{1}.spm.stats.fmri_spec.sess.hpf = SPM.xX.K(sess_num(jSess)).HParam;    
-            matlabbatch{1}.spm.stats.fmri_spec.fact = struct('name', {}, 'levels', {});
-            matlabbatch{1}.spm.stats.fmri_spec.bases.hrf.derivs = [0 0];
-            matlabbatch{1}.spm.stats.fmri_spec.volt = 1;
-            matlabbatch{1}.spm.stats.fmri_spec.global = SPM.xGX.iGXcalc;
-            matlabbatch{1}.spm.stats.fmri_spec.mthresh = SPM.xM.gMT;           
+            fmri_spec.sess.hpf = SPM.xX.K(sess_num(jSess)).HParam;    
+            fmri_spec.fact = struct('name', {}, 'levels', {});
+            fmri_spec.bases.hrf.derivs = [0 0];
+            fmri_spec.volt = 1;
+            fmri_spec.global = SPM.xGX.iGXcalc;
+            fmri_spec.mthresh = SPM.xM.gMT;           
             
             try
-                matlabbatch{1}.spm.stats.fmri_spec.mask = {SPM.xM.VM.fname};
+                fmri_spec.mask = {SPM.xM.VM.fname};
             catch
-                matlabbatch{1}.spm.stats.fmri_spec.mask = {''};
+                fmri_spec.mask = {''};
             end
             
             if strcmp(SPM.xVi.form,'i.i.d') || strcmp(SPM.xVi.form,'none')
-                matlabbatch{1}.spm.stats.fmri_spec.cvi = 'None';
+                fmri_spec.cvi = 'None';
             elseif strcmp(SPM.xVi.form,'fast') || strcmp(SPM.xVi.form,'FAST')
-                matlabbatch{1}.spm.stats.fmri_spec.cvi = 'FAST';
+                fmri_spec.cvi = 'FAST';
             else
-                matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
+                fmri_spec.cvi = 'AR(1)';
             end
         
             if strcmp(SPM.xVi.form,'wls')
@@ -253,13 +253,13 @@ for iSub = start_sub:nSub
                 rWLS(iSub) = 0;
             end
 
-            matlabbatch_2{1}.spm.stats.fmri_est.spmmat(1) = {fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name,['LSS_Sess_' num2str(sess_num(jSess)) '_Trial_' num2str(kTrial)],'SPM.mat')};
-            matlabbatch_2{1}.spm.stats.fmri_est.write_residuals = 0;
-            matlabbatch_2{1}.spm.stats.fmri_est.method.Classical = 1;
+            fmri_est_2.spmmat(1) = {fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name,['LSS_Sess_' num2str(sess_num(jSess)) '_Trial_' num2str(kTrial)],'SPM.mat')};
+            fmri_est_2.write_residuals = 0;
+            fmri_est_2.method.Classical = 1;
 
-            batch{kTrial} = matlabbatch;
-            batch_2{kTrial} = matlabbatch_2;
-            clear matlabbatch matlabbatch_2 current* other*
+            batch{kTrial} = fmri_spec;
+            batch_2{kTrial} = fmri_est_2;
+            clear fmri_spec fmri_est_2 current* other*
         end
          
         % Sequential or parallel computing
@@ -269,7 +269,7 @@ for iSub = start_sub:nSub
                 trials = zeros(1,nTrial);
                 for kTrial = 1:nTrial                                          
                     % Specify LSS GLM
-                    spm_jobman('run',batch{kTrial});
+                    spm_run_fmri_spec(batch{kTrial});
                     % Concatenated sessions
                     if SPM_concat(iSub) == 1
                         spm_fmri_concatenate(fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name, ...
@@ -277,7 +277,7 @@ for iSub = start_sub:nSub
                     end
                     % Check for rWLS
                     if rWLS(iSub) == 0
-                        spm_jobman('run', batch_2{kTrial});
+                        spm_run_fmri_est(batch_2{kTrial});
                     else
                         tmfc_rwls_LSS(tmfc,sess_num,iSub,jSess,kTrial);
                     end
@@ -304,13 +304,13 @@ for iSub = start_sub:nSub
                 trials = zeros(1,nTrial);
                 parfor kTrial = 1:nTrial                   
                     % Specify LSS GLM
-                    spm('defaults','fmri');
+                    %spm('defaults','fmri');
                     spm_jobman('initcfg');
                     spm_get_defaults('cmdline',true);
                     spm_get_defaults('stats.resmem',tmfc.defaults.resmem);
                     spm_get_defaults('stats.maxmem',tmfc.defaults.maxmem);
                     spm_get_defaults('stats.fmri.ufp',1);
-                    spm_jobman('run',batch{kTrial});
+                    spm_run_fmri_spec(batch{kTrial});
                     % Concatenated sessions
                     if SPM_concat(iSub) == 1
                         spm_fmri_concatenate(fullfile(tmfc.project_path,'LSS_regression',tmfc.subjects(iSub).name, ...
@@ -318,7 +318,7 @@ for iSub = start_sub:nSub
                     end
                     % Check for rWLS
                     if rWLS(iSub) == 0
-                        spm_jobman('run', batch_2{kTrial});
+                        spm_run_fmri_est(batch_2{kTrial});
                     else
                         tmfc_rwls_LSS(tmfc,sess_num,iSub,jSess,kTrial);
                     end

@@ -181,13 +181,12 @@ for iSub = start_sub:nSub
 
     % Estimate contrasts only if missing
     if isempty(idx)
-        matlabbatch = [];
-        matlabbatch{1}.spm.stats.con.spmmat = {tmfc.subjects(iSub).path};
-        matlabbatch{1}.spm.stats.con.consess{1}.fcon.name = 'F_conditions_of_interest';
-        matlabbatch{1}.spm.stats.con.consess{1}.fcon.weights = weights;
-        matlabbatch{1}.spm.stats.con.consess{1}.fcon.sessrep = 'none';
-        matlabbatch{1}.spm.stats.con.delete = 0;
-        spm_jobman('run',matlabbatch);
+        con.spmmat = {tmfc.subjects(iSub).path};
+        con.consess{1}.fcon.name = 'F_conditions_of_interest';
+        con.consess{1}.fcon.weights = weights;
+        con.consess{1}.fcon.sessrep = 'none';
+        con.delete = 0;
+        spm_run_con(con);
         idx = nCon + 1;
         % Reload SPM.mat to update SPM.xCon
         SPM = load(tmfc.subjects(iSub).path).SPM;
