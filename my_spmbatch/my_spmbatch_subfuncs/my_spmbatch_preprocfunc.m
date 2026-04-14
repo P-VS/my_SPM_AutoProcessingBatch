@@ -171,7 +171,7 @@ if (params.func.isaslbold || params.func.denoise) && ~contains(ppparams.func(ppp
         end
     end
 end
-if ppparams.func(ppparams.echoes(1)).prefix(1:2)=='cd' params.denoise.do_DUNE
+if startsWith(ppparams.func(ppparams.echoes(1)).prefix,'cd') && params.denoise.do_DUNE
     boldfile = fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile]);
     if exist(boldfile,"file")
         nfname = split([ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile],'_dune-bold_bold');
