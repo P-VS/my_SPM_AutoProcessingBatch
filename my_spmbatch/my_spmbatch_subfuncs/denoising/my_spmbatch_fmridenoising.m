@@ -193,7 +193,7 @@ if params.denoise.do_noiseregression || params.denoise.do_ICA_AROMA
         end
 
         if params.func.isaslbold && contains(params.asl.splitaslbold,'meica')
-            ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+            ppparams.subperfdir = fullfile(ppparams.subpath,params.perf_folder);
             if ~isfolder(ppparams.subperfdir), mkdir(ppparams.subperfdir); end
 
             fafuncdat = my_spmbatch_noiseregression(funcdat,ppparams,params,'fasl');
@@ -212,7 +212,7 @@ if params.denoise.do_noiseregression || params.denoise.do_ICA_AROMA
 
             clear fafuncdat fVfunc
         elseif params.func.isaslbold && contains(params.asl.splitaslbold,'filter')
-            ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+            ppparams.subperfdir = fullfile(ppparams.subpath,params.perf_folder);
             if ~isfolder(ppparams.subperfdir), mkdir(ppparams.subperfdir); end
 
             fname = split(ppparams.func(ie).funcfile,'_bold.nii');
