@@ -26,22 +26,22 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [2]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'POSTcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = true; %true if run number is in filename
 params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
-params.SPMMAT_analysisname = 'MEICA-BOLD_OPTHRF';
-params.modality = 'fmri'; %'fmri' of 'fasl'
+params.SPMMAT_analysisname = 'MEICA-ASL_SPLINE';
+params.modality = 'fasl'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
-params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
+params.preprocfmridir = 'preproc_meica_asl_spline'; %directory with the preprocessed fMRI data
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; 
@@ -51,8 +51,8 @@ params.keeplogs = false;
 
 %% PPI/BSC data parameters
 
-params.PPI_analysisname = 'MF_9ROIs';
-params.VOIfolder = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/PPI_Regios_MF';
+params.PPI_analysisname = 'MF_Inhibition';
+params.VOIfolder = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/VOI_PPI_Inhibition';
 
 params.doPPI = true;
 params.doBSC = false;

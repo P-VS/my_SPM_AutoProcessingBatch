@@ -24,28 +24,28 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1,2,3:11]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'ME-EmoFaces'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'ME-DUNE-NonBOLD';
-params.modality = 'fmri'; %'fmri' of 'fasl'
-params.isaslbold = false;
+params.analysisname = 'DUNE-ASL_fALFF';
+params.modality = 'fasl'; %'fmri' of 'fasl'
+params.isaslbold = true;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
-params.use_parallel = false; 
+params.use_parallel = true; 
 params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_func_ME-DUNE-NonBOLD'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swcdavure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_dune_asl_new'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'wcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     %In case of multiple runs in the same session exist
     params.func.mruns = false; %true if run number is in filename
@@ -56,10 +56,15 @@ params.keeplogs = false;
     
     % For ME-fMRI
     params.func.meepi = true; %true if echo number is in filename
-    params.func.echoes = [1,2]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+    params.func.echoes = [1,3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+
+    % For Functional ASL 
+    params.whichfile = 'cbf'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
+    params.asl.LabelingDuration = 1.525; % in seconds (parameter is ignored if LabelingDuration is in json file)
+    params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
 %% Analysis parameters
-    params.do_ALFF = false;
+    params.do_ALFF = true;
     params.do_fALFF = true;
     params.do_ReHo = false; %KCC Kendall’s coefficient of concordance for N neighbouring voxels
 

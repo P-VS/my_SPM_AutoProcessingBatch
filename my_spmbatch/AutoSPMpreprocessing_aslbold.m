@@ -33,15 +33,16 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/vsc11352/DataManon'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
-sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [2];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_meica_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_meica_asl_spline'; %name of the folder to save the preprocessed asl data
+params.perf_folder = 'perf_meica'; %name of the folder with the asl data
 
-task ={'PREcog'};
+task ={'POSTcog'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = true; %true if run number is in filename
@@ -56,7 +57,7 @@ params.loadmaxvols = 300; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false; %(default=false)
 
 %% Save intermediate results needed?
-params.save_intermediate_results = true; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
+params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
@@ -72,7 +73,7 @@ params.func.dummytime = 8; %time in seconds (default=2*TR)
 params.func.pepolar = true; %true if fmap scan exist otherwise false (default=true)
 
 %% ASL Parameters
-params.asl.splitaslbold = 'dune'; %'filter','meica' or 'dune' (default='meica') 
+params.asl.splitaslbold = 'meica'; %'filter','meica' or 'dune' (default='meica') 
 %'meica': after filtering, ME-ICA (tedana based)
 %'dune': experimental splitting method
 
@@ -98,7 +99,8 @@ params.asl.splitaslbold = 'dune'; %'filter','meica' or 'dune' (default='meica')
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
     params.asl.GMWM = 'anat'; %wich data used for segmentation maps 'anat', 'M0asl' (default='anat')
-    
+    params.asl.Tres = 'orig'; %temporal resolution of the processed asl time series 'orig' or 'half' (default='orig')
+    params.asl.interp = 'spline'; %technique used for interpolating labeled and control images 'spline', 'sinc' (default='sinc')
 %% Preprocessing functional (the order of the parameters represents the fixed order of the steps done)
 
     % Realignnment (motion correction)
