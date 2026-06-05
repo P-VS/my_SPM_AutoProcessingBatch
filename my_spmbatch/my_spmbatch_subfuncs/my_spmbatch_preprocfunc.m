@@ -85,9 +85,7 @@ try
                     end
                 end
 
-                if params.func.isaslbold, vol_tr = ppparams.tr-params.asl.PostLabelDelay-params.asl.LabelingDuration; else vol_tr = ppparams.tr; end
-                
-                funcdat=my_spmbatch_st(funcdat,tVfunc,ppparams.SliceTimes,vol_tr);
+                funcdat=my_spmbatch_st(funcdat,tVfunc,ppparams.SliceTimes,ppparams.tr);
 
                 for iv=1:nvols
                     tVfunc(iv).fname = fullfile(ppparams.subfuncdir,['a' ppparams.func(ie).prefix ppparams.func(ie).funcfile]);
