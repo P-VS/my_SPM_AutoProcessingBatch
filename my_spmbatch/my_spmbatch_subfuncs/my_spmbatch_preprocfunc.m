@@ -35,7 +35,7 @@ try
     
                 funcdat = spm_read_vols(tVfunc);
 
-                vor_tr = ppparams.tr;
+                vol_tr = ppparams.tr;
                 
                 if ~isfield(ppparams,'SliceTimes')
                     jsondat = fileread(ppparams.func(ie).jsonfile);
