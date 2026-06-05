@@ -34,6 +34,8 @@ try
                 fprintf(['Do slice time correction echo ' num2str(ie) ' vol ' num2str(ti) '-' num2str(ti+nvols-1) '\n'])
     
                 funcdat = spm_read_vols(tVfunc);
+
+                vor_tr = ppparams.tr;
                 
                 if ~isfield(ppparams,'SliceTimes')
                     jsondat = fileread(ppparams.func(ie).jsonfile);
@@ -80,10 +82,13 @@ try
                         end
                     end
     
-                    if params.func.isaslbold, ppparams.SliceTimes = params.asl.LabelingDuration+params.asl.PostLabelDelay+ppparams.SliceTimes; end
+                    if params.func.isaslbold
+                        ppparams.SliceTimes = params.asl.LabelingDuration+params.asl.PostLabelDelay+ppparams.SliceTimes; 
+                        vol_tr = ppparams.tr-params.asl.PostLabelDelay-ppparams.SliceTimes; 
+                    end
                 end
                 
-                funcdat=my_spmbatch_st(funcdat,tVfunc,ppparams.SliceTimes,ppparams.tr);
+                funcdat=my_spmbatch_st(funcdat,tVfunc,ppparams.SliceTimes,vol_tr);
 
                 for iv=1:nvols
                     tVfunc(iv).fname = fullfile(ppparams.subfuncdir,['a' ppparams.func(ie).prefix ppparams.func(ie).funcfile]);
@@ -114,7 +119,7 @@ if params.func.isaslbold && contains(ppparams.func(1).funcfile,'_aslbold.nii')
             Vasl=spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ie).prefix ppparams.func(ie).funcfile]));
             fasldata = spm_read_vols(Vasl);
         
-            ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+            ppparams.subperfdir = fullfile(ppparams.subpath,params.perf_folder);
             fname = split(ppparams.func(ie).funcfile,'_aslbold.nii');
     
             tpref = split(ppparams.func(ie).prefix,'f');
@@ -188,23 +193,13 @@ if startsWith(ppparams.func(ppparams.echoes(1)).prefix,'cd') && params.denoise.d
             V(i) = spm_create_vol(V(i));
         end
 
-        %[V,~] = my_spmbatch_readSEfMRI(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile],1,ppparams,numel(V));
-        %auto_acpc_reorient([fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile]) ',1'],'EPI');
-        %V2 = spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ppparams.echoes(ie)).prefix ppparams.func(ie).funcfile ',1']));
-        %MM = V2.mat;
-
-        %for iv=1:numel(V)
-        %    V(iv) = my_reset_orientation(V(iv),MM);
-        %    V(iv) = spm_create_vol(V(iv));
-        %end
-
         clear V V2
     end
     nfname = split([ppparams.func(ppparams.echoes(1)).prefix ppparams.func(1).funcfile],'_dune-bold_bold');
     aslfile = [nfname{1} '_dune-asl_asl.nii'];
     if exist(fullfile(ppparams.subfuncdir,aslfile),"file")
-        if ~exist(fullfile(ppparams.subpath,'perf'),'dir'), mkdir(fullfile(ppparams.subpath,'perf')); end
-        ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+        if ~exist(fullfile(ppparams.subpath,params.perf_folder),'dir'), mkdir(fullfile(ppparams.subpath,params.perf_folder)); end
+        ppparams.subperfdir = fullfile(ppparams.subpath,params.perf_folder);
     
         oldfile = fullfile(ppparams.subfuncdir,aslfile);
         newfile = fullfile(ppparams.subperfdir,aslfile);

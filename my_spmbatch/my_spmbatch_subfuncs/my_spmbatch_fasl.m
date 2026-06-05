@@ -60,7 +60,7 @@ if ~isfield(ppparams,'func'), return; end
 
 %% Step 2: Preprocessing of the ASL part of the data
 if params.preprocess_asl
-    ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+    ppparams.subperfdir = fullfile(ppparams.subpath,params.perf_folder);
     
     if ~isfolder(ppparams.subfuncdir)
         fprintf(['No perf data folder found for subject ' num2str(sub) ' session ' num2str(ses)])

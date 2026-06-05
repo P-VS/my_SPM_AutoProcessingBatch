@@ -49,17 +49,19 @@ load(fullfile(ppparams.fmriresultmap,'SPM.mat'));
 % SPM output directory
 SPM.swd = ppparams.fmriresultmap;
 
+P = SPM.xY.P;
+rmfield(SPM.xY,'P');
+
 % SPM fMRI data files
-for ifile=1:size(SPM.xY.P,1)
-    [ffolder,fname,fext] = fileparts(SPM.xY.P(ifile,:));
+for ifile=1:size(P,1)
+    [ffolder,fname,fext] = fileparts(P(ifile,:));
 
-    splitfold1 = split(ffolder,ppparams.sesstring);
-    if contains(splitfold1{end},'\'), splitfold2 = split(splitfold1{end},'\'); end
-    if contains(splitfold1{end},'/'), splitfold2 = split(splitfold1{end},'/'); end
-
-    SPM.xY.P(ifile,:) = fullfile(ppparams.subpath,splitfold2{2:end},[fname fext]);
-    SPM.xY.VY(ifile).fname = fullfile(ppparams.subpath,splitfold2{2:end},[fname '.nii']);
+    if ifile==1, SPM.xY.P = fullfile(ppparams.subpath,params.preprocfmridir,[fname fext]); else SPM.xY.P(ifile,:) = fullfile(ppparams.subpath,params.preprocfmridir,[fname fext]); end
+    SPM.xY.VY(ifile).fname = fullfile(ppparams.subpath,params.preprocfmridir,[fname '.nii']);
 end
+
+[ffolder,fname,fext] = fileparts(SPM.xM.VM.fname);
+SPM.xM.VM.fname = fullfile(ppparams.subpath,params.preprocfmridir,[fname fext]);
 
 save(fullfile(ppparams.ppiresultmap,'SPM.mat'),'SPM')
 
