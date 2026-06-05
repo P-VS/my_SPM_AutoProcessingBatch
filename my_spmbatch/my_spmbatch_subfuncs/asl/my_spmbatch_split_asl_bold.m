@@ -39,8 +39,8 @@ Vbold = myspm_write_vol_4d(Vbold,bolddat);
 
 clear bolddat Vbold
 
-if ~exist(fullfile(ppparams.subpath,'perf'),'dir'), mkdir(fullfile(ppparams.subpath,'perf')); end
-ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
+if ~exist(fullfile(ppparams.subpath,params.perf_folder),'dir'), mkdir(fullfile(ppparams.subpath,params.perf_folder)); end
+ppparams.subperfdir = fullfile(ppparams.subpath,params.perf_folder);
 
 tmpdat = my_spm_batch_filt_funcdata(mfuncdat, 0.008, Inf, tr);
 masldat = tmpdat-mbolddat;
