@@ -35,15 +35,13 @@ try
     
                 funcdat = spm_read_vols(tVfunc);
 
-                vol_tr = ppparams.tr;
-                
                 if ~isfield(ppparams,'SliceTimes')
                     jsondat = fileread(ppparams.func(ie).jsonfile);
                     jsondat = jsondecode(jsondat);
                 
                     ppparams.tr = jsondat.RepetitionTime;
                     nsl=tVfunc(1).dim(3);
-                    
+                        
                     if isfield(jsondat,'SliceTiming'), ppparams.SliceTimes = jsondat.SliceTiming; else ppparams.SliceTimes = []; end
                     if ~(numel(ppparams.SliceTimes)==nsl), ppparams.SliceTimes = []; end
     
@@ -84,9 +82,10 @@ try
     
                     if params.func.isaslbold
                         ppparams.SliceTimes = params.asl.LabelingDuration+params.asl.PostLabelDelay+ppparams.SliceTimes; 
-                        vol_tr = ppparams.tr-params.asl.PostLabelDelay-ppparams.SliceTimes; 
                     end
                 end
+
+                if params.func.isaslbold, vol_tr = ppparams.tr-params.asl.PostLabelDelay-params.asl.LabelingDuration; else vol_tr = ppparams.tr; end
                 
                 funcdat=my_spmbatch_st(funcdat,tVfunc,ppparams.SliceTimes,vol_tr);
 
