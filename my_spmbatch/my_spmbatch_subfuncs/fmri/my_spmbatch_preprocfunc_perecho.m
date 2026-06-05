@@ -9,6 +9,7 @@ if ~contains(ppparams.func(enum).prefix,'e'), do_reorientation = true; else
 end
 if (params.func.do_realignment && ~contains(ppparams.func(enum).prefix,'r')), do_realignment = true; else 
     do_realignment = false; 
+    if isfield(ppparams,'rp_file'), keepfiles{numel(keepfiles)+1} = ppparams.rp_file; end
     if params.func.do_realignment, ppparams.func(enum).tprefix = ['r' ppparams.func(enum).tprefix]; end
 end
 if params.func.pepolar && ~contains(ppparams.func(enum).prefix,'u'), do_pepolar = true; else
@@ -87,7 +88,7 @@ if do_reorientation || do_realignment || do_pepolar
             
             % in ASL-BOLD the last dynamic is the M0 image 
             if (ti+nvols-1)==tdim && params.func.isaslbold && contains(params.asl.isM0scan,'last')
-                if ~exist(fullfile(ppparams.subpath,'perf'),'dir'), mkdir(fullfile(ppparams.subpath,'perf')); end
+                if ~exist(fullfile(ppparams.subpath,params.perf_folder),'dir'), mkdir(fullfile(ppparams.subpath,params.perf_folder)); end
         
                 M0 = tVfunc(end);
                 m0dat = funcdat(:,:,:,end);
@@ -96,7 +97,7 @@ if do_reorientation || do_realignment || do_pepolar
                 fparts = split(fparts{1},'_aslbold.nii');
                 
                 M0         = rmfield(M0, {'private'});
-                M0.fname   = fullfile(ppparams.subpath,'perf',[prefix ppparams.func(enum).tprefix fparts{1} '_m0scan.nii']);
+                M0.fname   = fullfile(ppparams.subpath,params.perf_folder,[prefix ppparams.func(enum).tprefix fparts{1} '_m0scan.nii']);
                 M0.descrip = 'my_spmbatch - m0scan';
                 M0.n       = [1 1];
                 M0.mat     = mat;

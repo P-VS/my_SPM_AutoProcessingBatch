@@ -17,12 +17,13 @@ end
 fmri_spec.dir = {ppparams.resultmap};
 fmri_spec.timing.units = 'secs';
 fmri_spec.timing.RT = tr;
-fmri_spec.timing.fmri_t = nsl;
-fmri_spec.timing.fmri_t0 = 1;
+if params.isaslbold, fmri_spec.timing.fmri_t = 4; else fmri_spec.timing.fmri_t = 1; end
+if params.isaslbold, fmri_spec.timing.fmri_t0 = 4; else fmri_spec.timing.fmri_t0 = 1; end
 
 for ir=1:numel(params.iruns)
     % correct events file for dummy scans if needed
     dummys = floor(params.dummytime/tr);
+    if params.isaslbold && contains(params.modality,'fasl'), dummys=dummys+1; end
     numparams = 0;
 
     T = readtable(ppparams.frun(ir).functsvfile,'FileType','text');
@@ -42,7 +43,6 @@ for ir=1:numel(params.iruns)
     end
 
     ppparams.edat{ir}.onset = ppparams.edat{ir}.onset-dummys*tr;
-    if params.isaslbold, ppparams.edat{ir}.onset=ppparams.edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay); end
     
     for it=1:numel(ppparams.edat{ir}.trial_type(:,1))
         ntrial_type(it,1) = convertCharsToStrings(ppparams.edat{ir}.trial_type(it,:));
