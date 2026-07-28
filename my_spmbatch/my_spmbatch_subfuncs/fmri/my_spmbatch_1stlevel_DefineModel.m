@@ -39,8 +39,7 @@ for ir=1:numel(params.iruns)
             end
             numparams = numel(fnames)-6;
         else params.add_parametricModulation=false; end
-    else params.add_parametricModulation=false;
-    end
+    else params.add_parametricModulation=false; end
 
     ppparams.edat{ir}.onset = ppparams.edat{ir}.onset-dummys*tr;
     
@@ -49,7 +48,7 @@ for ir=1:numel(params.iruns)
     end
     
     ppparams.edat{ir}.trial_type = ntrial_type;
-    
+
     [~,edatorder] = sort(ppparams.edat{ir}.trial_type);
     ppparams.edat{ir}.onset = ppparams.edat{ir}.onset(edatorder);
     ppparams.edat{ir}.duration = ppparams.edat{ir}.duration(edatorder);
@@ -129,7 +128,7 @@ for ir=1:numel(params.iruns)
     
         fmri_spec.sess(nsess).multi = {''};
 
-        if params.isaslbold && contains(params.modality,'fmri')
+        if (params.isaslbold && params.add_labelregressor) && contains(params.modality,'fmri')
             labels = zeros(1,numel(ppparams.ppfmridat{ir}.sess{ne}.func));
             labels(2:2:end) = 1;
             fmri_spec.sess(nsess).regress.name = 'labeling';

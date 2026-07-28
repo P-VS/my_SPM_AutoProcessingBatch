@@ -30,8 +30,8 @@ if params.func.isaslbold
 end
 
 if isempty(funcniilist)
-    fprintf(['No nifti files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No nifti files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task];
+    error(e)
     ppparams.error = true;
     return
 end
@@ -48,8 +48,8 @@ if isempty(funcjsonlist)
     funcjsonlist = my_spmbatch_dirfilelist(subjfuncdir,'json',namefilters,false);
 
     if isempty(funcjsonlist)
-        fprintf(['No json files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
-        fprintf('\nPP_Error\n');
+        e.message = ['No json files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task];
+        error(e)
         ppparams.error = true;
         return
     end
