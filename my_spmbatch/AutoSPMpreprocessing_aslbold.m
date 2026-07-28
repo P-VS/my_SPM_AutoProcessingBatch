@@ -26,14 +26,14 @@ function AutoSPMpreprocessing_aslbold
 
 %% Give path to SPM25 and GroupICA
 
-params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/spm25'; %'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/spm25';
-params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/GroupICATv40c'; %'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/GroupICATv40c'; 
+params.spm_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/spm25'; %'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/spm25';
+params.GroupICAT_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple~CloudDocs/Matlab/my_spmbatch/GroupICAT'; %'/data/brussel/113/vsc11352/MatlabScripts/my_spmbatch/GroupICATv40c'; 
 
 %% Give the basic input information of your data
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/vsc11352/DataManon'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
-sublist = [2];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
@@ -42,26 +42,24 @@ params.func_save_folder = 'preproc_meica_bold'; %name of the folder to save the 
 params.perf_save_folder = 'preproc_meica_asl_spline'; %name of the folder to save the preprocessed asl data
 params.perf_folder = 'perf_meica'; %name of the folder with the asl data
 
-task ={'POSTcog'};
+task ={'stroop'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = true; %true if run number is in filename
-params.func.runs = [1]; %the index of the runs (in filenames run-(index))
+params.func.runs = [3]; %the index of the runs (in filenames run-(index))
 
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; %(default=false)
-params.run_background = true;
-params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
+params.maxprocesses = 3; %Best not too high to avoid memory problems %(default=2)
 params.loadmaxvols = 300; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
-params.keeplogs = false; %(default=false)
 
 %% Save intermediate results needed?
 params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = false; %(default=true)
+params.preprocess_functional = true; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters

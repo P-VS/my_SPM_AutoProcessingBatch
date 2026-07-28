@@ -1,4 +1,4 @@
-function my_spmbatch_start_ppianalysis(sublist,nsessions,datpath,params)
+function my_spmbatch_start_PSCanalysis(sublist,nsessions,datpath,params)
 
 if params.onVSC || params.use_parallel, params.save_spm_results = false; end
 
@@ -43,20 +43,20 @@ for k = 1:numel(params.task)
             parfor is = 1:maxruns
                 i = (j-1)*params.maxprocesses+is;
 
-                fprintf(['Start PPI for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+                fprintf(['Start PSC for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
 
-                my_spmbatch_run_ppianalysis(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
+                my_spmbatch_run_PSCanalysis(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
     
-                fprintf(['Done PPI for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+                fprintf(['Done PSC for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
             end
         end
     else  
         for i=1:numel(datlist(:,1))
-            fprintf(['Start PPI for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+            fprintf(['Start PSC for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
 
-            my_spmbatch_run_ppianalysis(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
+            my_spmbatch_run_PSCanalysis(datlist(i,1),datlist(i,2),datlist(i,3),params.task{k},datpath,fullfile(datpath,paramsfile));
 
-            fprintf(['Done PPI for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+            fprintf(['Done PSC for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
         end
     end
 end

@@ -20,11 +20,11 @@ function AutoLocalRSfMRI_fMRI
 
 clear 'all'
 
-params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
+params.spm_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
 sublist = [1:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
@@ -33,19 +33,17 @@ nsessions = [1]; %nsessions>0
  
 params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'DUNE-ASL_fALFF';
-params.modality = 'fasl'; %'fmri' of 'fasl'
+params.analysisname = 'DUNE-BOLD_fALFF';
+params.modality = 'fmri'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; 
-params.run_background = true;
-params.maxprocesses = 2; %Best not too high to avoid memory problems
-params.keeplogs = false;
+params.maxprocesses = 4; %Best not too high to avoid memory problems
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_dune_asl_new'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'wcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_dune_bold'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     %In case of multiple runs in the same session exist
     params.func.mruns = false; %true if run number is in filename
@@ -68,7 +66,7 @@ params.keeplogs = false;
     params.do_fALFF = true;
     params.do_ReHo = false; %KCC Kendall’s coefficient of concordance for N neighbouring voxels
 
-    params.LF_band = [0.008 0.1]; %BOLD frequency band for (f)ALFF (default=[0.008 0.1])
+    params.LF_band =  [0.008 0.06]; %BOLD frequency band for (f)ALFF (default=[0.008 0.1])
     params.Nvoxels = 27; %number of neighbouring voxels (27, 19, or 7) (default=27)
 
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!

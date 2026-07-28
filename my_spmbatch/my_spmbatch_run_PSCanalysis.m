@@ -1,23 +1,23 @@
-function my_spmbatch_run_ppianalysis(sub,ses,run,task,datpath,paramsfile)
+function my_spmbatch_run_PSCanalysis(sub,ses,run,task,datpath,paramsfile)
 
 load(paramsfile)
 
 global spmpath
 spmpath = params.spm_path;
 
-if params.onVSC, [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,task,params); end
+if params.onVSC, [datpath,params] = before_run_pscaVSC(datpath,sub,ses,task,params); end
 
 try
     %% make batch
-    params = my_spmbatch_ppianalysis(sub,ses,run,task,datpath,params);
+    params = my_spmbatch_pscanalysis(sub,ses,run,task,datpath,params);
 
 catch e
     fprintf(['\nError processing ' num2str(sub,['%0' num2str(params.sub_digits) 'd']) ' ses-' num2str(ses,'%03d') ' run-' num2str(run,'%02d') ' task-' task '\n']);
 
-    nlogfname = fullfile(datpath,['error_fmri_PPI_' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '.txt']);
+    nlogfname = fullfile(datpath,['error_fmri_PSC_' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '.txt']);
 
     fid = fopen(nlogfname, 'w');
-    fprintf(fid,['Error processing ' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '.txt\n\n']);
+    fprintf(fid,['Error processing ' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '\n\n']);
     fprintf(fid,'\nThe error was: \n%s\n',e.message);
     fprintf(fid,'\n');
     if isfield(e,'stack')
@@ -46,7 +46,7 @@ fprintf('\nCompleted\n');
 out = 1;
 
 %----------------------------------------------------------------------
-function [datpath,params] = before_run_ppiaVSC(datpath,sub,ses,task,params)
+function [datpath,params] = before_run_pscaVSC(datpath,sub,ses,task,params)
 
 fprintf('\nStart copying results\n');
 
@@ -61,10 +61,10 @@ try
 
     sesstring = ['ses-' num2str(ses,'%02d')];
     if ~isfolder(fullfile(datpath,substring,sesstring)), sesstring = ['ses-' num2str(ses,'%03d')]; end
-    
+
     orig_subpath = fullfile(orig_datpath,substring,sesstring);
     new_subpath = fullfile(new_datpath,substring,sesstring);
-    
+
     if ~isfolder(orig_subpath)
         orig_subpath = fullfile(datpath,substring); 
         new_subpath = fullfile(new_datpath,substring); 
@@ -75,13 +75,12 @@ try
     params.resultmap = ['SPMMAT-' task '_' params.SPMMAT_analysisname];
 
     if isfolder(fullfile(orig_subpath,params.resultmap)), copyfile(fullfile(orig_subpath,params.resultmap),fullfile(new_subpath,params.resultmap)); end
-    if isfield(params,'preprocfmridir') && isfolder(fullfile(orig_subpath,params.preprocfmridir)), copyfile(fullfile(orig_subpath,params.preprocfmridir),fullfile(new_subpath,params.preprocfmridir)); end
 
     datpath = new_datpath;
 
     params.orig_subpath = orig_subpath;
     params.new_subpath = new_subpath;
-    
+
     params.save_intermediate_results = false;
 catch
     params.onVSC = false;

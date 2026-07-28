@@ -26,21 +26,21 @@ function AutoSPMpreprocessing_fmri
 
 %% Give path to SPM25 and GroupICA
 
-params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
-params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICATv40c';
+params.spm_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple~CloudDocs/Matlab/spm25';
+params.GroupICAT_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple~CloudDocs/Matlab/GroupICAT';
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/USB512DISK1/PracticumfMRI';
+datpath = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/data';
 
-sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
 params.func_save_folder = 'preproc_func'; %name of the folder to save the preprocessed bold data
 
-task ={'language'};
+task ={'resti'};
 
 %In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -53,10 +53,8 @@ params.func.echoes = [1,2]; %the index of echoes in ME-fMRI used in the analysis
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!! 
 params.use_parallel = true; %(default=false)
-params.run_background = true;
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 1000; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 1000)
-params.keeplogs = false;
 
 params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
@@ -76,7 +74,7 @@ params.func.pepolar = true; %(default=true)
     params.anat.do_normalization = true; %(default=true)
     params.anat.normvox = [2.0 2.0 2.0]; %(default=[2.0 2.0 2.0]) Same as for fMRI!!
 
-    % Segmentation ussing CAT12
+    % Segmentation using CAT12
     params.anat.do_segmentation = false; %(default=true)
     params.anat.roi_atlas = false; %(default=false)
     

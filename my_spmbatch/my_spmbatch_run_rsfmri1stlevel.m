@@ -1,4 +1,4 @@
-function out = my_spmbatch_run_vbmpreprocessing(sub,ses,datpath,paramsfile)
+function out = my_spmbatch_run_rsfmri1stlevel(sub,ses,run,task,datpath,paramsfile)
 
 load(paramsfile)
 
@@ -7,18 +7,14 @@ spmpath = params.spm_path;
 
 if params.onVSC, [datpath,params] = before_run_VSC(datpath,sub,ses,params); end
 
-fprintf('\nStart analysing the data\n');
-
 try
-    %% preprocess anatomical scans
-    [delfiles,keepfiles] = my_spmbatch_preprocess_anat(sub,ses,datpath,params);
+    %% make batch
+    params = my_spmbatch_rsfmri1stlevel_processing(sub,ses,run,task,datpath,params);
 
-    % Clean up unnecessary files
-    cleanup_intermediate_files(sub,ses,datpath,delfiles,keepfiles,params,'anat',params.save_folder);
 catch e
     fprintf(['\nError processing ' num2str(sub,['%0' num2str(params.sub_digits) 'd']) ' ses-' num2str(ses,'%03d') ' run-' num2str(run,'%02d') ' task-' task '\n']);
 
-    nlogfname = fullfile(datpath,['error_VBM_preprocessing_' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '.txt']);
+    nlogfname = fullfile(datpath,['error_fmri_CONN1stlevel_' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '.txt']);
 
     fid = fopen(nlogfname, 'w');
     fprintf(fid,['Error processing ' num2str(sub,['%0' num2str(params.sub_digits) 'd']) '_ses-' num2str(ses,'%03d') '_run-' num2str(run,'%02d') '_task-' task '\n\n']);
