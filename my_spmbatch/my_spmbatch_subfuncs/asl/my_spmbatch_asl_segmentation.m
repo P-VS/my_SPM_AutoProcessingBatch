@@ -174,8 +174,8 @@ namefilters(3).required = true;
 anatniilist = my_spmbatch_dirfilelist(folder,'nii',namefilters,false);
 
 if isempty(anatniilist)
-    fprintf(['No nifti files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No nifti files found for subject ' ppparams.substring ' ' ppparams.sesstring];
+    error(e)
     return
 end
 

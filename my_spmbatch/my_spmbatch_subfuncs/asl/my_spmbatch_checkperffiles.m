@@ -46,8 +46,8 @@ namefilters(5).required = true;
 aslniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
 
 if isempty(aslniilist)
-    fprintf(['No asl nifti file found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No asl nifti file found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task];
+    error(e)
     ppparams.error = true;
     return
 end
@@ -86,8 +86,8 @@ namefilters(6).required = true;
 labelniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
 
 if isempty(labelniilist)
-    fprintf(['No label nifti file found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No label nifti file found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task];
+    error(e)
     ppparams.error = true;
     return
 end
@@ -116,8 +116,8 @@ namefilters(6).required = true;
 m0scanniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
 
 if isempty(m0scanniilist)
-    fprintf(['No m0scan nifti file found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No m0scan nifti file found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task];
+    error(e)
     ppparams.error = true;
     return
 end

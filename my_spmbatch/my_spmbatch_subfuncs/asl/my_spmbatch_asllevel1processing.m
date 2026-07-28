@@ -23,24 +23,24 @@ ppparams.subpath = fullfile(datpath,ppparams.substring,ppparams.sesstring);
 if ~isfolder(ppparams.subpath), ppparams.subpath = fullfile(datpath,ppparams.substring); end
 
 if ~isfolder(ppparams.subpath)
-    fprintf(['No data folder for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
 ppparams.subfuncdir = fullfile(ppparams.subpath,'func');
 
 if ~isfolder(ppparams.subfuncdir)
-    fprintf(['No func data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No func data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
 ppparams.preprocfmridir = fullfile(ppparams.subpath,params.preprocfmridir);
 
 if ~isfolder(ppparams.subfuncdir)
-    fprintf(['No preprocessed func data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No preprocessed func data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
@@ -75,8 +75,8 @@ for ir=1:numel(params.iruns)
     funcniilist = my_spmbatch_dirfilelist(ppparams.preprocfmridir,'nii',namefilters,false);
     
     if isempty(funcniilist)
-        fprintf(['No nii files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' params.task '\n'])
-        fprintf('\nPP_Error\n');
+        e.message = ['No nii files found for subject ' num2str(sub) ' session ' num2str(ses) ' task-' params.task];
+        error(e)
         return
     end
 
@@ -94,8 +94,8 @@ for ir=1:numel(params.iruns)
     if ~isempty(tmp), ppparams.frun(ir).func(1).funcfile = edirniilist(tmp).name; end
 
     if ~isfield(ppparams.frun(ir).func(1),'funcfile')
-        fprintf(['no preprocessed fmri data found for run ' num2str(ir) ' for echo ' num2str(params.func.echoes(1)) '\n'])
-        fprintf('\nPP_Error\n');
+        e.message = ['No preprocessed fmri data found for run ' num2str(ir) ' for echo ' num2str(params.func.echoes(1))];
+        error(e)
         return
     end
 
@@ -115,8 +115,8 @@ for ir=1:numel(params.iruns)
     functsvlist = my_spmbatch_dirfilelist(ppparams.subfuncdir,'tsv',enamefilters,false);
     
     if isempty(functsvlist)
-        fprintf(['No events.tsv files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' task '\n'])
-        fprintf('\nPP_Error\n');
+        e.message = ['No events.tsv files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' task];
+        error(e)
         return
     end
     
@@ -135,8 +135,8 @@ for ir=1:numel(params.iruns)
     funcjsonlist = funcjsonlist(jstmp);
     
     if isempty(funcjsonlist)
-        fprintf(['No json files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' task '\n'])
-        fprintf('\nPP_Error\n');
+        e.message = ['No json files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' task];
+        error(e)
         return
     end
     
