@@ -106,8 +106,7 @@ try
         end
     end
 catch e
-    fprintf('\nPP_Error\n');
-    fprintf('\nThe error was: \n%s\n',e.message)
+    error(e)
 end
 
 if params.func.isaslbold && contains(ppparams.func(1).funcfile,'_aslbold.nii')

@@ -30,8 +30,8 @@ ppparams.subpath = fullfile(datpath,ppparams.substring,ppparams.sesstring);
 if ~isfolder(ppparams.subpath), ppparams.subpath = fullfile(datpath,ppparams.substring); end
 
 if ~isfolder(ppparams.subpath)
-    fprintf(['No data folder for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     ppparams.error = true;
     return
 end
@@ -39,8 +39,8 @@ end
 ppparams.subfuncdir = fullfile(ppparams.subpath,'func');
 
 if ~isfolder(ppparams.subfuncdir)
-    fprintf(['No func data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No func data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     ppparams.error = true;
     return
 end

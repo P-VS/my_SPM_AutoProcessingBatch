@@ -18,16 +18,22 @@ ppparams.subpath = fullfile(datpath,ppparams.substring,ppparams.sesstring);
 if ~isfolder(ppparams.subpath), ppparams.subpath = fullfile(datpath,ppparams.substring); end
 
 if ~isfolder(ppparams.subpath)
-    fprintf(['No data folder for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
-ppparams.fmriresultmap = fullfile(ppparams.subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname]);
+if params.func.mruns
+    ppparams.resultfolder = ['SPMMAT-' task '_' params.SPMMAT_analysisname '_run-' num2str(run)];
+    ppparams.fmriresultmap = fullfile(ppparams.subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname '_run-' num2str(run)]);
+else
+    ppparams.resultfolder = ['SPMMAT-' task '_' params.SPMMAT_analysisname];
+    ppparams.fmriresultmap = fullfile(ppparams.subpath,['SPMMAT-' task '_' params.SPMMAT_analysisname]);
+end
 
 if ~isfolder(ppparams.fmriresultmap)
-    fprintf(['No SPMMAT folder for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No SPMMAT folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
@@ -120,8 +126,8 @@ for iroi=1:numel(roilist)
     ROI = spm_vol(fullfile(roilist(iroi).folder,roilist(iroi).name));
 
     if ~(ROI.dim==Vmask.dim)
-        fprintf(['ROI ' roilist(iroi).name ' not of the same dimensions as the subject mask'])
-        fprintf('\nPP_Error\n');
+        e.message = [ROI ' roilist(iroi).name ' not of the same dimensions as the subject mask];
+        error(e)
         return
     end
 
@@ -137,8 +143,8 @@ for iroi=1:numel(roilist)
     tmfc.ROI_set(1).ROIs(iroi).path_masked =ROI.fname;
 
     if numel(ROImask>0.1)==0
-        fprintf(['ROI ' roilist(iroi).name ' no voxels in ROI'])
-        fprintf('\nPP_Error\n');
+        e.message = ['ROI ' roilist(iroi).name ' no voxels in ROI'];
+        error(e)
         return
     end
 end

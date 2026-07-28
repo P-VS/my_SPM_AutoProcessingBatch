@@ -40,6 +40,25 @@ Vmask = spm_write_vol(Vmask,mask);
 
 ppparams.mask_file = Vmask.fname;
 
+if params.isaslbold && contains(params.modality,'fmri')
+    label = zeros(numel(Vfunc),1);
+    label(1:2:numel(Vfunc)) = 1;
+
+    s = size(fdata);
+    fdata = reshape(fdata(:,:,:,:),[prod(s(1:end-1)),s(end)]);
+
+    tmp=find(mask>0);
+    mfdata = fdata(tmp,:);
+
+    [mfdata,~] = fmri_cleaning(mfdata(:,:),0,[tr 0.008 Inf],label,[],'restoremean','on');
+
+    fdata(tmp,:) = mfdata;
+
+    fdata = reshape(fdata(:,:),s);
+
+    clear mfdata label
+end
+
 if params.do_ALFF
     fprintf('\nComputing ALFF...');
 

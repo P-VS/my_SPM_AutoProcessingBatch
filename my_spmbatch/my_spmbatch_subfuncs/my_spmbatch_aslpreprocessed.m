@@ -24,16 +24,18 @@ ppparams.subpath = fullfile(datpath,ppparams.substring,ppparams.sesstring);
 if ~isfolder(ppparams.subpath), ppparams.subpath = fullfile(datpath,ppparams.substring); end
 
 if ~isfolder(ppparams.subpath)
-    fprintf(['No data folder for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    e.stack = dbstack('-completenames');
+    error(e)
     return
 end
 
 ppparams.subasldir = fullfile(ppparams.subpath,'perf');
 
 if ~isfolder(ppparams.subasldir)
-    fprintf(['No perf data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No perf data folder for subject ' num2str(sub) ' session ' num2str(ses)];
+    e.stack = dbstack('-completenames');
+    error(e)
     return
 end
 
@@ -56,8 +58,9 @@ namefilters(4).required = true;
 deltamniilist = my_spmbatch_dirfilelist(ppparams.subasldir,'nii',namefilters,false);
 
 if isempty(deltamniilist)
-    fprintf(['No deltam nifti files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No deltam files for subject ' num2str(sub) ' session ' num2str(ses)];
+    e.stack = dbstack('-completenames');
+    error(e)
     return
 end
 
@@ -78,8 +81,9 @@ if ~isempty(tmp), ppparams.wdeltam = fullfile(deltamniilist(tmp).folder,deltamni
 deltamjsonlist = my_spmbatch_dirfilelist(ppparams.subasldir,'json',namefilters,false);
 
 if isempty(deltamjsonlist)
-    fprintf(['No json files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No json files for subject ' ppparams.substring ' ' ppparams.sesstring];
+    e.stack = dbstack('-completenames');
+    error(e)
     return
 end
 
@@ -93,8 +97,9 @@ namefilters(4).required = true;
 m0scanniilist = my_spmbatch_dirfilelist(ppparams.subasldir,'nii',namefilters,false);
 
 if isempty(m0scanniilist)
-    fprintf(['No m0scan nifti files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No m0scan files found for subject ' ppparams.substring ' ' ppparams.sesstring];
+    e.stack = dbstack('-completenames');
+    error(e)
     return
 end
 
@@ -121,8 +126,9 @@ if ~isempty(tmp), ppparams.wm0scan = fullfile(m0scanniilist(tmp).folder,m0scanni
 m0scanjsonlist = my_spmbatch_dirfilelist(ppparams.subasldir,'json',namefilters,false);
 
 if isempty(m0scanjsonlist)
-    fprintf(['No json files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No json files for subject ' num2str(sub) ' session ' num2str(ses)];
+    e.stack = dbstack('-completenames');
+    error(e)
     return
 end
 

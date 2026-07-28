@@ -19,16 +19,16 @@ ppparams.subpath = fullfile(datpath,ppparams.substring,ppparams.sesstring);
 if ~isfolder(ppparams.subpath), ppparams.subpath = fullfile(datpath,ppparams.substring); end
 
 if ~isfolder(ppparams.subpath)
-    fprintf(['No data folder for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No data found for ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
 ppparams.subanatdir = fullfile(ppparams.subpath,'anat');
 
 if ~isfolder(ppparams.subanatdir)
-    fprintf(['No anat data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
-    fprintf('\nPP_Error\n');
+    e.message = ['No anat data found for ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
@@ -51,8 +51,8 @@ namefilters(3).required = true;
 anatniilist = my_spmbatch_dirfilelist(ppparams.subanatdir,'nii',namefilters,false);
 
 if isempty(anatniilist)
-    fprintf(['No nifti files found for ' ppparams.substring ' ' ppparams.sesstring '\n'])
-    fprintf('\nPP_Error\n');
+    e.message = ['No nifti files found for ' num2str(sub) ' session ' num2str(ses)];
+    error(e)
     return
 end
 
