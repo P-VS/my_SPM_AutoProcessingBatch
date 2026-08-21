@@ -26,9 +26,9 @@ params.spm_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple~
 
 %% Give the basic input information of your data
 
-params.datpath = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/data';
+params.datpath = '/Volumes/LaCie/UZ_Brussel/7Ttest_Manon_20260604/Volunteer';
 
-sublist = [2,3];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [2];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the result will be sub-01, if 3 the result will be sub-001
 
 %Add per sequence to convert an extra ssequence object to the mri_data structure as (folder,seqtype,name,task,[session],add_run,add_echo,add_acq)
@@ -50,7 +50,7 @@ params.sub_digits = 2; %if 2 the result will be sub-01, if 3 the result will be 
 % deactivating the lines by addinng a % at the beginning
 
 %% Example anatomical T1w scan
-params.mridata(1).folder = 'ses-001/dcm/3DT1';
+params.mridata(1).folder = 'data/T13D';
 params.mridata(1).acqtype = 'anat';
 params.mridata(1).seqtype = 'T1w';
 params.mridata(1).task = '';
@@ -62,28 +62,28 @@ params.mridata(1).add_run = false;
 params.mridata(1).add_echo = false;
 
 %% Example pepolar fmap scan
-params.mridata(2).folder = 'ses-001/dcm/FMRI PI SWITCH';
-params.mridata(2).acqtype = 'fmap';
-params.mridata(2).seqtype = 'pepolar';
-params.mridata(2).task = '';
-params.mridata(2).session = 1;
-params.mridata(2).run = 1;
-params.mridata(2).add_acq = false;
-params.mridata(2).add_dir = true;
-params.mridata(2).add_run = false;
-params.mridata(2).add_echo = true;
+%params.mridata(2).folder = 'ses-001/dcm/FMRI PI SWITCH';
+%params.mridata(2).acqtype = 'fmap';
+%params.mridata(2).seqtype = 'pepolar';
+%params.mridata(2).task = '';
+%params.mridata(2).session = 1;
+%params.mridata(2).run = 1;
+%params.mridata(2).add_acq = false;
+%params.mridata(2).add_dir = true;
+%params.mridata(2).add_run = false;
+%params.mridata(2).add_echo = true;
 
 %% Example fMRI scan
-params.mridata(3).folder = 'ses-001/dcm/FMRI';
-params.mridata(3).acqtype = 'func';
-params.mridata(3).seqtype = 'fmri';
-params.mridata(3).task = 'rest';
-params.mridata(3).session = 1;
-params.mridata(3).run = 1;
-params.mridata(3).add_acq = false;
-params.mridata(3).add_dir = true;
-params.mridata(3).add_run = false;
-params.mridata(3).add_echo = true;
+%params.mridata(3).folder = 'ses-001/dcm/FMRI';
+%params.mridata(3).acqtype = 'func';
+%params.mridata(3).seqtype = 'fmri';
+%params.mridata(3).task = 'rest';
+%params.mridata(3).session = 1;
+%params.mridata(3).run = 1;
+%params.mridata(3).add_acq = false;
+%params.mridata(3).add_dir = true;
+%params.mridata(3).add_run = false;
+%params.mridata(3).add_echo = true;
 
 %params.mridata(2).folder = 'dcm/SE-fMRI_EmoFaces';
 %params.mridata(2).acqtype = 'func';

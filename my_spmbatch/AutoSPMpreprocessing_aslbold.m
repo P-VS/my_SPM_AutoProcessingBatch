@@ -36,17 +36,17 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/v
 sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
 
-params.func_save_folder = 'preproc_meica_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_meica_asl_spline'; %name of the folder to save the preprocessed asl data
-params.perf_folder = 'perf_meica'; %name of the folder with the asl data
+params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune_asl_spline'; %name of the folder to save the preprocessed asl data
+params.perf_folder = 'perf_dune'; %name of the folder with the asl data
 
-task ={'stroop'};
+task ={'PREcog'};
 
 %% In case of multiple runs in the same session exist
-params.func.mruns = true; %true if run number is in filename
-params.func.runs = [3]; %the index of the runs (in filenames run-(index))
+params.func.mruns = false; %true if run number is in filename
+params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 %% Parallel processing and memory reduction
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
@@ -59,7 +59,7 @@ params.save_intermediate_results = false; %clean up the directory by deleting un
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = true; %(default=true)
+params.preprocess_functional = false; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
@@ -71,7 +71,7 @@ params.func.dummytime = 8; %time in seconds (default=2*TR)
 params.func.pepolar = true; %true if fmap scan exist otherwise false (default=true)
 
 %% ASL Parameters
-params.asl.splitaslbold = 'meica'; %'filter','meica' or 'dune' (default='meica') 
+params.asl.splitaslbold = 'dune'; %'filter','meica' or 'dune' (default='meica') 
 %'meica': after filtering, ME-ICA (tedana based)
 %'dune': experimental splitting method
 

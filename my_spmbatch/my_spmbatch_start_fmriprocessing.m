@@ -6,6 +6,7 @@ if ~params.func.meepi, params.func.echoes = [1]; end
 if ~params.func.mruns, params.func.runs = [1]; end
 if ~contains(params.modality,'fmri'), params.func.echoes = [1]; end
 if ~contains(params.modality,'fasl'), params.reduced_temporal_resolution = false; end
+if contains(params.modality,'fasl') && contains(params.whichfile,'cbf'), params.add_labelregressor = false; end
 
 if params.add_regressors || params.add_derivatives || params.add_parametricModulation || contains(params.modality,'fasl'), params.optimize_HRF=false; 
 elseif params.optimize_HRF; params.add_derivatives = false; end

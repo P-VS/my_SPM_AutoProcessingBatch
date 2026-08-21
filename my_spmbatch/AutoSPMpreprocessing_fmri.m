@@ -31,16 +31,16 @@ params.GroupICAT_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/7Ttest_Manon_20260604/Volunteer';
 
-sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [2];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
 params.func_save_folder = 'preproc_func'; %name of the folder to save the preprocessed bold data
 
-task ={'resti'};
+task ={'rest'};
 
 %In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -58,8 +58,8 @@ params.loadmaxvols = 1000; %to reduce memory load, the preprocessing can be spli
 
 params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
-params.preprocess_anatomical = false;
-params.preprocess_functional = true;
+params.preprocess_anatomical = true;
+params.preprocess_functional = false;
 
 % Geometric correction if fmap is available
 params.func.pepolar = true; %(default=true)

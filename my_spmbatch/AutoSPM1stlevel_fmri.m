@@ -29,28 +29,28 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/Volumes/LaCie/UZ_B
 sublist = [1:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
  
-params.task = {'stroop'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'MEICA-ASL_SPLINE';
+params.analysisname = 'DUNE-ASL_NOCBF';
 params.modality = 'fasl'; %'fmri' or 'fasl'
 params.isaslbold = true;
-params.add_labelregressor = false;
+params.add_labelregressor = true;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; 
 params.maxprocesses = 3; %Best not too high to avoid memory problems
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_meica_asl_spline'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_dune_asl_spline'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
     %In case of multiple runs in the same session exist
-    params.func.mruns = true; %true if run number is in filename
-    params.func.runs = [3]; %the index of the runs (in filenad mes run-(index))
+    params.func.mruns = false; %true if run number is in filename
+    params.func.runs = [1]; %the index of the runs (in filenad mes run-(index))
     params.func.use_runs = 'separately'; % 'separately' or 'together' (this parameter is ignored if mruns is false)
     %'separately': a separate analysis is done per run (default=separately)
     %'together': all runs are combined in 1 analysis 
@@ -60,7 +60,7 @@ params.maxprocesses = 3; %Best not too high to avoid memory problems
     params.func.echoes = [1:3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
     % For Functional ASL 
-    params.whichfile = 'cbf'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
+    params.whichfile = 'asl'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
     params.asl.LabelingDuration = 1.525; % in seconds (parameter is ignored if LabelingDuration is in json file)
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
@@ -106,23 +106,23 @@ params.maxprocesses = 3; %Best not too high to avoid memory problems
     %params.contrast(2).vector = [-1,1];
 
     %% For experiment MANON: STROOP
-    params.contrast(1).conditions = {'congruent','neutral'};
-    params.contrast(1).vector = [1,-1];
+    %params.contrast(1).conditions = {'congruent','neutral'};
+    %params.contrast(1).vector = [1,-1];
 
-    params.contrast(2).conditions = {'congruent','neutral'};
-    params.contrast(2).vector = [-1,1];
+    %params.contrast(2).conditions = {'congruent','neutral'};
+    %params.contrast(2).vector = [-1,1];
 
-    params.contrast(3).conditions = {'incongruent','neutral'};
-    params.contrast(3).vector = [1,-1];
+    %params.contrast(3).conditions = {'incongruent','neutral'};
+    %params.contrast(3).vector = [1,-1];
 
-    params.contrast(4).conditions = {'incongruent','neutral'};
-    params.contrast(4).vector = [-1,1];
+    %params.contrast(4).conditions = {'incongruent','neutral'};
+    %params.contrast(4).vector = [-1,1];
 
-    params.contrast(5).conditions = {'congruent','incongruent'};
-    params.contrast(5).vector = [1,-1];
+    %params.contrast(5).conditions = {'congruent','incongruent'};
+    %params.contrast(5).vector = [1,-1];
 
-    params.contrast(6).conditions = {'congruent','incongruent'};
-    params.contrast(6).vector = [-1,1];
+    %params.contrast(6).conditions = {'congruent','incongruent'};
+    %params.contrast(6).vector = [-1,1];
 
     %params.contrast(7).conditions = {'congruent','incongruent','neutral'};
     %params.contrast(7).vector = [1,1,1];
@@ -131,11 +131,11 @@ params.maxprocesses = 3; %Best not too high to avoid memory problems
     %params.contrast(8).vector = [-1,-1,-1];
 
     %% For experiment MANON: Go-NoGO
-    %params.contrast(1).conditions = {'Go','NoGo'};
-    %params.contrast(1).vector = [1,-1];
+    params.contrast(1).conditions = {'Go','NoGo'};
+    params.contrast(1).vector = [1,-1];
 
-    %params.contrast(2).conditions = {'Go','NoGo'};
-    %params.contrast(2).vector = [-1,1];
+    params.contrast(2).conditions = {'Go','NoGo'};
+    params.contrast(2).vector = [-1,1];
 
     %params.contrast(3).conditions = {'Go','NoGo'};
     %params.contrast(3).vector = [1,1];

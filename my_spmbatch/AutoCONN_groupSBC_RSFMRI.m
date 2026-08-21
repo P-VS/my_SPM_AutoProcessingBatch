@@ -25,16 +25,16 @@ params.conn_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple
 
 %% Give the basic input information of your data
 
-datpath = '/Users/petervanschuerbeek/fMRI_data/HumanIT/IndividueleData'; 
+datpath = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/data'; 
 
 sublist = [2,3]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1,2]; %nsessions>0
 
-params.task = {'rest'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'rest'}; %text string that is in between task_ and _bold in your fNRI nifti filename
 
-params.outfolder = '/Users/petervanschuerbeek/fMRI_data/HumanIT/Group_CONN'; 
+params.outfolder = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/Group_CONN'; 
 params.analysisname = 'CONN-HumanIT-2Subjects';
 
 params.use_parallel = false; 
@@ -49,7 +49,15 @@ params.func.mruns = false; %true if run number is in filename
 params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 %% CONN parameters
-params.add = true; %add new data to an existing analysis
+params.add = false; %add new data to an existing analysis
+
+params.do_ROI2ROI = true;
+params.do_Seed2voxel = true;
+params.do_voxel2voxel = true;
+
+%defines 2nd-level covariates (arbitrary continuous/categorical/ordinal data for each subject) 
+params.sub_covariates{1}.names = 'All subjects';
+params.sub_covariates{1}.vector = ones(numel(sublist),1); %subjects.effects{neffect} vector of size [nsubjects,1] defining second-level effects
 
 %% BE CAREFUL WITH CHANGING THE CODE BELOW THIS LINE !!
 %--------------------------------------------------------------------------------
