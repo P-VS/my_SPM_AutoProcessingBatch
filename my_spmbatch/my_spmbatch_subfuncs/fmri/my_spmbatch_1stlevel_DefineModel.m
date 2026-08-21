@@ -128,7 +128,7 @@ for ir=1:numel(params.iruns)
     
         fmri_spec.sess(nsess).multi = {''};
 
-        if (params.isaslbold && params.add_labelregressor) && contains(params.modality,'fmri')
+        if (params.isaslbold && params.add_labelregressor)
             labels = zeros(1,numel(ppparams.ppfmridat{ir}.sess{ne}.func));
             labels(2:2:end) = 1;
             fmri_spec.sess(nsess).regress.name = 'labeling';
