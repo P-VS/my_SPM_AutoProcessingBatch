@@ -2967,7 +2967,19 @@ for i = 1:numel(dirs)
     a = [a dir(fullfile(curFolder,'*.dcm'))];
     a = [a dir(fullfile(curFolder,'*.DCM'))];
     a([a.isdir]) = []; % remove folders
+    if ~isempty(a)
+        tmp = find(strlength({a.name})>4); %Remove '.' and '..'
+        if ~isempty(tmp)
+            a = a(tmp);
+        end
+    
+        tmp = find(~contains({a.name},'._')); %Remove the hidden files from Mac from the list
+        if ~isempty(tmp)
+            a = a(tmp);
+        end
+    end
     a = strcat(curFolder, {a.name});
+
     files = [files a]; %#ok<*AGROW>
 end
 

@@ -120,6 +120,6 @@ for si=1:numel(params.mridata)
         end
     catch e
         fprintf('\nDCM2NII Error\n');
-        error(e)
+        fprintf('\nThe error was: \n%s\n',e.message);
     end
 end
