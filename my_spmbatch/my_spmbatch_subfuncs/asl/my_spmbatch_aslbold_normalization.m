@@ -1,9 +1,14 @@
 function [ppparams,delfiles,keepfiles] = my_spmbatch_aslbold_normalization(ppparams,params,delfiles,keepfiles)
 
 Vcbf = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).cbfprefix ppparams.perf(1).cbffile]));
+Vasl = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
 
 for i=1:numel(Vcbf)
     wcbffiles{i,1} = [Vcbf(i).fname ',' num2str(i)];
+end
+
+for i=1:numel(Vasl)
+    waslfiles{i,1} = [Vasl(i).fname ',' num2str(i)];
 end
 
 %% Normalization of the M0 scan
@@ -43,7 +48,6 @@ spm_run_norm(m0normw);
 keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile])};
 ppparams.perf(1).wm0file = ['w' ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile];
 
-
 %% Normalise CBF data
 
 %Write the spatially normalised  CBF data
@@ -76,3 +80,19 @@ keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf
 ppparams.perf(1).wmcbffile = ['w' ppparams.perf(1).meancbf];
 
 clear Vmcbf
+
+%% Normalise ASL data
+
+%Write the spatially normalised  ASL data
+
+aslnormw = m0normw;
+aslnormw.subj.def = {ppparams.deffile};
+aslnormw.subj.resample = waslfiles(:,1);
+
+spm_run_norm(aslnormw);
+
+keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile])};
+
+ppparams.perf(1).waslfile = ['w' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile];
+
+clear Vasl
