@@ -31,26 +31,26 @@ params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject fold
 
 nsessions = [1,2]; %nsessions>0
  
-params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog','POSTcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'DUNE-ASL_NOCBF';
+params.analysisname = 'MEICA-ASL_SPLINE';
 params.modality = 'fasl'; %'fmri' or 'fasl'
 params.isaslbold = true;
-params.add_labelregressor = true;
+params.add_labelregressor = false;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; 
 params.maxprocesses = 3; %Best not too high to avoid memory problems
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_dune_asl_spline'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_meica_asl_spline'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
     %In case of multiple runs in the same session exist
     params.func.mruns = false; %true if run number is in filename
-    params.func.runs = [1]; %the index of the runs (in filenad mes run-(index))
+    params.func.runs = [1,2,3]; %the index of the runs (in filenad mes run-(index))
     params.func.use_runs = 'separately'; % 'separately' or 'together' (this parameter is ignored if mruns is false)
     %'separately': a separate analysis is done per run (default=separately)
     %'together': all runs are combined in 1 analysis 
@@ -60,7 +60,7 @@ params.maxprocesses = 3; %Best not too high to avoid memory problems
     params.func.echoes = [1:3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
     % For Functional ASL 
-    params.whichfile = 'asl'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
+    params.whichfile = 'cbf'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
     params.asl.LabelingDuration = 1.525; % in seconds (parameter is ignored if LabelingDuration is in json file)
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
@@ -72,8 +72,8 @@ params.maxprocesses = 3; %Best not too high to avoid memory problems
     params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
     params.optimize_HRF = false; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
     params.use_ownmask = true;
-    params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
-    params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
+    params.model_serial_correlations = 'none'; %'default=AR(1)
+    params.hpf = 128; %default 128 but changed to tr*(nvol-1) if data already filtered (f in prefix)
 
 %% SPM results analysis
     %Save SPM results per contrast as thresholded map, binary mask, n-aray map (n=cluster number), 

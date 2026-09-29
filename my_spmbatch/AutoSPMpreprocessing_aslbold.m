@@ -36,10 +36,10 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/v
 sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1,2]; %nsessions>0
+nsessions = [1]; %nsessions>0
 
 params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_asl_spline'; %name of the folder to save the preprocessed asl data
+params.perf_save_folder = 'preproc_dune_asl_abs'; %name of the folder to save the preprocessed asl data
 params.perf_folder = 'perf_dune'; %name of the folder with the asl data
 
 task ={'PREcog'};

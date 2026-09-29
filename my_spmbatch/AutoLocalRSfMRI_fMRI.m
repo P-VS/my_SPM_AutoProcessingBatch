@@ -29,12 +29,12 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 sublist = [1:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [2]; %nsessions>0
  
 params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = 'DUNE-BOLD_fALFF';
-params.modality = 'fmri'; %'fmri' of 'fasl'
+params.analysisname = 'DUNE-ASL_fALFF';
+params.modality = 'fasl'; %'fmri' of 'fasl'
 params.isaslbold = true;
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
@@ -42,7 +42,7 @@ params.use_parallel = true;
 params.maxprocesses = 4; %Best not too high to avoid memory problems
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_dune_bold'; %directory with the preprocessed fMRI data
+    params.preprocfmridir = 'preproc_dune_asl_spline'; %directory with the preprocessed fMRI data
     params.fmri_prefix = 'swcdlavfure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     %In case of multiple runs in the same session exist

@@ -21,13 +21,13 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 sublist = [1:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
  
 params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
-params.func.runs = [2]; %the index of the runs (in filenames run-(index))
+params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
 params.SPMMAT_analysisname = 'MEICA-ASL_SPLINE';
 params.modality = 'fasl'; %'fmri' or 'fasl'

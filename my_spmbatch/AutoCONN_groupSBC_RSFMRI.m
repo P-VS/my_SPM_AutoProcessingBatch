@@ -25,24 +25,24 @@ params.conn_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~apple
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/data'; 
+datpath = '/Volumes/LaCie/UZ_Brussel/7Ttest_Manon_20260604/Volunteer'; 
 
-sublist = [2,3]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1,2]; %nsessions>0
+nsessions = [1]; %nsessions>0
 
 params.task = {'rest'}; %text string that is in between task_ and _bold in your fNRI nifti filename
 
-params.outfolder = '/Volumes/LaCie/UZ_Brussel/HumanIT Kevin-Elke/Group_CONN'; 
-params.analysisname = 'CONN-HumanIT-2Subjects';
+params.outfolder = '/Volumes/LaCie/UZ_Brussel/7Ttest_Manon_20260604/Volunteer/sub-01/ses-001'; 
+params.analysisname = 'CONN-REST';
 
 params.use_parallel = false; 
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 
 %% fMRI data parameters
 params.preprocfmridir = 'preproc_func'; %directory with the preprocessed fMRI data
-params.fmri_prefix = 'swdfavure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+params.fmri_prefix = 'swdfavre'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename

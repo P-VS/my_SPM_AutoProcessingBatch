@@ -31,18 +31,18 @@ params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject fold
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'stroop'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
 %% In case of multiple runs in the same session exist
-params.func.mruns = true; %true if run number is in filename
-params.func.runs = [2]; %the index of the runs (in filenames run-(index))
+params.func.mruns = false; %true if run number is in filename
+params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
-params.SPMMAT_analysisname = 'MEICA-BOLD';
-params.modality = 'fmri'; %'fmri' of 'fasl'
+params.SPMMAT_analysisname = 'MEICA-ASL_SPLINE';
+params.modality = 'fasl'; %'fmri' of 'fasl'
 params.isaslbold = true;
-params.add_labelregressor = true;
+params.add_labelregressor = false;
 
-params.preprocfmridir = 'preproc_meica_bold'; %directory with the preprocessed fMRI data
+params.preprocfmridir = 'preproc_meica_asl_spline'; %directory with the preprocessed fMRI data
 
 params.onVSC = false; % !!!Only true if using the VSC with a VUB account!!!
 params.use_parallel = true; 
