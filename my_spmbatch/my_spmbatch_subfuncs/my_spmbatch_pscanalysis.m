@@ -45,7 +45,7 @@ mask = spm_read_vols(spm_vol(fullfile(ppparams.fmriresultmap,'mask.nii')));
 vmask = find(mask>0);
 
 Bmean_dat = spm_read_vols(spm_vol(fullfile(ppparams.fmriresultmap,SPM.Vbeta(end).fname)));
-vbmask = find(Bmean_dat(vmask)>0);
+vbmask = find(abs(Bmean_dat(vmask))>0);
 
 nCon = numel(SPM.xCon);
 
@@ -55,6 +55,7 @@ for icon=1:nCon
 
     psc_dat = zeros(VC.dim);
     psc_dat(vmask(vbmask)) = (Con_dat(vmask(vbmask)) ./ Bmean_dat(vmask(vbmask))) * peakX * 100;
+    psc_dat(isnan(psc_dat)) = 0;
 
     PVC = VC;
     rmfield(PVC,'pinfo');
