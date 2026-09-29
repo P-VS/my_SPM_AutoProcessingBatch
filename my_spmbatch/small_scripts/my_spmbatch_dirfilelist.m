@@ -11,7 +11,7 @@ else
     return 
 end
 
-tmp = find(~contains({dirlist.name},'._')); %Remove the hiden files from Mac from the list
+tmp = find(~contains({dirlist.name},'._')); %Remove the hidden files from Mac from the list
 if ~isempty(tmp)
     dirlist = dirlist(tmp);
 else
