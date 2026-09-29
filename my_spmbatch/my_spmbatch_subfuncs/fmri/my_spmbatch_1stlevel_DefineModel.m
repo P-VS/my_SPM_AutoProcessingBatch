@@ -182,7 +182,7 @@ if contains(params.modality,'fasl') && contains(params.whichfile,'cbf')
 
     Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(ir).m0scan));
     fdata = spm_read_vols(Vfunc);
-    if ~(ppparams.frun(ir).m0scan=='s'),fdata = my_spmbatch_smooth(fdata,Vfunc(1),[],[6 6 6],0); end
+    fdata = my_spmbatch_smooth(fdata,Vfunc(1),[],[6 6 6],0); 
     mask = my_spmbatch_mask(fdata);
 else
     Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(1).func(1).funcfile));

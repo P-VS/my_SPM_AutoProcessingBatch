@@ -96,7 +96,7 @@ for ir=1:numel(params.iruns)
             error(e)
             return
         end
-    
+
         Vfunc = spm_vol(fullfile(ppparams.preprocfmridir,ppparams.frun(ir).func(ie).funcfile));
     
         for i=1:numel(Vfunc)
