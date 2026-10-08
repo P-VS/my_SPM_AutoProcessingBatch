@@ -505,10 +505,10 @@ for i = 1:nRun
     if s.isEnh, continue; end % Siemens enhanced dicom
     
     [err, h{i}] = checkImagePosition(h{i}); % may re-oder h{i} for Philips
-    if ~isempty(err)
-        errorLog([err ' for ' series '. Series skipped.']);
-        keep(i) = 0; continue; % skip
-    end    
+    %if ~isempty(err)
+    %    errorLog([err ' for ' series '. Series skipped.']);
+    %    keep(i) = 0; continue; % skip
+    %end    
 end
 h = h(keep); sNs = sNs(keep); studyIDs = studyIDs(keep); hSuf = hSuf(keep);
 subjs = subjs(keep); vendor = vendor(keep); acqs = acqs(keep);
@@ -848,25 +848,42 @@ for i = 1:nRun
     if nFile>1 && ~isfield(s, 'LastFile')
         h{i}{1}.LastFile = h{i}{nFile}; % store partial last header into 1st
     end
-    
+
     spm_progress_bar('Init',nFile,['Converting DCM files for run ' num2str(i)],'Files done');
+    ipp = zeros(nFile, 1);
+    iSL = xform_mat(h{i}{1}); iSL = iSL(3);
+    for j = 1:nFile, ipp(j,:) = h{i}{j}.ImagePositionPatient(iSL); end
+
+    a = diff(sort(ipp));
+    tol = max(a)/100; % max(a) close to SliceThichness. 1% arbituary
+    if abs(tryGetField(h{i}{1}, 'GantryDetectorTilt', 0)) > 0.1, tol = tol * 10; end % arbituary
+    nSL = sum(a > tol) + 1;
+    nVol = ceil(numel(ipp) / nSL);
+    sipp = sort(ipp);
+    SlPos=[sipp(find(a>tol));sipp(end)];
+
     for j = 1:nFile
         if mod(j,100), spm_progress_bar('Set',j); end
+        iSlPos = h{i}{j}.ImagePositionPatient(iSL);
+        ipos = find(SlPos==iSlPos);
+        ivol = ceil(j/nSL)-1;
         if j==1
-            img = dicm_img(s, 0); % initialize img with dicm data type
-            if ndims(img)>4 % err out, likely won't work for other series
+            timg = dicm_img(s, 0); % initialize img with dicm data type
+            if ndims(timg)>4 % err out, likely won't work for other series
                 error('Image with 5 or more dim not supported: %s', s.Filename);
             end
             applyRescale = tryGetField(s, 'ApplyRescale', false);
-            if applyRescale, img = single(img); end
+            if applyRescale, timg = single(timg); end
+            img = timg;
+            img(:,:,:,:,nSL*nVol) = 0;
         else
-            if j==2, img(:,:,:,:,nFile) = 0; end % pre-allocate for speed
-            img(:,:,:,:,j) = dicm_img(h{i}{j}, 0);
+            timg = dicm_img(h{i}{j}, 0);
         end
+        img(:,:,:,:,(ivol*nSL)+ipos) = timg;
         if applyRescale
             slope = tryGetField(h{i}{j}, 'RescaleSlope', 1);
             inter = tryGetField(h{i}{j}, 'RescaleIntercept', 0);
-            img(:,:,:,:,j) = img(:,:,:,:,j) * slope + inter;
+            img(:,:,:,:,(ivol*nSL)+ipos) = img(:,:,:,:,(ivol*nSL)+ipos) * slope + inter;
         end
     end
     spm_progress_bar('Clear');
@@ -1585,7 +1602,7 @@ elseif nFile>1 % multiple files: order already in slices then volumes
     dict = my_spmbatch_dicm_dict(s.Manufacturer, {'B_value' 'B_factor' 'SlopInt_6_9' ...
        'DiffusionDirectionX' 'DiffusionDirectionY' 'DiffusionDirectionZ' ...
        'MRDiffusionGradOrientation' 'ImageComments'});
-    iDir = (0:nDir-1) * nFile/nDir + 1; % could be mosaic or multiframe
+    iDir = (0:nDir-1) * nSL + 1; % could be mosaic or multiframe
     for j = 1:nDir % no bval/bvec for B0 volume
         s2 = h{iDir(j)};
         val = tryGetField(s2, 'B_value');
@@ -2697,7 +2714,11 @@ if abs(tryGetField(h{1}, 'GantryDetectorTilt', 0)) > 0.1, tol = tol * 10; end % 
 nSL = sum(a > tol) + 1;
 err = '';
 nVol = numel(ipp) / nSL;
-if mod(nVol,1), err = 'Missing file(s) detected'; return; end
+if mod(nVol,1) 
+    terr = 'Missing file(s) detected'; 
+    if nVol>1, err=terr; return; end
+end
+
 h{1}.LocationsInAcquisition = uint16(nSL); % best way for nSL?
 if nSL<2 || ~strncmp(h{1}.Manufacturer, 'Philips', 7), return; end
 

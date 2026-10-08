@@ -7,7 +7,7 @@ function my_spmdcm2niibatch(sub,params,useparfor)
 substring = ['sub-' num2str(sub,['%0' num2str(params.sub_digits) 'd'])];
 
 for si=1:numel(params.mridata)
-    try
+    %try
         sesstring = ['ses-' num2str(params.mridata(si).session,'%03d')];
     
         subpath = fullfile(params.datpath,substring,sesstring);
@@ -76,31 +76,40 @@ for si=1:numel(params.mridata)
     
             niifile = fullfile(outfolder,[fname{1} '.nii']);
             jsonfile = fullfile(outfolder,[fname{1} '.json']);
-    
-            noutfname = outfname;
-        
-            if params.mridata(si).add_acq || params.mridata(si).add_dir
-                jsondat = fileread(jsonfile);
-                jsondat = jsondecode(jsondat);
-        
-                if params.mridata(si).add_acq
-                    acq = jsondat.SeriesDescription;
-        
-                    noutfname=[noutfname '_acq-' acq];
-                end
-        
-                if params.mridata(si).add_dir
-                    jsonpedir = jsondat.PhaseEncodingDirection;
-            
-                    if contains(jsonpedir,'i'), pedir = 'LR'; end
-                    if contains(jsonpedir,'j'), pedir = 'PA'; end
-                    if contains(jsonpedir,'k'), pedir = 'FH'; end
-                    if contains(jsonpedir,'-'), pedir = reverse(pedir); end
-        
-                    noutfname=[noutfname '_dir-' pedir];
-                end
+
+            if contains(params.mridata(si).seqtype,'dwi')
+                bvalfile = fullfile(outfolder,[fname{1} '.bval']);
+                bvecfile = fullfile(outfolder,[fname{1} '.bvec']);
             end
     
+            noutfname = outfname;
+
+            jsondat = fileread(jsonfile);
+            jsondat = jsondecode(jsondat);
+        
+            if params.mridata(si).add_acq
+                acq = jsondat.SeriesDescription;
+    
+                noutfname=[noutfname '_acq-' acq];
+            end
+    
+            if params.mridata(si).add_dir
+                jsonpedir = jsondat.PhaseEncodingDirection;
+        
+                if contains(jsonpedir,'i'), pedir = 'LR'; end
+                if contains(jsonpedir,'j'), pedir = 'PA'; end
+                if contains(jsonpedir,'k'), pedir = 'FH'; end
+                if contains(jsonpedir,'-'), pedir = reverse(pedir); end
+    
+                noutfname=[noutfname '_dir-' pedir];
+            end
+
+            if contains(params.mridata(si).seqtype,'dwi')
+                seriesN = jsondat.SeriesNumber;
+
+                if seriesN>100, noutfname = ['u' noutfname]; end
+            end
+
             if params.mridata(si).add_echo
                 if contains(fname{1},'_e')
                     esplit = split(fname{1},'_e');
@@ -111,15 +120,21 @@ for si=1:numel(params.mridata)
             end
         
             if contains(params.mridata(si).seqtype,'T1w'), noutfname=[noutfname '_T1w']; end
+            if contains(params.mridata(si).seqtype,'dwi'), noutfname=[noutfname '_dwi']; end
             if contains(params.mridata(si).seqtype,'pepolar'), noutfname=[noutfname '_epi']; end
             if contains(params.mridata(si).seqtype,'fmri'), noutfname=[noutfname '_bold']; end
             if contains(params.mridata(si).seqtype,'aslbold'), noutfname=[noutfname '_aslbold']; end
         
             movefile(niifile,fullfile(outfolder,[noutfname '.nii']));
             movefile(jsonfile,fullfile(outfolder,[noutfname '.json']));
+
+            if contains(params.mridata(si).seqtype,'dwi')
+                movefile(bvecfile,fullfile(outfolder,[noutfname '.bvec']));
+                movefile(bvalfile,fullfile(outfolder,[noutfname '.bval']));
+            end
         end
-    catch e
-        fprintf('\nDCM2NII Error\n');
-        fprintf('\nThe error was: \n%s\n',e.message);
-    end
+    %catch e
+    %    fprintf('\nDCM2NII Error\n');
+    %    fprintf('\nThe error was: \n%s\n',e.message);
+    %end
 end
