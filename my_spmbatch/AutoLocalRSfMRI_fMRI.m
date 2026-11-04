@@ -29,7 +29,7 @@ datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 sublist = [1:31]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [2]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
  
 params.task = {'PREcog'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
@@ -64,7 +64,7 @@ params.maxprocesses = 4; %Best not too high to avoid memory problems
 %% Analysis parameters
     params.do_ALFF = true;
     params.do_fALFF = true;
-    params.do_ReHo = false; %KCC Kendall’s coefficient of concordance for N neighbouring voxels
+    params.do_ReHo = true; %KCC Kendall’s coefficient of concordance for N neighbouring voxels
 
     params.LF_band =  [0.008 0.06]; %BOLD frequency band for (f)ALFF (default=[0.008 0.1])
     params.Nvoxels = 27; %number of neighbouring voxels (27, 19, or 7) (default=27)

@@ -33,16 +33,16 @@ params.GroupICAT_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';  %'/data/brussel/113/vsc11352/DataManon'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; 
 
-sublist = [1:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:22,24:31];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [1,2]; %nsessions>0
 
 params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_asl_abs'; %name of the folder to save the preprocessed asl data
+params.perf_save_folder = 'preproc_dune_asl_spline'; %name of the folder to save the preprocessed asl data
 params.perf_folder = 'perf_dune'; %name of the folder with the asl data
 
-task ={'PREcog'};
+task ={'POSTcog'};
 
 %% In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -55,11 +55,11 @@ params.maxprocesses = 3; %Best not too high to avoid memory problems %(default=2
 params.loadmaxvols = 300; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 
 %% Save intermediate results needed?
-params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
+params.save_intermediate_results = true; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = false; %(default=true)
+params.preprocess_functional = true; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters

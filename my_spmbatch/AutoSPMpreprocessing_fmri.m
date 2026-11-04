@@ -31,16 +31,16 @@ params.GroupICAT_path = '/Users/petervanschuerbeek/Library/Mobile Documents/com~
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/Labo_fMRI/Language';
+datpath = '/Volumes/LaCie/UZ_Brussel/Studie_Sara_tDCS-rTMS/data_SAO';
 
-sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
-params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
+sublist = [5,6,7,8,9];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+params.sub_digits = 3; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
-nsessions = [1]; %nsessions>0
+nsessions = [2,3]; %nsessions>0
 
-params.func_save_folder = 'preproc_func_smoothness'; %name of the folder to save the preprocessed bold data
+params.func_save_folder = 'preproc_func_dune'; %name of the folder to save the preprocessed bold data
 
-task ={'language'};
+task ={'rest'};
 
 %In case of multiple runs in the same session exist
 params.func.mruns = false; %true if run number is in filename
@@ -56,7 +56,7 @@ params.use_parallel = true; %(default=false)
 params.maxprocesses = 2; %Best not too high to avoid memory problems
 params.loadmaxvols = 1000; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 1000)
 
-params.save_intermediate_results = true; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
+params.save_intermediate_results = false; %clean up the directory by deleting unnecessary files generated during the processing (default = false)
 
 params.preprocess_anatomical = false;
 params.preprocess_functional = true;
@@ -75,7 +75,7 @@ params.func.pepolar = true; %(default=true)
     params.anat.normvox = [2.0 2.0 2.0]; %(default=[2.0 2.0 2.0]) Same as for fMRI!!
 
     % Segmentation using CAT12
-    params.anat.do_segmentation = false; %(default=true)
+    params.anat.do_segmentation = true; %(default=true)
     params.anat.roi_atlas = false; %(default=false)
     
 %% Preprocessing functional data (the order of the parameters represents the fixed order of the steps done)
@@ -111,7 +111,7 @@ params.func.pepolar = true; %(default=true)
      
     % Smoothing
     params.func.do_smoothing = true; %(default=true)
-    params.func.smoothfwhm = 6; %(default=6)
+    params.func.smoothfwhm = 4; %(default=6)
 
 %% Denoising (after normalization)
     %if do_denoising = true and preprocess_functional = false -> only denoising of the normalised data
@@ -132,13 +132,13 @@ params.func.pepolar = true; %(default=true)
     params.denoise.Ncomponents = 5; %if in range [0 1] then the number of aCompCor components is equal to the number of components that explain the specified percentage of variation in the signal (default=5)
 
     % ICA-AROMA
-    params.denoise.do_ICA_AROMA = true; %(default=true)
+    params.denoise.do_ICA_AROMA = false; %(default=true)
 
     % Noise regression / remove ICA-AROMA noise components
     params.denoise.do_noiseregression = true; %(default=true)
 
     % Prepare data for DUNE denoising in python (WIP)
-    params.denoise.do_DUNE = false; %(default=false)
+    params.denoise.do_DUNE = true; %(default=false)
     params.denoise.DUNE_part = 'bold'; %'bold' or 'nonbold' (default='bold')
    
 %% Start preprocessing
