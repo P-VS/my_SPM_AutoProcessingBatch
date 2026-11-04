@@ -30,13 +30,13 @@ n = numel(V);                                           %-#images
 Y = zeros([V(1).dim(1:3),n]);                           %-image data matrix
 
 Range = [1:n];
-for i=1:n
+%for i=1:n
 %    for p=1:V(1).dim(3)
 %        Y(:,:,p,i) = spm_slice_vol(V(i),spm_matrix([0 0 p]),V(i).dim(1:2),0);
 %    end
-    ni=V(i).n;
-    Range(i) = ni(1);
-end
+%    ni=V(i).n;
+%    Range(i) = ni(1);
+%end
 
 Nii = my_spmbatch_load_nii(V(1).fname,Range);
 tY = Nii.img;
