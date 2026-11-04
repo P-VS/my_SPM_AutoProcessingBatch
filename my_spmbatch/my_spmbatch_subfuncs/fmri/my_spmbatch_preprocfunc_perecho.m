@@ -9,7 +9,7 @@ if ~contains(ppparams.func(enum).prefix,'e'), do_reorientation = true; else
 end
 if (params.func.do_realignment && ~contains(ppparams.func(enum).prefix,'r')), do_realignment = true; else 
     do_realignment = false; 
-    if isfield(ppparams,'rp_file'), keepfiles{numel(keepfiles)+1} = ppparams.rp_file; end
+    if isfield(ppparams,'rp_file'), keepfiles{numel(keepfiles)+1} = {ppparams.rp_file}; end
     if params.func.do_realignment, ppparams.func(enum).tprefix = ['r' ppparams.func(enum).tprefix]; end
 end
 if params.func.pepolar && ~contains(ppparams.func(enum).prefix,'u'), do_pepolar = true; else

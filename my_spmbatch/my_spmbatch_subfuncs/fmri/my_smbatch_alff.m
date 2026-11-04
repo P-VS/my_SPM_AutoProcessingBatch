@@ -18,4 +18,4 @@ dimFFT = size(fft_fdata);
 f = 0 : NyF/(dimFFT(2)-1) : NyF;
 fincl = find(and(f >= LF_band(1),f <= LF_band(2)));
 
-alffbrain = sum(fft_fdata(:,min(fincl):max(fincl)),2);
+alffbrain = mean(fft_fdata(:,min(fincl):max(fincl)),2);
